@@ -3,8 +3,8 @@ import Firebase
 import FirebaseAuth
 import FirebaseStorage
 class AddEventVC: UITableViewController {
-    @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var eventImageView: UIImageView!
     @IBOutlet weak var eventTitle: UITextField!
     @IBOutlet weak var eventDate: UILabel!
@@ -14,24 +14,16 @@ class AddEventVC: UITableViewController {
     @IBOutlet weak var organiserName: UILabel!
     @IBOutlet weak var addMemberTextFiled: UITextField!
     
-
-    @IBAction func addMemberPressed(_ sender: Any) {
-        
-        self.queryMemberData()
-        
-    }
-    
+    let now = Date()
     var memberData: [Member] = []
     var members: [Member] = []
     var isOn = false
     let ref = Database.database().reference()
     var user: User!
-    var memberIDs: [String] = []
+    var memberStrings: Set<String> = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        
         self.collectionView.dataSource = self
         self.eventDescription.delegate = self
         
@@ -40,11 +32,11 @@ class AddEventVC: UITableViewController {
             self.queryOrganiserData(uid)
         }
         
-        // 建立時間格式
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"
         // 將當下時間轉換成設定的時間格式，存入self.eventDate
-        self.eventDate.text = dateFormatter.string(from:Date())
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        self.eventDate.text = dateformatter.string(from: Date())
+        self.eventDatePicker.minimumDate = Date()
         
     }
     
@@ -71,13 +63,19 @@ class AddEventVC: UITableViewController {
         }else if self.isOn == true {
             self.isOn = false
             self.eventDatePicker.isHidden = true
-
+            
         }
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
     }
     
-    // 完成編輯並上傳至資料庫
+    @IBAction func addMemberPressed(_ sender: Any) {
+        
+        self.queryMemberData()
+        
+    }
+    
+    
     @IBAction func done(_ sender: Any) {
         
         // Check if event's title or event's description is empty.
@@ -111,9 +109,10 @@ class AddEventVC: UITableViewController {
     }
     
     @objc func dateChanged(sender:UIDatePicker){
+        becomeFirstResponder()
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"
-        self.eventDate.text = dateFormatter.string(from: sender.date)
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        self.eventDate.text = dateFormatter.string(from: self.eventDatePicker.date)
     }
     
     
@@ -167,8 +166,8 @@ class AddEventVC: UITableViewController {
         }
         return 44
     }
-
-
+    
+    
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -205,7 +204,31 @@ class AddEventVC: UITableViewController {
     
     // 資料上傳
     func uploadEventData(_ image: UIImage?) {
-        guard let imageData = UIImageJPEGRepresentation(image!, 0.5) else{
+        
+        
+        let imageName = UUID().uuidString
+        let imageRef = Storage.storage().reference().child("eventImage").child(imageName)
+        
+        FirebaseManager.shared.uploadImage(imageRef, image: image) { (url) in
+            
+            if let user = Auth.auth().currentUser {
+                let childRef = self.ref.childByAutoId()
+                
+                let event = Event(eventID:childRef.key, organiserID: user.uid, title: self.eventTitle.text!, date: self.eventDate.text!, description: self.eventDescription.text, eventImageURL: String(describing: url) )
+                
+                self.ref.child("event").child(childRef.key).setValue(event.uploadedEventData())
+                
+                for member in self.members {
+                    
+                    // Upload data to Notice
+                    self.ref.child("Notice").child(member.memberID).child(childRef.key).setValue(self.uploadedMemberListData(childRef.key, userName: self.user.name, eventName: event.title))
+                    
+                }
+            }
+        }
+        
+        /* old
+        guard let imageData = UIImageJPEGRepresentation(image!, 1) else{
             return
         }
         
@@ -223,30 +246,25 @@ class AddEventVC: UITableViewController {
                     print("error: \(error!)")
                     return
                 }
-
                 
-                for i in self.members {
-                    self.memberIDs.append(i.memberID)
-                }
+
                 
                 if let user = Auth.auth().currentUser {
                     let childRef = self.ref.childByAutoId()
-
-                    let event = Event(eventID:childRef.key, organiserID: user.uid , title: self.eventTitle.text!, date: self.eventDate.text!, description: self.eventDescription.text, eventImageURL: "\(url)" )
+                    
+                    let event = Event(eventID:childRef.key, organiserID: user.uid, title: self.eventTitle.text!, date: self.eventDate.text!, description: self.eventDescription.text, eventImageURL: "\(url)" )
                     
                     self.ref.child("event").child(childRef.key).setValue(event.uploadedEventData())
+                    
                     for member in self.members {
                         
                         // Upload data to Notice
                         self.ref.child("Notice").child(member.memberID).child(childRef.key).setValue(self.uploadedMemberListData(childRef.key, userName: self.user.name, eventName: event.title))
                         
-                        // Upload to member list & event list.
-//                        self.ref.child("memberList").child(childRef.key).child(member.memberID).child("memberID").setValue(member.memberID)
-//                        self.ref.child("eventList").child(member.memberID).child(childRef.key).child("eventID").setValue(childRef.key)
                     }
                 }
             }
-        }
+        }*/
     }
     
     func uploadedMemberListData(_ ref:String, userName: String, eventName: String) -> Dictionary<String, Any> {
@@ -255,10 +273,72 @@ class AddEventVC: UITableViewController {
                 "Notice": "\(userName)邀請您加入\(eventName)"]
     }
     
+    
     // Query member's data from database.
     func queryMemberData() {
         
         let ref = Database.database().reference().child("user")
+        
+        FirebaseManager.shared.getData(ref, type: .value) { (allObjects, dict)  in
+            
+            for snap in allObjects {
+                
+                guard let dict = snap.value as? [String : Any] else {
+                    print("Fail to get data")
+                    return
+                }
+                
+                let member = Member(memberID: dict["userID"] as! String,
+                                    email: dict["email"] as! String,
+                                    name: dict["name"] as! String,
+                                    profileImageURL: dict["profileImageURL"] as! String)
+                
+                self.memberData.insert(member, at: 0)
+                self.memberStrings.insert(member.email)
+                
+            }
+            if self.memberStrings.contains(self.addMemberTextFiled.text!) {
+                
+                guard let currentUser = Auth.auth().currentUser else {
+                    return
+                }
+                
+                if self.addMemberTextFiled.text! == currentUser.email {
+                    let alert = UIAlertController(title: "錯誤", message: "你已經在成員內了！", preferredStyle: .alert)
+                    let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(ok)
+                    self.present(alert, animated: true, completion: nil)
+                    return
+                }
+                
+                for i in self.members {
+                    if self.addMemberTextFiled.text == i.email {
+                        let alert = UIAlertController(title: "錯誤", message: "這個帳號已經是成員了！", preferredStyle: .alert)
+                        let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
+                        alert.addAction(ok)
+                        self.present(alert, animated: true, completion: nil)
+                        return
+                    }
+                }
+                
+                for i in self.memberData {
+                    if self.addMemberTextFiled.text! == i.email {
+                        self.members.insert(i, at: 0)
+                        self.collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
+                        break
+                    }
+                }
+            }else {
+                let alert = UIAlertController(title: "錯誤", message: "找不到這個帳號耶！重新輸入看看吧！", preferredStyle: .alert)
+                let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(ok)
+                self.present(alert, animated: true, completion: nil)
+            }
+            
+        
+        
+        
+        /* old
         ref.observe(.value) { (snapshot) in
             
             for snap in snapshot.children.allObjects as! [DataSnapshot] {
@@ -274,18 +354,59 @@ class AddEventVC: UITableViewController {
                                     profileImageURL: dict["profileImageURL"] as! String)
                 
                 self.memberData.insert(member, at: 0)
+                self.memberStrings.insert(member.email)
             }
             
-            if let newMember = self.addMemberTextFiled.text {
+            
+            if self.memberStrings.contains(self.addMemberTextFiled.text!) {
                 
+                guard let currentUser = Auth.auth().currentUser else {
+                    return
+                }
+                
+                if self.addMemberTextFiled.text! == currentUser.email {
+                    let alert = UIAlertController(title: "錯誤", message: "你已經在成員內了！", preferredStyle: .alert)
+                    let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(ok)
+                    self.present(alert, animated: true, completion: nil)
+                    return
+                }
+                
+                for i in self.members {
+                    if self.addMemberTextFiled.text == i.email {
+                        let alert = UIAlertController(title: "錯誤", message: "這個帳號已經是成員了！", preferredStyle: .alert)
+                        let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
+                        alert.addAction(ok)
+                        self.present(alert, animated: true, completion: nil)
+                        return
+                    }
+                }
+                
+                for i in self.memberData {
+                    if self.addMemberTextFiled.text! == i.email {
+                        self.members.insert(i, at: 0)
+                        self.collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
+                        break
+                    }
+                }
+            }else {
+                let alert = UIAlertController(title: "錯誤", message: "找不到這個帳號耶！重新輸入看看吧！", preferredStyle: .alert)
+                let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(ok)
+                self.present(alert, animated: true, completion: nil)
+            }*/
+            
+            /*
+            if let newMember = self.addMemberTextFiled.text {
+
                 for i in 0...self.memberData.count-1 {
-                    
+
                     if newMember == self.memberData[i].email {
-                        
+
                         guard let currentUser = Auth.auth().currentUser else {
                             return
                         }
-                        
+
                         if newMember == currentUser.email {
                             let alert = UIAlertController(title: "錯誤", message: "你已經在成員內了！", preferredStyle: .alert)
                             let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -293,7 +414,7 @@ class AddEventVC: UITableViewController {
                             self.present(alert, animated: true, completion: nil)
                             return
                         }
-                        
+
                         for i in self.members {
                             if newMember == i.email {
                                 let alert = UIAlertController(title: "錯誤", message: "這個帳號已經是成員了！", preferredStyle: .alert)
@@ -303,7 +424,7 @@ class AddEventVC: UITableViewController {
                                 return
                             }
                         }
-                        
+
                         self.members.insert(self.memberData[i], at: 0)
                         self.collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
                         break
@@ -314,9 +435,9 @@ class AddEventVC: UITableViewController {
                         self.present(alert, animated: true, completion: nil)
                     }
                 }
-            }
+              }*/
             self.addMemberTextFiled.text = ""
-
+            
         }
     }
     
@@ -324,6 +445,28 @@ class AddEventVC: UITableViewController {
     // Query organiser's data from database.
     func queryOrganiserData(_ uid: String) {
         
+        let ref = Database.database().reference().child("user").child(uid)
+        
+        FirebaseManager.shared.getData(ref, type: .value) { (allObjects, dict)  in
+            
+            self.user = User(userID: uid, email: dict["email"] as! String,
+                             name: dict["name"] as! String,
+                             profileImageURL: dict["profileImageURL"] as! String)
+            
+            let urlString = self.user.profileImageURL
+            let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+                
+                let smallImage = self.thumbnail(image)
+                DispatchQueue.main.async {
+                    self.organiserProfileImage.image = smallImage
+                    self.organiserName.text = self.user.name
+                }
+            }
+            task.resume()
+            
+        }
+        
+        /* old
         self.ref.child("user").child(uid).observe(.value) { (snapshot) in
             
             guard let dict = snapshot.value as? [String : Any] else {
@@ -332,8 +475,8 @@ class AddEventVC: UITableViewController {
             }
             
             self.user = User(userID: uid, email: dict["email"] as! String,
-                            name: dict["name"] as! String,
-                            profileImageURL: dict["profileImageURL"] as! String)
+                             name: dict["name"] as! String,
+                             profileImageURL: dict["profileImageURL"] as! String)
             
             
             let urlString = self.user.profileImageURL
@@ -362,7 +505,7 @@ class AddEventVC: UITableViewController {
                 }
             }
             task.resume()
-        }
+        }*/
     }
 }
 
@@ -404,7 +547,17 @@ extension AddEventVC: UICollectionViewDataSource {
         let urlString = member.profileImageURL
         memberCell.delegate = self
         
-        
+        let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+            member.image = image
+            DispatchQueue.main.async {
+                memberCell.memberName.text = member.name
+                memberCell.memberProfileImage.image = member.image
+            }
+        }
+        task.resume()
+        return memberCell
+
+        /* old
         guard let imageURL = URL(string: urlString) else {
             print("Fail to get imageURL")
             return UICollectionViewCell()
@@ -429,7 +582,7 @@ extension AddEventVC: UICollectionViewDataSource {
             }
         }
         task.resume()
-        return memberCell
+        return memberCell*/
     }
 }
 

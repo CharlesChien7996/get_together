@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 
 class Member {
-    
     var memberID: String
     
     var email: String

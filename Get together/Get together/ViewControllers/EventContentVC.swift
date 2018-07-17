@@ -20,8 +20,8 @@ class EventContentVC: UITableViewController {
     @IBOutlet weak var eventContent: UITextView!
     
     var event: Event!
-    var eventIDs: [String] = []
-    var isNewMember: Bool = false
+    var eventIDs: Set<String> = []
+//    var isNewMember: Bool = false
     let ref = Database.database().reference()
 
     
@@ -34,9 +34,9 @@ class EventContentVC: UITableViewController {
         }
         
         let ref = Database.database().reference().child("eventList").child(uid)
+        
         ref.observe(.value) { (snapshot) in
        
-            
             for snap in snapshot.children.allObjects as! [DataSnapshot] {
                 
                 guard let dict = snap.value as? [String : Any] else {
@@ -44,41 +44,65 @@ class EventContentVC: UITableViewController {
                     return
                 }
                 let eventID = dict["eventID"] as! String
-                self.eventIDs.insert(eventID, at: 0)
-            
+                self.eventIDs.insert(eventID)
 
             }
-            for i in 0...self.eventIDs.count-1 {
+            
+            guard self.eventIDs.contains(self.event.eventID) || self.event.organiserID == uid else{
                 
-                
-                if self.event.eventID == self.eventIDs[i] {
-                    self.isNewMember = false
-                    break
-                }else if i == self.eventIDs.count-1 {
-                    self.isNewMember = true
+                let alert = UIAlertController(title: "提示", message: "是否同意加入\(self.event.title)?", preferredStyle: .alert)
+                let agree = UIAlertAction(title: "同意", style: .default) { (action) in
                     
+                    guard let uid = Auth.auth().currentUser?.uid else{
+                        return
+                    }
+                    self.ref.child("memberList").child(self.event.eventID).child(uid).child("memberID").setValue(uid)
+                    self.ref.child("eventList").child(uid).child(self.event.eventID).child("eventID").setValue(self.event.eventID)
                 }
-                if self.isNewMember == true {
-                    let alert = UIAlertController(title: "提示", message: "是否同意加入\(self.event.title)?", preferredStyle: .alert)
-                    let agree = UIAlertAction(title: "同意", style: .default) { (action) in
-                        
-                        guard let uid = Auth.auth().currentUser?.uid else{
-                            return
-                        }
-                        self.ref.child("memberList").child(self.event.eventID).child(uid).child("memberID").setValue(uid)
-                        self.ref.child("eventList").child(uid).child(self.event.eventID).child("eventID").setValue(self.event.eventID)
-                    }
-                    let reject = UIAlertAction(title: "拒絕", style: .cancel) { (action) in
-                        
-                        self.navigationController?.popViewController(animated: true)
-                    }
+                let reject = UIAlertAction(title: "拒絕", style: .cancel) { (action) in
                     
-                    alert.addAction(agree)
-                    alert.addAction(reject)
-                    self.present(alert, animated: true, completion: nil)
+                    self.navigationController?.popViewController(animated: true)
                 }
                 
+                alert.addAction(agree)
+                alert.addAction(reject)
+                self.present(alert, animated: true, completion: nil)
+                
+                return
             }
+            
+            
+            
+//            for i in 0...self.eventIDs.count-1 {
+//
+//
+//                if self.event.eventID == self.eventIDs[i] {
+//                    self.isNewMember = false
+//                    break
+//                }else if i == self.eventIDs.count-1 {
+//                    self.isNewMember = true
+//                }
+//
+//                if self.isNewMember == true {
+//                    let alert = UIAlertController(title: "提示", message: "是否同意加入\(self.event.title)?", preferredStyle: .alert)
+//                    let agree = UIAlertAction(title: "同意", style: .default) { (action) in
+//
+//                        guard let uid = Auth.auth().currentUser?.uid else{
+//                            return
+//                        }
+//                        self.ref.child("memberList").child(self.event.eventID).child(uid).child("memberID").setValue(uid)
+//                        self.ref.child("eventList").child(uid).child(self.event.eventID).child("eventID").setValue(self.event.eventID)
+//                    }
+//                    let reject = UIAlertAction(title: "拒絕", style: .cancel) { (action) in
+//
+//                        self.navigationController?.popViewController(animated: true)
+//                    }
+//
+//                    alert.addAction(agree)
+//                    alert.addAction(reject)
+//                    self.present(alert, animated: true, completion: nil)
+//                }
+//            }
         }
 
         

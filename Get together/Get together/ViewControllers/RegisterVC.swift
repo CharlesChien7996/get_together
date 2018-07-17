@@ -119,6 +119,23 @@ class RegisterVC: UIViewController {
      */
     
     func uploadUserData(_ image: UIImage?) {
+        
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("Fail to get uid.")
+            return
+        }
+        
+        let imageName = uid
+        let imageRef = Storage.storage().reference().child("userProfileImage").child(imageName)
+        
+        FirebaseManager.shared.uploadImage(imageRef, image: image) { (url) in
+            
+            let user = User(userID: uid, email: self.emailTextField.text!, name: self.usernameTextField.text!, profileImageURL: String(describing: url))
+            self.ref.child("user").child(uid).setValue(user.uploadedUserData())
+        }
+        
+        
+        /*
         guard let imageData = UIImageJPEGRepresentation(image!, 0.5) else{
             return
         }
@@ -136,7 +153,6 @@ class RegisterVC: UIViewController {
                 print("error: \(error!)")
                 return
             }
-            
             imageRef.downloadURL() { (url, error) in
                 
                 guard let url = url else {
@@ -147,7 +163,7 @@ class RegisterVC: UIViewController {
                 let user = User(userID: uid, email: self.emailTextField.text!, name: self.usernameTextField.text!, profileImageURL: "\(url)")
                 self.ref.child("user").child(uid).setValue(user.uploadedUserData())
             }
-        }
+        }*/
     }
 }
 
@@ -163,7 +179,7 @@ extension RegisterVC: UITextFieldDelegate {
         
         if self.checkPasswordTextField.text!.isEmpty == false {
             if self.checkPasswordTextField.text! != self.passwordTextField.text! {
-                self.checkPasswordCheck.text = "好像跟密碼不一樣耶，再試一次看看吧"
+                self.checkPasswordCheck.text = "好像跟密碼不一樣耶，重試看看吧"
             }else {
                 self.checkPasswordCheck.text! = ""
             }

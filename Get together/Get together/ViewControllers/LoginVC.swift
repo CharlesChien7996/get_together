@@ -54,11 +54,6 @@ class LoginVC: UIViewController {
                 }
      
                 let tabBarVC = self.storyboard?.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
-//                let naviVC = tabBarVC.viewControllers?.first as! UINavigationController
-//                let mainVC = naviVC.viewControllers.first as! MainVC
-//                let user = User()
-//                user.email = self.emailTextField.text
-//                mainVC.user = user
                 self.present(tabBarVC, animated: true, completion: nil)
             }
         }

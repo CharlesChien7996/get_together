@@ -18,7 +18,6 @@
 		D60E33FD20FC80CD003BD0FD /* EventContentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E33F520FC80CD003BD0FD /* EventContentVC.swift */; };
 		D60E33FE20FC80CD003BD0FD /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E33F620FC80CD003BD0FD /* MainVC.swift */; };
 		D60E33FF20FC80CD003BD0FD /* ResetPasswordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E33F720FC80CD003BD0FD /* ResetPasswordVC.swift */; };
-		D60E340020FC80CD003BD0FD /* AddMemberVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E33F820FC80CD003BD0FD /* AddMemberVC.swift */; };
 		D60E340120FC80CD003BD0FD /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E33F920FC80CD003BD0FD /* LoginVC.swift */; };
 		D60E340520FC80D9003BD0FD /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E340220FC80D9003BD0FD /* Event.swift */; };
 		D60E340620FC80D9003BD0FD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E340320FC80D9003BD0FD /* User.swift */; };
@@ -29,6 +28,7 @@
 		D60E340F20FC80E4003BD0FD /* MemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E340B20FC80E4003BD0FD /* MemberCell.swift */; };
 		D60E341120FC816E003BD0FD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D60E341020FC816E003BD0FD /* GoogleService-Info.plist */; };
 		D60E341320FC8173003BD0FD /* TestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E341220FC8173003BD0FD /* TestVC.swift */; };
+		D6F3742920FCAD6C000C6D2E /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +45,6 @@
 		D60E33F520FC80CD003BD0FD /* EventContentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventContentVC.swift; sourceTree = "<group>"; };
 		D60E33F620FC80CD003BD0FD /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		D60E33F720FC80CD003BD0FD /* ResetPasswordVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordVC.swift; sourceTree = "<group>"; };
-		D60E33F820FC80CD003BD0FD /* AddMemberVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddMemberVC.swift; sourceTree = "<group>"; };
 		D60E33F920FC80CD003BD0FD /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		D60E340220FC80D9003BD0FD /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		D60E340320FC80D9003BD0FD /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -56,6 +55,7 @@
 		D60E340B20FC80E4003BD0FD /* MemberCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberCell.swift; sourceTree = "<group>"; };
 		D60E341020FC816E003BD0FD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D60E341220FC8173003BD0FD /* TestVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestVC.swift; sourceTree = "<group>"; };
+		D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		F8DF832103232BC24883B0F3 /* Pods-Get together.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Get together.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Get together/Pods-Get together.debug.xcconfig"; sourceTree = "<group>"; };
 		F9C9BDEFB792E2F94B33714E /* Pods-Get together.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Get together.release.xcconfig"; path = "Pods/Target Support Files/Pods-Get together/Pods-Get together.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,6 +110,7 @@
 		D60E33DF20FC7F73003BD0FD /* Get together */ = {
 			isa = PBXGroup;
 			children = (
+				D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */,
 				D60E33E020FC7F73003BD0FD /* AppDelegate.swift */,
 				D6A50FE820FC824200217A51 /* ViewControllers */,
 				D6A50FE920FC825B00217A51 /* DataModels */,
@@ -127,14 +128,13 @@
 		D6A50FE820FC824200217A51 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				D60E33F320FC80CD003BD0FD /* RegisterVC.swift */,
 				D60E33F920FC80CD003BD0FD /* LoginVC.swift */,
+				D60E33F620FC80CD003BD0FD /* MainVC.swift */,
 				D60E33F720FC80CD003BD0FD /* ResetPasswordVC.swift */,
 				D60E33F420FC80CD003BD0FD /* AddEventVC.swift */,
-				D60E33F820FC80CD003BD0FD /* AddMemberVC.swift */,
 				D60E33F520FC80CD003BD0FD /* EventContentVC.swift */,
-				D60E33F620FC80CD003BD0FD /* MainVC.swift */,
 				D60E33F220FC80CD003BD0FD /* ProfileVC.swift */,
-				D60E33F320FC80CD003BD0FD /* RegisterVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -281,7 +281,6 @@
 			files = (
 				D60E33FA20FC80CD003BD0FD /* ProfileVC.swift in Sources */,
 				D60E340520FC80D9003BD0FD /* Event.swift in Sources */,
-				D60E340020FC80CD003BD0FD /* AddMemberVC.swift in Sources */,
 				D60E33FD20FC80CD003BD0FD /* EventContentVC.swift in Sources */,
 				D60E33FB20FC80CD003BD0FD /* RegisterVC.swift in Sources */,
 				D60E340120FC80CD003BD0FD /* LoginVC.swift in Sources */,
@@ -291,6 +290,7 @@
 				D60E340620FC80D9003BD0FD /* User.swift in Sources */,
 				D60E340D20FC80E4003BD0FD /* MyEventCell.swift in Sources */,
 				D60E340720FC80D9003BD0FD /* Member.swift in Sources */,
+				D6F3742920FCAD6C000C6D2E /* FirebaseManager.swift in Sources */,
 				D60E33E120FC7F73003BD0FD /* AppDelegate.swift in Sources */,
 				D60E33FE20FC80CD003BD0FD /* MainVC.swift in Sources */,
 				D60E33FF20FC80CD003BD0FD /* ResetPasswordVC.swift in Sources */,
@@ -372,7 +372,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -426,7 +426,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
