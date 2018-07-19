@@ -13,11 +13,13 @@ import FirebaseStorage
 
 class EventContentVC: UITableViewController {
     
+    @IBOutlet weak var organiserName: UILabel!
+    @IBOutlet weak var organiserProfileImage: UIImageView!
     @IBOutlet weak var eventImageView: UIImageView!
     @IBOutlet weak var eventTitle: UILabel!
     @IBOutlet weak var eventDate: UILabel!
-    @IBOutlet weak var eventDatePicker: UIDatePicker!
     @IBOutlet weak var eventContent: UITextView!
+    @IBOutlet weak var memberCollectionView: UICollectionView!
     
     var event: Event!
     var eventIDs: Set<String> = []
@@ -25,8 +27,32 @@ class EventContentVC: UITableViewController {
     let ref = Database.database().reference()
 
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.row {
+        case 0 :
+            return 226
+        case 1:
+            return 44
+        case 2:
+            return 70
+        case 3:
+            return 70
+        case 4 :
+            return 44
+        case 5:
+            return 44
+        case 6:
+            return UITableViewAutomaticDimension
+        default:
+            break
+        }
+        return UITableViewAutomaticDimension
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        self.tableView.rowHeight = UITableViewAutomaticDimension
         
         guard let uid = Auth.auth().currentUser?.uid else {
             print("Fail to get uid")
@@ -105,7 +131,6 @@ class EventContentVC: UITableViewController {
 //            }
         }
 
-        
         
         self.eventTitle.text = self.event.title
         self.eventDate.text = self.event.date

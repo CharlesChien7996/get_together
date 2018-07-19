@@ -68,7 +68,7 @@ class TestVC: UITableViewController {
                         }
                         
                         let image = UIImage(data: imageData)
-                        event.image = image
+                        event.image = image!
                     }
                     task.resume()
                     

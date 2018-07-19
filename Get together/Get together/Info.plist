@@ -20,6 +20,12 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>開啟定位以搜尋或設定地點</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>開啟定位以搜尋或設定地點</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>開啟定位以搜尋或設定地點</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

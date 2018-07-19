@@ -21,7 +21,6 @@ class MyEventCell: UITableViewCell {
 
     
     override func prepareForReuse() {
-        super.prepareForReuse()
         
         self.eventTitle.textColor = UIColor.lightGray
         self.eventDate.textColor = UIColor.lightGray
