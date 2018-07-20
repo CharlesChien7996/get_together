@@ -22,14 +22,14 @@ class TestVC: UITableViewController {
             return
         }
         
-        let ref = Database.database().reference().child("Notice").child(uid)
+        let ref = Database.database().reference().child("notification").child(uid)
         ref.observe(.childAdded) { (snapshot) in
             
             guard let dict = snapshot.value as? [String : Any] else {
                 print("Fail to get data")
                 return
             }
-            let noticeMessage = dict["Notice"] as! String
+            let noticeMessage = dict["message"] as! String
             let eventID = dict["eventID"] as! String
             
             self.noticeMessages.insert(noticeMessage, at: 0)
@@ -44,8 +44,9 @@ class TestVC: UITableViewController {
                                       organiserID: dict["organiserID"] as! String,
                                       title: dict["title"] as! String,
                                       date: dict["date"] as! String,
+                                      location: dict["location"] as! String,
                                       description: dict["description"] as! String,
-                                      eventImageURL: dict["imageURL"] as! String)
+                                      eventImageURL: dict["eventImageURL"] as! String)
                     
                     let urlString = event.eventImageURL
                     

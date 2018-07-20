@@ -4,14 +4,29 @@ import Firebase
 class MainVC: UITableViewController {
     
     @IBOutlet weak var eventSegmentedControl: UISegmentedControl!
-    
+    var ActivityIndicator: UIActivityIndicatorView!
+
     var joinedEventData:[Event] = []
     var hostEventData:[Event] = []
     let ref = FirebaseManager.shared.databaseReference
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        /*
+        // ActivityIndicatorを作成＆中央に配置
+        ActivityIndicator = UIActivityIndicatorView()
+        ActivityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        ActivityIndicator.center = self.view.center
         
+        // クルクルをストップした時に非表示する
+        ActivityIndicator.hidesWhenStopped = true
+        
+        // 色を設定
+        ActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        
+        //Viewに追加
+        self.view.addSubview(ActivityIndicator)
+        */
         self.queryJoinedEventData()
         self.queryHostEventData()
 
@@ -34,15 +49,25 @@ class MainVC: UITableViewController {
                               organiserID: dict["organiserID"] as! String,
                               title: dict["title"] as! String,
                               date: dict["date"] as! String,
+                              location: dict["location"] as! String,
                               description: dict["description"] as! String,
-                              eventImageURL: dict["imageURL"] as! String)
+                              eventImageURL: dict["eventImageURL"] as! String)
             
-            if uid == event.organiserID {
-                self.hostEventData.insert(event, at: 0)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
+            
+            
+            // 在viewDidLoad就先下載圖片
+            let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
+                let smallImage = FirebaseManager.shared.thumbnail(image)
+                event.image = smallImage
+                if uid == event.organiserID {
+                    self.hostEventData.insert(event, at: 0)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
                 }
             }
+            task.resume()// 在viewDidLoad就先下載圖片
+
         }
         
         /* old.
@@ -78,6 +103,9 @@ class MainVC: UITableViewController {
     // Query joined data from database.
     func queryJoinedEventData() {
         
+//        ActivityIndicator.startAnimating()
+
+        
         guard let uid = Auth.auth().currentUser?.uid else {
             print("Fail to get uid")
             return
@@ -98,13 +126,24 @@ class MainVC: UITableViewController {
                                   organiserID: dict["organiserID"] as! String,
                                   title: dict["title"] as! String,
                                   date: dict["date"] as! String,
+                                  location: dict["location"] as! String,
                                   description: dict["description"] as! String,
-                                  eventImageURL: dict["imageURL"] as! String)
+                                  eventImageURL: dict["eventImageURL"] as! String)
                 
-                self.joinedEventData.insert(event, at: 0)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                // 在viewDidLoad就先下載圖片
+                let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
+                    let smallImage = FirebaseManager.shared.thumbnail(image)
+                    event.image = smallImage
+                    self.joinedEventData.insert(event, at: 0)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+//                        self.ActivityIndicator.stopAnimating()
+                        
+                    }
                 }
+                task.resume()// 在viewDidLoad就先下載圖片
+
+                
             }
     
         }
@@ -195,31 +234,48 @@ class MainVC: UITableViewController {
         default:
             break
         }
-        
-        
-        // Download image from firebase storage.
-        let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
-            let smallImage = FirebaseManager.shared.thumbnail(image)
-            event.image = image
-            DispatchQueue.main.async {
-                cell.eventTitle?.textColor = UIColor.black
-                cell.eventDate?.textColor = UIColor.blue
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-                if let eventDate = dateFormatter.date(from: event.date) {
-                    let now = Date()
-                    if eventDate < now {
-                        cell.eventDate?.text = "已過期"
-                    }else {
-                        cell.eventDate?.text = event.date
-                        
-                    }
-                }
-                cell.eventTitle?.text = event.title
-                cell.eventImageView?.image = smallImage
+        cell.eventTitle?.textColor = UIColor.black
+        cell.eventDate?.textColor = UIColor.blue
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        if let eventDate = dateFormatter.date(from: event.date) {
+            let now = Date()
+            if eventDate < now {
+                cell.eventDate?.text = "已過期"
+            }else {
+                cell.eventDate?.text = event.date
+                
             }
         }
-        task.resume()
+        
+        cell.eventTitle.text = event.title
+        cell.eventImageView.image = event.image
+        
+        /* 在cellForRow才下載圖片
+//        // Download image from firebase storage.
+//        let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
+//            let smallImage = FirebaseManager.shared.thumbnail(image)
+//            event.image = image
+//            DispatchQueue.main.async {
+//                cell.eventTitle?.textColor = UIColor.black
+//                cell.eventDate?.textColor = UIColor.blue
+//                let dateFormatter = DateFormatter()
+//                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+//                if let eventDate = dateFormatter.date(from: event.date) {
+//                    let now = Date()
+//                    if eventDate < now {
+//                        cell.eventDate?.text = "已過期"
+//                    }else {
+//                        cell.eventDate?.text = event.date
+//
+//                    }
+//                }
+//                cell.eventTitle?.text = event.title
+//                cell.eventImageView?.image = smallImage
+//            }
+//        }
+//        task.resume()
+ */
         return cell
 
         

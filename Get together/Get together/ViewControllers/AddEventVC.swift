@@ -4,11 +4,9 @@ import FirebaseAuth
 import FirebaseStorage
 import MapKit
 class AddEventVC: UITableViewController {
-    //
+
 //    var memberSearchResultController: UISearchController!
 
-    
-    
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var eventImageView: UIImageView!
@@ -20,17 +18,14 @@ class AddEventVC: UITableViewController {
     @IBOutlet weak var organiserName: UILabel!
     @IBOutlet weak var eventLocation: UILabel!
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var addMemberTextFiled: UITextField!
     
-    let now = Date()
-    var memberData: [Member] = []
-    var members: [Member] = []
+    var memberData: [User] = []
+    var members: [User] = []
     var isOn = false
     var isLocationSelected = false
     let ref = Database.database().reference()
     var user: User!
     var memberStrings: Set<String> = []
-    
 
     
     override func viewDidLoad() {
@@ -69,7 +64,6 @@ class AddEventVC: UITableViewController {
     }
     
 
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -99,11 +93,12 @@ class AddEventVC: UITableViewController {
         self.tableView.endUpdates()
     }
     
+    /*
     @IBAction func addMemberPressed(_ sender: Any) {
         
         self.queryMemberData()
         
-    }
+    }*/
     
     
     @IBAction func done(_ sender: Any) {
@@ -213,32 +208,7 @@ class AddEventVC: UITableViewController {
     }
     
     
-    // 縮圖
-    func thumbnail(_ image: UIImage?) -> UIImage? {
-        guard let image = image else {
-            print("There has no image.")
-            return nil
-        }
-        
-        let thumbnailSize = CGSize(width: 80, height: 80)
-        let scale = UIScreen.main.scale
-        
-        UIGraphicsBeginImageContextWithOptions(thumbnailSize, false, scale)
-        
-        let widthRatio = thumbnailSize.width / image.size.width
-        let heightRatio = thumbnailSize.height / image.size.height
-        
-        let ratio = max(widthRatio, heightRatio)
-        
-        let imageSize = CGSize(width: image.size.width*ratio, height: image.size.height*ratio)
-        let cgRect = CGRect(x: -(imageSize.width - thumbnailSize.width) / 2, y: -(imageSize.height - thumbnailSize.height) / 2, width: imageSize.width, height: imageSize.height)
-        image.draw(in: cgRect)
-        
-        let smallImage = UIGraphicsGetImageFromCurrentImageContext()
-        
-        UIGraphicsEndImageContext()
-        return smallImage
-    }
+
     
     
     // 資料上傳
@@ -253,14 +223,14 @@ class AddEventVC: UITableViewController {
             if let user = Auth.auth().currentUser {
                 let childRef = self.ref.childByAutoId()
                 
-                let event = Event(eventID:childRef.key, organiserID: user.uid, title: self.eventTitle.text!, date: self.eventDate.text!, description: self.eventDescription.text, eventImageURL: String(describing: url))
+                let event = Event(eventID:childRef.key, organiserID: user.uid, title: self.eventTitle.text!, date: self.eventDate.text!, location: self.eventLocation.text!, description: self.eventDescription.text, eventImageURL: String(describing: url))
                 
                 self.ref.child("event").child(childRef.key).setValue(event.uploadedEventData())
                 
                 for member in self.members {
                     
                     // Upload data to Notice
-                    self.ref.child("Notice").child(member.memberID).child(childRef.key).setValue(self.uploadedMemberListData(childRef.key, userName: self.user.name, eventName: event.title))
+                    self.ref.child("notification").child(member.userID).child(childRef.key).setValue(self.uploadedMemberListData(childRef.key, userName: self.user.name, eventName: event.title))
                     
                 }
             }
@@ -309,10 +279,10 @@ class AddEventVC: UITableViewController {
     func uploadedMemberListData(_ ref:String, userName: String, eventName: String) -> Dictionary<String, Any> {
         
         return ["eventID": ref,
-                "Notice": "\(userName)邀請您加入\(eventName)"]
+                "message": "\"\(userName)\" 邀請您加入 \(eventName)"]
     }
     
-    
+    /*
     // Query member's data from database.
     func queryMemberData() {
         
@@ -373,7 +343,7 @@ class AddEventVC: UITableViewController {
                 alert.addAction(ok)
                 self.present(alert, animated: true, completion: nil)
             }
-            
+     
             
             
             
@@ -478,7 +448,7 @@ class AddEventVC: UITableViewController {
             self.addMemberTextFiled.text = ""
             
         }
-    }
+    }*/
     
     
     // Query organiser's data from database.
@@ -486,8 +456,10 @@ class AddEventVC: UITableViewController {
         
         let ref = Database.database().reference().child("user").child(uid)
         
-        FirebaseManager.shared.getData(ref, type: .value) { (allObjects, dict)  in
-            
+        FirebaseManager.shared.getDataBySingleEvent(ref, type: .value) { (allObject, dict) in
+            guard let dict = dict else {
+                return
+            }
             self.user = User(userID: uid, email: dict["email"] as! String,
                              name: dict["name"] as! String,
                              profileImageURL: dict["profileImageURL"] as! String)
@@ -495,15 +467,36 @@ class AddEventVC: UITableViewController {
             let urlString = self.user.profileImageURL
             let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
                 
-                let smallImage = self.thumbnail(image)
+                let smallImage = FirebaseManager.shared.thumbnail(image)
                 DispatchQueue.main.async {
                     self.organiserProfileImage.image = smallImage
                     self.organiserName.text = self.user.name
                 }
             }
             task.resume()
-            
         }
+        
+        
+        
+        
+//        FirebaseManager.shared.getData(ref, type: .value) { (allObjects, dict)  in
+//
+//            self.user = User(userID: uid, email: dict["email"] as! String,
+//                             name: dict["name"] as! String,
+//                             profileImageURL: dict["profileImageURL"] as! String)
+//
+//            let urlString = self.user.profileImageURL
+//            let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+//
+//                let smallImage = self.thumbnail(image)
+//                DispatchQueue.main.async {
+//                    self.organiserProfileImage.image = smallImage
+//                    self.organiserName.text = self.user.name
+//                }
+//            }
+//            task.resume()
+//
+//        }
         
         /* old
          self.ref.child("user").child(uid).observe(.value) { (snapshot) in
@@ -594,6 +587,7 @@ extension AddEventVC: UICollectionViewDataSource, MemberCollectionViewCellDelega
         let member = members[indexPath.item]
         let urlString = member.profileImageURL
         memberCell.delegate = self
+        
         let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
             member.image = image
             DispatchQueue.main.async {
@@ -637,7 +631,6 @@ extension AddEventVC: LoginVCDelegate {
     
     func getCoordinate(_ coordinate: CLLocationCoordinate2D) {
         
-        self.isLocationSelected = true
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         let geocoder = CLGeocoder()
             
@@ -669,9 +662,6 @@ extension AddEventVC: LoginVCDelegate {
                 address.append(name)
             }
             
-            
-            print("地址： \(address)")
-            
             self.eventLocation.text = address
 
             let annotation = MKPointAnnotation()
@@ -687,7 +677,7 @@ extension AddEventVC: LoginVCDelegate {
 
 extension AddEventVC: MemberSearchVCDelegate {
     
-    func didUpdateMember(_ updatedMember: Member) {
+    func didUpdateMember(_ updatedMember: User) {
         
             guard let currentUser = Auth.auth().currentUser else {
                 return
@@ -710,13 +700,10 @@ extension AddEventVC: MemberSearchVCDelegate {
                     return
                 }
             }
-            
-     
-  
+
         self.members.insert(updatedMember, at: 0)
         self.collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
 
     }
-    
-    
+   
 }

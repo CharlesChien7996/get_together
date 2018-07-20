@@ -4,6 +4,7 @@ protocol MemberCollectionViewCellDelegate {
 }
 class MemberCollectionViewCell: UICollectionViewCell {
     
+    @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var memberProfileImage: UIImageView!
     
     @IBOutlet weak var memberName: UILabel!

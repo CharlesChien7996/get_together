@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import FirebaseAuth
 import FirebaseStorage
+import MapKit
 
 class EventContentVC: UITableViewController {
     
@@ -18,15 +19,17 @@ class EventContentVC: UITableViewController {
     @IBOutlet weak var eventImageView: UIImageView!
     @IBOutlet weak var eventTitle: UILabel!
     @IBOutlet weak var eventDate: UILabel!
-    @IBOutlet weak var eventContent: UITextView!
     @IBOutlet weak var memberCollectionView: UICollectionView!
+    @IBOutlet weak var eventLocation: UILabel!
+    @IBOutlet weak var eventLocationMap: MKMapView!
+    @IBOutlet weak var eventDescription: UILabel!
+    
+
     
     var event: Event!
     var eventIDs: Set<String> = []
-//    var isNewMember: Bool = false
     let ref = Database.database().reference()
-
-    
+    var memberData: [User] = []
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0 :
@@ -36,11 +39,11 @@ class EventContentVC: UITableViewController {
         case 2:
             return 70
         case 3:
-            return 70
+            return 80
         case 4 :
             return 44
         case 5:
-            return 44
+            return 177
         case 6:
             return UITableViewAutomaticDimension
         default:
@@ -49,15 +52,53 @@ class EventContentVC: UITableViewController {
         return UITableViewAutomaticDimension
     }
     
+    func setLocationAnnotation() {
+        
+        let geoCoder = CLGeocoder()
+        geoCoder.geocodeAddressString(self.event.location) { (placemarks, error) in
+            
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            
+            
+            if let placemarks = placemarks {
+                let annotation = MKPointAnnotation()
+
+                if let location = placemarks[0].location {
+                    annotation.coordinate = location.coordinate
+                    annotation.title = self.event.location
+                    self.eventLocationMap.addAnnotation(annotation)
+                    let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    let region = MKCoordinateRegion(center: annotation.coordinate, span: span)
+                    self.eventLocationMap.setRegion(region, animated: false)
+            }
+  
+               
+            }
+            
+            
+        }
+
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.setLocationAnnotation()
+        
+        self.queryOrganiserData()
+        self.queryMemberData()
+        self.memberCollectionView.dataSource = self
         
         guard let uid = Auth.auth().currentUser?.uid else {
             print("Fail to get uid")
             return
         }
+        
+
         
         let ref = Database.database().reference().child("eventList").child(uid)
         
@@ -134,8 +175,11 @@ class EventContentVC: UITableViewController {
         
         self.eventTitle.text = self.event.title
         self.eventDate.text = self.event.date
-        self.eventContent.text = self.event.description
+        self.eventLocation.text = self.event.location
+        self.eventDescription.text = self.event.description
         self.eventImageView.image = self.event.image
+        
+
         // 建立時間格式
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"
@@ -148,29 +192,97 @@ class EventContentVC: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    // Query organiser's data from database.
+    func queryOrganiserData() {
+        
+        let ref = Database.database().reference().child("user").child(self.event.organiserID)
+        
+        FirebaseManager.shared.getDataBySingleEvent(ref, type: .value) { (allObject, dict) in
+            guard let dict = dict else {
+                return
+            }
+            let user = User(userID: dict["userID"] as! String,
+                            email: dict["email"] as! String,
+                             name: dict["name"] as! String,
+                             profileImageURL: dict["profileImageURL"] as! String)
+            
+            let urlString = user.profileImageURL
+            let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+                
+                let smallImage = FirebaseManager.shared.thumbnail(image)
+                DispatchQueue.main.async {
+                    self.organiserProfileImage.image = smallImage
+                    self.organiserName.text = user.name
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    
+    func queryMemberData() {
+        
+        let memberRef = Database.database().reference().child("memberList").child(self.event.eventID)
+        
+        FirebaseManager.shared.getDataBySingleEvent(memberRef, type: .value) { (allObjects, dict) in
+                for snap in allObjects {
+                    guard let dict = snap.value as? [String : Any] else {
+                        print("Fail to get data")
+                        return
+                    }
+                    
+                    let memberID = dict["memberID"] as! String
+                    let userRef = Database.database().reference().child("user").child(memberID)
+                    
+                    FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value){ (allObjects, dict) in
+                        guard let dict = dict else {
+                            return
+                        }
+                        let user = User(userID: dict["userID"] as! String,
+                                        email: dict["email"] as! String,
+                                        name: dict["name"] as! String,
+                                        profileImageURL: dict["profileImageURL"] as! String)
+                        
+                        let urlString = user.profileImageURL
+                        let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+                            
+                            let smallImage = FirebaseManager.shared.thumbnail(image)
+                            user.image = smallImage
+                            self.memberData.insert(user, at: 0)
+                            DispatchQueue.main.async {
+                                self.memberCollectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
+                            }
+                            
+                        }
+                        task.resume()
+                    }
+                    
+                }
+            
+            
 
+        }
+    }
+    
+    
     
     // MARK: - Table view data source
     
 //    override func numberOfSections(in tableView: UITableView) -> Int {
 //        // #warning Incomplete implementation, return the number of sections
-//        return 4
+//        return 1
 //    }
 //    //
 //    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //
 //        if section == 0 {
-//            return 2
-//        }else if section == 1 && self.isOn {
-//            return 2
+//            return 7
 //        }else {
-//            return 1
-//
+//            return 0
 //        }
-//
 //    }
     
-    
+ 
     
     
     /*
@@ -220,6 +332,26 @@ class EventContentVC: UITableViewController {
 
         
 
-}
 
+}
+extension EventContentVC: UICollectionViewDataSource {
+    
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.memberData.count
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let memberCell = collectionView.dequeueReusableCell(withReuseIdentifier: "member", for: indexPath) as! MemberCollectionViewCell
+        let member = self.memberData[indexPath.item]
+        
+                memberCell.memberName.text = member.name
+                memberCell.memberProfileImage.image = member.image
+                memberCell.deleteButton.isHidden = true
+        
+        
+        return memberCell
+}
+}
 

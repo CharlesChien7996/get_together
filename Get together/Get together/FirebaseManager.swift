@@ -21,6 +21,14 @@ class FirebaseManager {
         }
     }
     
+    func getDataBySingleEvent(_ reference:DatabaseQuery, type: DataEventType, completionHandler: @escaping (_ allObjects: [DataSnapshot], _ dict: Dictionary<String,Any>?) -> Void) {
+        
+        reference.observeSingleEvent(of: type) { (snapshot) in
+            completionHandler(snapshot.children.allObjects as! [DataSnapshot], snapshot.value as? [String : Any])
+
+        }
+    }
+    
     
     func getImage(urlString: String, completionHandler: @escaping (_ image: UIImage?) -> Void) -> URLSessionDataTask {
         

@@ -17,7 +17,23 @@ class LocationVC: UIViewController {
     
     var resultSearchController: UISearchController!
 
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+                switch self.mapView.mapType {
+                case .hybrid:
+                    self.mapView.mapType = .standard
+        
+                case .standard:
+                    self.mapView.mapType = .hybrid
+        
+                default:
+                    break
+                }
+        self.mapView.showsUserLocation = false
+        self.mapView.delegate = nil
+        self.mapView.removeFromSuperview()
+        self.mapView = nil
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +54,7 @@ class LocationVC: UIViewController {
         
         let searchBar = resultSearchController!.searchBar
         searchBar.sizeToFit()
-        searchBar.placeholder = "Search for places"
+        searchBar.placeholder = "搜尋地點"
 
         navigationItem.titleView = resultSearchController?.searchBar
         resultSearchController?.hidesNavigationBarDuringPresentation = false

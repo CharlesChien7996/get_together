@@ -1,27 +1,36 @@
 import UIKit
 import Firebase
 protocol MemberSearchVCDelegate {
-    func didUpdateMember(_ updatedMember: Member)
+    func didUpdateMember(_ updatedMember: User)
 }
 
 class MemberSearchVC: UITableViewController {
     var memberSearchResultController: UISearchController?
 
-    var memberData: [Member] = []
-    var matchingItems: [Member] = []
+    var memberData: [User] = []
+    var matchingItems: [User] = []
     var delegate: MemberSearchVCDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         let ref = Database.database().reference().child("user")
         FirebaseManager.shared.getData(ref, type: .childAdded) { (snap, dict) in
-            let member = Member(memberID: dict["userID"] as! String,
+            let member = User(userID: dict["userID"] as! String,
                                 email: dict["email"] as! String,
                                 name: dict["name"] as! String,
                                 profileImageURL: dict["profileImageURL"] as! String)
-            self.memberData.append(member)
-        }
-        
+            
+            // 在viewDidLoad就先下載圖片
+            let task = FirebaseManager.shared.getImage(urlString: member.profileImageURL){ (image) in
+                let smallImage = FirebaseManager.shared.thumbnail(image)
+                member.image = smallImage
+                self.memberData.append(member)
+
+            }
+            task.resume()
+        }// 在viewDidLoad就先下載圖片
+
                 self.memberSearchResultController = UISearchController(searchResultsController: nil)
                 self.memberSearchResultController?.searchResultsUpdater = self
                 let memberSearchBar = self.memberSearchResultController?.searchBar
@@ -59,17 +68,23 @@ class MemberSearchVC: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "memberDataCell", for: indexPath)
         let selectedMember = matchingItems[indexPath.row]
-        let task = FirebaseManager.shared.getImage(urlString: selectedMember.profileImageURL) { (image) in
-            let smallImage = FirebaseManager.shared.thumbnail(image)
-            
-            DispatchQueue.main.async {
-                cell.textLabel?.text = selectedMember.name
-                cell.detailTextLabel?.text = selectedMember.email
-                cell.imageView?.image = smallImage
-            }
-            
-        }
-        task.resume()
+/* 在cellForRow才下載圖片
+
+//        let task = FirebaseManager.shared.getImage(urlString: selectedMember.profileImageURL) { (image) in
+//            let smallImage = FirebaseManager.shared.thumbnail(image)
+//
+//            DispatchQueue.main.async {
+//                cell.textLabel?.text = selectedMember.name
+//                cell.detailTextLabel?.text = selectedMember.email
+//                cell.imageView?.image = smallImage
+//            }
+//
+//        }
+//        task.resume()
+ */
+                        cell.textLabel?.text = selectedMember.name
+                        cell.detailTextLabel?.text = selectedMember.email
+                        cell.imageView?.image = selectedMember.image
         
         
         return cell

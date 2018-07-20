@@ -9,6 +9,7 @@ class RegisterVC: UIViewController {
     @IBOutlet weak var checkPasswordTextField: UITextField!
     @IBOutlet weak var usernameTextField: UITextField!
 
+    @IBOutlet weak var test: UIStackView!
     @IBOutlet weak var emailCheck: UILabel!
     @IBOutlet weak var passwordCheck: UILabel!
     @IBOutlet weak var checkPasswordCheck: UILabel!
@@ -17,6 +18,8 @@ class RegisterVC: UIViewController {
     @IBOutlet weak var profileImageView: UIImageView!
     
     let ref = Database.database().reference()
+    
+    var originalFrame : CGRect?
 
     
     @IBOutlet weak var register: UIButton!
@@ -28,6 +31,53 @@ class RegisterVC: UIViewController {
         self.checkPasswordTextField.delegate = self
         self.usernameTextField.delegate = self
     }
+    
+    
+    // 鍵盤自動升起
+
+    //畫面顯示時註冊通知
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //註冊UIKeyboardWillShow通知
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(notification:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
+        //註冊UIKeyboardWillHide通知
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    //畫面消失時取消註冊通知
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    
+    @objc func keyboardWillAppear(notification : Notification)  {
+        let info = notification.userInfo!
+        let currentKeyboardFrame = info[UIKeyboardFrameEndUserInfoKey] as! CGRect
+        let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
+        //取得textField的frame（windows座標)
+        let textFrame = self.view.window!.convert(self.test.frame, from: self.view)
+        var visibleRect = self.view.frame;
+        self.originalFrame = visibleRect
+        //如果textField frame（windows座標)的最低點 > keyboard frame minY,將view往上移
+        if (  textFrame.maxY > currentKeyboardFrame.minY ) {
+            //計算差額
+            let difference = textFrame.maxY - currentKeyboardFrame.minY
+            visibleRect.origin.y = visibleRect.origin.y - difference
+            //將controller view的 y 往上移
+            UIView.animate(withDuration: duration) {
+                self.view.frame = visibleRect
+            }
+        }
+    }
+    @objc func keyboardWillHide(notification : Notification)  {
+        let info = notification.userInfo!
+        //回復原本的位置,注意這裏的duration 要設的跟66行一樣，可以自行調整
+        UIView.animate(withDuration: 0.5) {
+//            self.view.frame = self.originalFrame!
+        }
+    }
+    // 鍵盤自動升起
     
     // USer register.
     @IBAction func registerPressed(_ sender: Any) {
