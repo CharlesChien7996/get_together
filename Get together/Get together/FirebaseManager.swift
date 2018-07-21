@@ -9,7 +9,8 @@ class FirebaseManager {
         
     }
     let databaseReference: DatabaseReference = Database.database().reference()
-    
+    var imageCache = NSCache<NSString, AnyObject>()
+
     
     func getData(_ reference:DatabaseQuery, type: DataEventType, completionHandler: @escaping (_ allObjects: [DataSnapshot], _ dict: Dictionary<String,Any>) -> Void) {
         
@@ -30,11 +31,11 @@ class FirebaseManager {
     }
     
     
-    func getImage(urlString: String, completionHandler: @escaping (_ image: UIImage?) -> Void) -> URLSessionDataTask {
+    func getImage(urlString: String, completionHandler: @escaping (_ image: UIImage?) -> Void) {
         
         guard let imageURL = URL(string: urlString) else {
             print("Fail to get imageURL")
-            return URLSessionDataTask()
+            return
         }
         
         let task = URLSession.shared.dataTask(with: imageURL) { (data, response, error) in
@@ -51,10 +52,16 @@ class FirebaseManager {
             
             let image = UIImage(data: imageData)
             
-            completionHandler(image)
+
+
+            DispatchQueue.main.async {
+                completionHandler(image)
+
+            }
+  
             
         }
-        return task
+        task.resume()
     }
     
     

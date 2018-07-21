@@ -33,7 +33,7 @@ class EventContentVC: UITableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0 :
-            return 226
+            return UITableViewAutomaticDimension
         case 1:
             return 44
         case 2:
@@ -207,7 +207,7 @@ class EventContentVC: UITableViewController {
                              profileImageURL: dict["profileImageURL"] as! String)
             
             let urlString = user.profileImageURL
-            let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+           FirebaseManager.shared.getImage(urlString: urlString) { (image) in
                 
                 let smallImage = FirebaseManager.shared.thumbnail(image)
                 DispatchQueue.main.async {
@@ -215,7 +215,7 @@ class EventContentVC: UITableViewController {
                     self.organiserName.text = user.name
                 }
             }
-            task.resume()
+
         }
     }
     
@@ -244,7 +244,7 @@ class EventContentVC: UITableViewController {
                                         profileImageURL: dict["profileImageURL"] as! String)
                         
                         let urlString = user.profileImageURL
-                        let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+                        FirebaseManager.shared.getImage(urlString: urlString) { (image) in
                             
                             let smallImage = FirebaseManager.shared.thumbnail(image)
                             user.image = smallImage
@@ -254,7 +254,6 @@ class EventContentVC: UITableViewController {
                             }
                             
                         }
-                        task.resume()
                     }
                     
                 }

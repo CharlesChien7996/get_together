@@ -20,12 +20,18 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>存取相機以新增照片</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>開啟定位以搜尋或設定地點</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>開啟定位以搜尋或設定地點</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>開啟定位以搜尋或設定地點</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>存取相簿以新增照片</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>存取相簿以新增照片</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

@@ -22,13 +22,12 @@ class MemberSearchVC: UITableViewController {
                                 profileImageURL: dict["profileImageURL"] as! String)
             
             // 在viewDidLoad就先下載圖片
-            let task = FirebaseManager.shared.getImage(urlString: member.profileImageURL){ (image) in
+           FirebaseManager.shared.getImage(urlString: member.profileImageURL){ (image) in
                 let smallImage = FirebaseManager.shared.thumbnail(image)
                 member.image = smallImage
                 self.memberData.append(member)
 
             }
-            task.resume()
         }// 在viewDidLoad就先下載圖片
 
                 self.memberSearchResultController = UISearchController(searchResultsController: nil)

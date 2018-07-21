@@ -74,6 +74,7 @@ class AddEventVC: UITableViewController {
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = self
+        imagePicker.allowsEditing = true
         self.present(imagePicker, animated: true, completion: nil)
         
     }
@@ -150,7 +151,7 @@ class AddEventVC: UITableViewController {
         
         switch indexPath.row {
         case 0:
-            return 226
+            return UITableViewAutomaticDimension
         case 1:
             return 44
         case 2:
@@ -173,7 +174,7 @@ class AddEventVC: UITableViewController {
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return 226
+            return UITableViewAutomaticDimension
         case 1:
             return 44
         case 2:
@@ -279,7 +280,7 @@ class AddEventVC: UITableViewController {
     func uploadedMemberListData(_ ref:String, userName: String, eventName: String) -> Dictionary<String, Any> {
         
         return ["eventID": ref,
-                "message": "\"\(userName)\" 邀請您加入 \(eventName)"]
+                "message": "\"\(userName)\" 邀請您加入 「\(eventName)」"]
     }
     
     /*
@@ -465,7 +466,7 @@ class AddEventVC: UITableViewController {
                              profileImageURL: dict["profileImageURL"] as! String)
             
             let urlString = self.user.profileImageURL
-            let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+            FirebaseManager.shared.getImage(urlString: urlString) { (image) in
                 
                 let smallImage = FirebaseManager.shared.thumbnail(image)
                 DispatchQueue.main.async {
@@ -473,7 +474,7 @@ class AddEventVC: UITableViewController {
                     self.organiserName.text = self.user.name
                 }
             }
-            task.resume()
+
         }
         
         
@@ -546,7 +547,13 @@ extension AddEventVC: UIImagePickerControllerDelegate, UINavigationControllerDel
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+        let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage
+        var editedImage = info[UIImagePickerControllerEditedImage] as? UIImage
+        if editedImage == nil{
+            editedImage = originalImage
+        }
+        
+        if let image = editedImage {
             
             self.eventImageView.image = image
         }
@@ -588,14 +595,13 @@ extension AddEventVC: UICollectionViewDataSource, MemberCollectionViewCellDelega
         let urlString = member.profileImageURL
         memberCell.delegate = self
         
-        let task = FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+         FirebaseManager.shared.getImage(urlString: urlString) { (image) in
             member.image = image
             DispatchQueue.main.async {
                 memberCell.memberName.text = member.name
                 memberCell.memberProfileImage.image = member.image
             }
         }
-        task.resume()
         return memberCell
         
         /* old

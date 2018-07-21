@@ -6,12 +6,29 @@ class MainVC: UITableViewController {
     @IBOutlet weak var eventSegmentedControl: UISegmentedControl!
     var ActivityIndicator: UIActivityIndicatorView!
 
+    @IBOutlet var viewWithoutLogin: UIView!
+    
+    @IBAction func goToLoginVC(_ sender: Any) {
+        
+        let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginVC
+        self.present(loginVC, animated: true, completion: nil)
+        }
+    
     var joinedEventData:[Event] = []
     var hostEventData:[Event] = []
     let ref = FirebaseManager.shared.databaseReference
-
+    var imageCache = FirebaseManager.shared.imageCache
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        guard Auth.auth().currentUser != nil else {
+            self.tableView.backgroundView = viewWithoutLogin
+            self.tableView.separatorStyle = .none
+            return
+        }
+        
+        
         /*
         // ActivityIndicatorを作成＆中央に配置
         ActivityIndicator = UIActivityIndicatorView()
@@ -55,18 +72,18 @@ class MainVC: UITableViewController {
             
             
             
-            // 在viewDidLoad就先下載圖片
-            let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
-                let smallImage = FirebaseManager.shared.thumbnail(image)
-                event.image = smallImage
+//            // 在viewDidLoad就先下載圖片
+//            let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
+//                let smallImage = FirebaseManager.shared.thumbnail(image)
+//                event.image = smallImage
                 if uid == event.organiserID {
                     self.hostEventData.insert(event, at: 0)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }
-                }
+//                }
             }
-            task.resume()// 在viewDidLoad就先下載圖片
+//            task.resume()// 在viewDidLoad就先下載圖片
 
         }
         
@@ -130,18 +147,18 @@ class MainVC: UITableViewController {
                                   description: dict["description"] as! String,
                                   eventImageURL: dict["eventImageURL"] as! String)
                 
-                // 在viewDidLoad就先下載圖片
-                let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
-                    let smallImage = FirebaseManager.shared.thumbnail(image)
-                    event.image = smallImage
+//                // 在viewDidLoad就先下載圖片
+//                let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
+//                    let smallImage = FirebaseManager.shared.thumbnail(image)
+//                    event.image = smallImage
                     self.joinedEventData.insert(event, at: 0)
-                    DispatchQueue.main.async {
+//                    DispatchQueue.main.async {
                         self.tableView.reloadData()
-//                        self.ActivityIndicator.stopAnimating()
-                        
-                    }
-                }
-                task.resume()// 在viewDidLoad就先下載圖片
+////                        self.ActivityIndicator.stopAnimating()
+//
+//                    }
+//                }
+//                task.resume()// 在viewDidLoad就先下載圖片
 
                 
             }
@@ -234,6 +251,22 @@ class MainVC: UITableViewController {
         default:
             break
         }
+//        cell.eventTitle?.textColor = UIColor.black
+//        cell.eventDate?.textColor = UIColor.blue
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+//        if let eventDate = dateFormatter.date(from: event.date) {
+//            let now = Date()
+//            if eventDate < now {
+//                cell.eventDate?.text = "已過期"
+//            }else {
+//                cell.eventDate?.text = event.date
+//
+//            }
+//        }
+//
+//        cell.eventTitle.text = event.title
+//        cell.eventImageView.image = event.image
         cell.eventTitle?.textColor = UIColor.black
         cell.eventDate?.textColor = UIColor.blue
         let dateFormatter = DateFormatter()
@@ -247,35 +280,27 @@ class MainVC: UITableViewController {
                 
             }
         }
+        cell.eventTitle?.text = event.title
+
+        if let image = self.imageCache.object(forKey: event.eventImageURL as NSString) as? UIImage {
+            cell.eventImageView.image = image
+        }else {
+            // 在cellForRow才下載圖片
+            // Download image from firebase storage.
+            FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
+                let smallImage = FirebaseManager.shared.thumbnail(image)
+                if let smallImage = smallImage {
+                        
+                        cell.eventImageView?.image = smallImage
+                        self.imageCache.setObject(smallImage, forKey: event.eventImageURL as NSString) 
+                    
+                }
+                
+            }
+        }
         
-        cell.eventTitle.text = event.title
-        cell.eventImageView.image = event.image
         
-        /* 在cellForRow才下載圖片
-//        // Download image from firebase storage.
-//        let task = FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
-//            let smallImage = FirebaseManager.shared.thumbnail(image)
-//            event.image = image
-//            DispatchQueue.main.async {
-//                cell.eventTitle?.textColor = UIColor.black
-//                cell.eventDate?.textColor = UIColor.blue
-//                let dateFormatter = DateFormatter()
-//                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-//                if let eventDate = dateFormatter.date(from: event.date) {
-//                    let now = Date()
-//                    if eventDate < now {
-//                        cell.eventDate?.text = "已過期"
-//                    }else {
-//                        cell.eventDate?.text = event.date
-//
-//                    }
-//                }
-//                cell.eventTitle?.text = event.title
-//                cell.eventImageView?.image = smallImage
-//            }
-//        }
-//        task.resume()
- */
+ 
         return cell
 
         
@@ -347,4 +372,23 @@ class MainVC: UITableViewController {
             
         }
     }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        guard Auth.auth().currentUser != nil else {
+            let alert = UIAlertController(title: "尚未登入", message: "登入來開始你的第一個聚吧！", preferredStyle: .alert)
+            let agree = UIAlertAction(title: "登入", style: .default) { (action) in
+                
+                let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginVC
+                self.present(loginVC, animated: true, completion: nil)
+            }
+            let reject = UIAlertAction(title: "取消", style: .cancel)
+            
+            alert.addAction(agree)
+            alert.addAction(reject)
+            self.present(alert, animated: true, completion: nil)
+            return false
+        }
+        return true
+    }
+    
 }
