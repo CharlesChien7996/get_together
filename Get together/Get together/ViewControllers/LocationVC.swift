@@ -50,7 +50,7 @@ class LocationVC: UIViewController {
         
         let searchBar = resultSearchController!.searchBar
         searchBar.sizeToFit()
-        searchBar.placeholder = "搜尋地點"
+        searchBar.placeholder = "輸入地址或關鍵字來搜尋地點"
         
         navigationItem.titleView = resultSearchController?.searchBar
         resultSearchController?.hidesNavigationBarDuringPresentation = false

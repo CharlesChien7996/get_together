@@ -250,6 +250,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="100" id="CgY-bd-ZOD"/>
+                                                    <constraint firstAttribute="width" secondItem="5Fr-x8-6Kg" secondAttribute="height" multiplier="1:1" id="Eex-SL-AGL"/>
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -986,7 +987,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" textLabel="ssb-vM-kwZ" detailTextLabel="RP1-l6-enk" style="IBUITableViewCellStyleSubtitle" id="H5A-YV-h29">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" textLabel="ssb-vM-kwZ" detailTextLabel="RP1-l6-enk" style="IBUITableViewCellStyleSubtitle" id="H5A-YV-h29">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="H5A-YV-h29" id="NKE-bZ-U0S">
@@ -1509,7 +1510,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="memberDataCell" textLabel="gS5-ZK-xbd" detailTextLabel="1cM-4z-OrZ" style="IBUITableViewCellStyleSubtitle" id="7BO-Wz-zif">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="memberDataCell" textLabel="gS5-ZK-xbd" detailTextLabel="1cM-4z-OrZ" style="IBUITableViewCellStyleSubtitle" id="7BO-Wz-zif">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7BO-Wz-zif" id="gkD-5F-Wfp">
@@ -1863,17 +1864,17 @@
         </scene>
     </scenes>
     <resources>
-        <image name="check" width="256" height="256"/>
-        <image name="default" width="225" height="157"/>
-        <image name="envelope" width="31" height="31"/>
-        <image name="event" width="31" height="31"/>
-        <image name="exit" width="25" height="25"/>
-        <image name="lock" width="256" height="256"/>
-        <image name="mail" width="256" height="256"/>
-        <image name="profile" width="31" height="31"/>
-        <image name="profileImage" width="188" height="188"/>
+        <image name="check" width="29" height="29"/>
+        <image name="default" width="640" height="640"/>
+        <image name="envelope" width="29" height="29"/>
+        <image name="event" width="29" height="29"/>
+        <image name="exit" width="20" height="20"/>
+        <image name="lock" width="29" height="29"/>
+        <image name="mail" width="29" height="29"/>
+        <image name="profile" width="29" height="29"/>
+        <image name="profileImage" width="75" height="75"/>
         <image name="search" width="256" height="256"/>
-        <image name="user" width="256" height="256"/>
+        <image name="user" width="29" height="29"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="z67-S9-OrP"/>

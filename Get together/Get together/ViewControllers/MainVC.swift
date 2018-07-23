@@ -26,6 +26,10 @@ class MainVC: UITableViewController {
         self.setUpRefreshView()
         self.queryHostEventData()
         
+        if self.hostEventData.count == 0 {
+            self .spinner.stopAnimating()
+        }
+        
         self.tableView.rowHeight = 100
     }
     
@@ -183,7 +187,6 @@ class MainVC: UITableViewController {
         
         cell.eventTitle?.textColor = UIColor.black
         cell.eventDate?.textColor = UIColor.blue
-        cell.eventImageView.image = nil
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
@@ -230,9 +233,21 @@ class MainVC: UITableViewController {
         
         switch self.eventSegmentedControl.selectedSegmentIndex {
         case 0:
+            // Show background view if current user is nil.
+            guard Auth.auth().currentUser != nil else {
+                self.tableView.backgroundView = backgroundViewWithoutLogin
+                self.tableView.separatorStyle = .none
+                return
+            }
             self.queryHostEventData()
             
         case 1:
+            // Show background view if current user is nil.
+            guard Auth.auth().currentUser != nil else {
+                self.tableView.backgroundView = backgroundViewWithoutLogin
+                self.tableView.separatorStyle = .none
+                return
+            }
             self.queryJoinedEventData()
             
         default:

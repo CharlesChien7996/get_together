@@ -193,6 +193,11 @@ class AddEventVC: UITableViewController {
     }
     
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    
     // Upload event's data to database.
     func uploadEventData() {
         

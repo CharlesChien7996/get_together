@@ -34,7 +34,7 @@ class MemberSearchVC: UITableViewController {
         self.memberSearchResultController?.searchResultsUpdater = self
         let memberSearchBar = self.memberSearchResultController?.searchBar
         memberSearchBar?.sizeToFit()
-        memberSearchBar?.placeholder = "搜尋成員"
+        memberSearchBar?.placeholder = "輸入暱稱或Email來搜尋成員"
         memberSearchBar?.barTintColor = UIColor.white
         self.memberSearchResultController?.dimsBackgroundDuringPresentation = false
         memberSearchResultController?.hidesNavigationBarDuringPresentation = false

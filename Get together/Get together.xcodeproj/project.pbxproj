@@ -24,12 +24,11 @@
 		D60E340720FC80D9003BD0FD /* Member.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E340420FC80D9003BD0FD /* Member.swift */; };
 		D60E340C20FC80E4003BD0FD /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E340820FC80E4003BD0FD /* MyCollectionViewCell.swift */; };
 		D60E340D20FC80E4003BD0FD /* MyEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E340920FC80E4003BD0FD /* MyEventCell.swift */; };
-		D60E341120FC816E003BD0FD /* GoogleService-Info2.plist in Resources */ = {isa = PBXBuildFile; fileRef = D60E341020FC816E003BD0FD /* GoogleService-Info2.plist */; };
 		D60E341320FC8173003BD0FD /* TestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E341220FC8173003BD0FD /* TestVC.swift */; };
-		D61A53652100C055007350EF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D61A53642100C055007350EF /* GoogleService-Info.plist */; };
 		D63E804420FF166900C0E010 /* LocationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804320FF166900C0E010 /* LocationVC.swift */; };
 		D63E804620FF220200C0E010 /* LocationSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804520FF220200C0E010 /* LocationSearchVC.swift */; };
 		D6D36F28210077C9001CE892 /* MemberSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D36F27210077C9001CE892 /* MemberSearchVC.swift */; };
+		D6E1B49D210623A700823F86 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6E1B49C210623A700823F86 /* GoogleService-Info.plist */; };
 		D6F3742920FCAD6C000C6D2E /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -53,12 +52,11 @@
 		D60E340420FC80D9003BD0FD /* Member.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Member.swift; sourceTree = "<group>"; };
 		D60E340820FC80E4003BD0FD /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
 		D60E340920FC80E4003BD0FD /* MyEventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyEventCell.swift; sourceTree = "<group>"; };
-		D60E341020FC816E003BD0FD /* GoogleService-Info2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info2.plist"; sourceTree = "<group>"; };
 		D60E341220FC8173003BD0FD /* TestVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestVC.swift; sourceTree = "<group>"; };
-		D61A53642100C055007350EF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D63E804320FF166900C0E010 /* LocationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationVC.swift; sourceTree = "<group>"; };
 		D63E804520FF220200C0E010 /* LocationSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchVC.swift; sourceTree = "<group>"; };
 		D6D36F27210077C9001CE892 /* MemberSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberSearchVC.swift; sourceTree = "<group>"; };
+		D6E1B49C210623A700823F86 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		F8DF832103232BC24883B0F3 /* Pods-Get together.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Get together.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Get together/Pods-Get together.debug.xcconfig"; sourceTree = "<group>"; };
 		F9C9BDEFB792E2F94B33714E /* Pods-Get together.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Get together.release.xcconfig"; path = "Pods/Target Support Files/Pods-Get together/Pods-Get together.release.xcconfig"; sourceTree = "<group>"; };
@@ -124,8 +122,7 @@
 				D60E33E720FC7F75003BD0FD /* Assets.xcassets */,
 				D60E341220FC8173003BD0FD /* TestVC.swift */,
 				D60E33EC20FC7F75003BD0FD /* Info.plist */,
-				D61A53642100C055007350EF /* GoogleService-Info.plist */,
-				D60E341020FC816E003BD0FD /* GoogleService-Info2.plist */,
+				D6E1B49C210623A700823F86 /* GoogleService-Info.plist */,
 			);
 			path = "Get together";
 			sourceTree = "<group>";
@@ -226,9 +223,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D61A53652100C055007350EF /* GoogleService-Info.plist in Resources */,
 				D60E33EB20FC7F75003BD0FD /* LaunchScreen.storyboard in Resources */,
-				D60E341120FC816E003BD0FD /* GoogleService-Info2.plist in Resources */,
+				D6E1B49D210623A700823F86 /* GoogleService-Info.plist in Resources */,
 				D60E33E820FC7F75003BD0FD /* Assets.xcassets in Resources */,
 				D60E33E620FC7F73003BD0FD /* Main.storyboard in Resources */,
 			);
