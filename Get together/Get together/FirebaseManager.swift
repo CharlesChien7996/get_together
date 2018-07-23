@@ -22,6 +22,7 @@ class FirebaseManager {
         }
     }
     
+    
     func getDataBySingleEvent(_ reference:DatabaseQuery, type: DataEventType, completionHandler: @escaping (_ allObjects: [DataSnapshot], _ dict: Dictionary<String,Any>?) -> Void) {
         
         reference.observeSingleEvent(of: type) { (snapshot) in
@@ -66,13 +67,14 @@ class FirebaseManager {
     
     
     // Convert image into thumbnail.
-    func thumbnail(_ image: UIImage?) -> UIImage? {
+    func thumbnail(_ image: UIImage?, widthSize: Int, heightSize: Int) -> UIImage? {
+        
         guard let image = image else {
-            print("Fail to get imageData")
+            print("Fail to get image")
             return nil
         }
         
-        let thumbnailSize = CGSize(width: 80, height: 80)
+        let thumbnailSize = CGSize(width: widthSize, height: heightSize)
         let scale = UIScreen.main.scale
         
         UIGraphicsBeginImageContextWithOptions(thumbnailSize, false, scale)
@@ -93,9 +95,12 @@ class FirebaseManager {
     }
     
     
-    func uploadImage(_ reference: StorageReference, image: UIImage?, completionHandler: @escaping (_ imageURL: URL) -> Void){
+    func uploadImage(_ reference: StorageReference, image: UIImage, completionHandler: @escaping (_ imageURL: URL) -> Void){
         
-        guard let imageData = UIImageJPEGRepresentation(image!, 1) else{
+        
+        
+        guard let imageData = UIImageJPEGRepresentation(image, 1) else{
+            print("Fail to get imageData")
             return
         }
         
@@ -112,10 +117,10 @@ class FirebaseManager {
                     print("error: \(error!)")
                     return
                 }
+                
                 completionHandler(url)
             }
         }
     }
     
-
 }

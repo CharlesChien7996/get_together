@@ -20,15 +20,6 @@ class MyEventCell: UITableViewCell {
     }
 
     
-    override func prepareForReuse() {
-        
-        self.eventTitle.textColor = UIColor.lightGray
-        self.eventDate.textColor = UIColor.lightGray
-        self.eventImageView.image = #imageLiteral(resourceName: "loading")
-        self.eventTitle.text = "讀取中"
-        self.eventDate.text = "讀取中"
-    }
-    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 

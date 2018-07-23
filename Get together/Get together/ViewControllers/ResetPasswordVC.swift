@@ -3,7 +3,6 @@ import Firebase
 
 class ResetPasswordVC: UIViewController {
     
-    // TextField.
     @IBOutlet weak var emailTextField: UITextField!
     
     override func viewDidLoad() {
@@ -33,6 +32,7 @@ class ResetPasswordVC: UIViewController {
             
         }
     }
+    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)

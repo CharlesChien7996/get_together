@@ -16,7 +16,7 @@ class RegisterVC: UIViewController {
     
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var stackView: UIStackView!
-
+    
     
     let ref = Database.database().reference()
     var originalFrame: CGRect?
@@ -33,7 +33,7 @@ class RegisterVC: UIViewController {
         self.usernameTextField.delegate = self
     }
     
-
+    
     // USer register.
     @IBAction func registerPressed(_ sender: Any) {
         
@@ -66,10 +66,10 @@ class RegisterVC: UIViewController {
                     return
                 }
                 
-                self.uploadUserData(self.profileImageView.image)
+                self.uploadUserData()
                 
                 let alertController = UIAlertController(title:"註冊成功", message:"登入開始使用吧",preferredStyle: .alert)
-                let defaultAction = UIAlertAction(title: "OK", style: .cancel) { (UIAlertAction) in
+                let defaultAction = UIAlertAction(title: "OK", style: .default) { (UIAlertAction) in
                     self.dismiss(animated: true, completion: nil)
                 }
                 alertController.addAction(defaultAction)
@@ -106,8 +106,12 @@ class RegisterVC: UIViewController {
         self.present(imagePicker, animated: true, completion: nil)
     }
     
+    @IBAction func cancelPressed(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
     
-    func uploadUserData(_ image: UIImage?) {
+    
+    func uploadUserData() {
         
         guard let uid = Auth.auth().currentUser?.uid else {
             print("Fail to get uid.")
@@ -117,7 +121,17 @@ class RegisterVC: UIViewController {
         let imageName = uid
         let imageRef = Storage.storage().reference().child("userProfileImage").child(imageName)
         
-        FirebaseManager.shared.uploadImage(imageRef, image: image) { (url) in
+        guard let image = self.profileImageView.image else{
+            print("Fail to get user's image")
+            return
+        }
+        
+        guard let thumbnailImage = FirebaseManager.shared.thumbnail(image, widthSize: Int(image.size.width / 5), heightSize: Int(image.size.height / 5)) else {
+            print("Fail to get image")
+            return
+        }
+        
+        FirebaseManager.shared.uploadImage(imageRef, image: thumbnailImage) { (url) in
             
             let user = User(userID: uid, email: self.emailTextField.text!, name: self.usernameTextField.text!, profileImageURL: String(describing: url))
             self.ref.child("user").child(uid).setValue(user.uploadedUserData())
@@ -169,7 +183,7 @@ class RegisterVC: UIViewController {
     
     @objc func keyboardWillHide(notification : Notification)  {
         UIView.animate(withDuration: 0.5) {
-            self.view.frame = self.originalFrame!
+            self.view.frame.origin.y = 0
         }
     }
     

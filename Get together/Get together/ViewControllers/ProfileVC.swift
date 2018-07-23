@@ -11,9 +11,12 @@ import Firebase
 
 class ProfileVC: UIViewController {
 
+    @IBOutlet weak var logoutBtn: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        if Auth.auth().currentUser == nil {
+            self.logoutBtn.isHidden = true
+        }
         // Do any additional setup after loading the view.
     }
     @IBAction func logoutPressed(_ sender: Any) {

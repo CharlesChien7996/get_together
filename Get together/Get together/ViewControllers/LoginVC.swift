@@ -10,9 +10,13 @@ class LoginVC: UIViewController {
     @IBOutlet weak var emailCheck: UILabel!
     @IBOutlet weak var passwordCheck: UILabel!
     
-    @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var laterBtn: UIButton!
     var originalFrame : CGRect?
 
+    @IBAction func laterPressed(_ sender: Any) {
+        let tabBarVC = self.storyboard?.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
+        self.present(tabBarVC, animated: true, completion: nil)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +54,7 @@ class LoginVC: UIViewController {
     // RegisterVC's Cancel button be pressed.
     @IBAction func cancelPressed(segue: UIStoryboardSegue) {
         print("User pressed Cancel button to back.")
+        self.view.endEditing(true)
 
     }
 
@@ -105,8 +110,8 @@ class LoginVC: UIViewController {
         let currentKeyboardFrame = info[UIKeyboardFrameEndUserInfoKey] as! CGRect
         let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
 
-        let textFrame = self.view.window!.convert(self.stackView.frame, from: self.view)
-        var visibleRect = self.view.frame;
+        let textFrame = self.view.window!.convert(self.laterBtn.frame, from: self.view)
+        var visibleRect = self.view.frame
         self.originalFrame = visibleRect
 
         if textFrame.maxY > currentKeyboardFrame.minY {
@@ -120,7 +125,7 @@ class LoginVC: UIViewController {
     }
     @objc func keyboardWillHide(notification : Notification)  {
         UIView.animate(withDuration: 0.5) {
-            self.view.frame = self.originalFrame!
+                self.view.frame.origin.y = 0
         }
     }
     
