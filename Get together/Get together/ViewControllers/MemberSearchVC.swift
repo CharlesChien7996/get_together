@@ -6,7 +6,8 @@ protocol MemberSearchVCDelegate: class {
 }
 
 class MemberSearchVC: UITableViewController {
-    var memberSearchResultController: UISearchController?
+    
+    var memberSearchResultController: UISearchController!
     
     var memberData: [User] = []
     var matchingItems: [User] = []
@@ -16,6 +17,9 @@ class MemberSearchVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "取消"
+
         
         let ref = Database.database().reference().child("user")
         FirebaseManager.shared.getData(ref, type: .childAdded) { (snap, dict) in
@@ -31,11 +35,14 @@ class MemberSearchVC: UITableViewController {
         
         // Prepare search bar.
         self.memberSearchResultController = UISearchController(searchResultsController: nil)
-        self.memberSearchResultController?.searchResultsUpdater = self
-        let memberSearchBar = self.memberSearchResultController?.searchBar
-        memberSearchBar?.sizeToFit()
-        memberSearchBar?.placeholder = "輸入暱稱或Email來搜尋成員"
-        memberSearchBar?.barTintColor = UIColor.white
+        self.memberSearchResultController.searchResultsUpdater = self
+        let memberSearchBar = self.memberSearchResultController.searchBar
+        memberSearchBar.sizeToFit()
+        let textFieldInsideUISearchBar = memberSearchBar.value(forKey: "searchField") as? UITextField
+        let textFieldInsideUISearchBarLabel = textFieldInsideUISearchBar!.value(forKey: "placeholderLabel") as? UILabel
+        textFieldInsideUISearchBarLabel?.font = textFieldInsideUISearchBarLabel?.font.withSize(14)
+        memberSearchBar.placeholder = "輸入暱稱或Email來搜尋成員..."
+        memberSearchBar.barTintColor = UIColor.white
         self.memberSearchResultController?.dimsBackgroundDuringPresentation = false
         memberSearchResultController?.hidesNavigationBarDuringPresentation = false
         self.navigationItem.titleView = memberSearchBar

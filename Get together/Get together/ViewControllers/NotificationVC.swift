@@ -2,7 +2,7 @@ import UIKit
 import Firebase
 
 
-class TestVC: UITableViewController {
+class NotificationVC: UITableViewController {
     
     var joinedEventData: [Event] = []
     var noticeMessages: [String] = []

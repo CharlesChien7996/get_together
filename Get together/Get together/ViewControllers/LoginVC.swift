@@ -123,6 +123,7 @@ class LoginVC: UIViewController {
             }
         }
     }
+    
     @objc func keyboardWillHide(notification : Notification)  {
         UIView.animate(withDuration: 0.5) {
                 self.view.frame.origin.y = 0

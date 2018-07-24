@@ -26,10 +26,12 @@ class AddEventVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.collectionView.dataSource = self
         self.eventDescription.delegate = self
-        
+
+        self.eventDatePicker.addTarget(self, action: #selector(dateChanged(sender:)), for: UIControlEvents.valueChanged)
+
         // Query organiser's data from database.
         if let uid = Auth.auth().currentUser?.uid {
             
@@ -67,6 +69,8 @@ class AddEventVC: UITableViewController {
             self.eventDatePicker.isHidden = true
             
         }
+        
+//        self.tableView.reloadRows(at: [IndexPath(row: 4, section: 0)], with: .none)
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
     }
@@ -115,14 +119,11 @@ class AddEventVC: UITableViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    @IBAction func eventDatePicker(_ sender: Any) {
-        
-        self.eventDatePicker.addTarget(self, action: #selector(dateChanged(sender:)), for: UIControlEvents.valueChanged)
-    }
+
     
     
     @objc func dateChanged(sender:UIDatePicker){
-        becomeFirstResponder()
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         self.eventDate.text = dateFormatter.string(from: self.eventDatePicker.date)
@@ -131,15 +132,19 @@ class AddEventVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        switch indexPath.row {
-        case 0:
-            return UITableViewAutomaticDimension
+        switch indexPath.section {
+        case 0 where UIScreen.main.bounds.width == 414:
+            return 414
+        case 0 where UIScreen.main.bounds.width == 375:
+            return 375
+        case 0 where UIScreen.main.bounds.width == 320:
+            return 320
         case 1:
             return 44
         case 2:
-            return 70
+            return 100
         case 3:
-            return 80
+            return 110
         case 4 where self.isOn:
             return 144
         case 5:
@@ -154,15 +159,19 @@ class AddEventVC: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch indexPath.row {
-        case 0:
-            return UITableViewAutomaticDimension
+        switch indexPath.section {
+        case 0 where UIScreen.main.bounds.width == 414:
+            return 414
+        case 0 where UIScreen.main.bounds.width == 375:
+            return 375
+        case 0 where UIScreen.main.bounds.width == 320:
+            return 320
         case 1:
             return 44
         case 2:
-            return 70
+            return 100
         case 3:
-            return 80
+            return 110
         case 4 where self.isOn:
             return 144
         case 5:
@@ -190,11 +199,6 @@ class AddEventVC: UITableViewController {
             let memberSearchVC = segue.destination as! MemberSearchVC
             memberSearchVC.delegate = self
         }
-    }
-    
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
     }
     
     
@@ -264,6 +268,14 @@ class AddEventVC: UITableViewController {
                 
             }
         }
+    }
+    
+    @IBAction func unwindPressed(segue: UIStoryboardSegue) {
+    }
+    
+    
+    @IBAction func backPressed(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
     
 }

@@ -22,13 +22,10 @@ class MainVC: UITableViewController {
             self.tableView.separatorStyle = .none
             return
         }
-        self.setUpActivityUndicatorView()
         self.setUpRefreshView()
-        self.queryHostEventData()
+        self.setUpActivityUndicatorView()
         
-        if self.hostEventData.count == 0 {
-            self .spinner.stopAnimating()
-        }
+        self.queryHostEventData()
         
         self.tableView.rowHeight = 100
     }
@@ -48,8 +45,9 @@ class MainVC: UITableViewController {
         self.refresh.tintColor = UIColor.darkGray
         self.refresh.addTarget(self, action: #selector(queryHostEventData), for: .valueChanged)
         self.refresh.addTarget(self, action: #selector(queryJoinedEventData), for: .valueChanged)
-
+        
         self.tableView.addSubview(self.refresh)
+
     }
     
     // Set up UIActivityUndicatorView.
@@ -59,7 +57,7 @@ class MainVC: UITableViewController {
         self.spinner.activityIndicatorViewStyle = .gray
         self.spinner.center = self.view.center
         self.spinner.hidesWhenStopped = true
-//        self.tableView.separatorStyle = .none
+        //        self.tableView.separatorStyle = .none
         self.view.addSubview(self.spinner)
         
     }
@@ -68,9 +66,15 @@ class MainVC: UITableViewController {
     // Query data host by self from database.
     @objc func queryHostEventData() {
         self.spinner.startAnimating()
+        if self.hostEventData.count == 0{
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3.0) {
+                self.spinner.stopAnimating()
+            }
+        }
+        
         self.tableView.separatorStyle = .none
         self.hostEventData.removeAll()
-
+        
         let eventRef = self.ref.child("event").queryOrdered(byChild: "date")
         
         guard let uid = Auth.auth().currentUser?.uid else {
@@ -97,12 +101,21 @@ class MainVC: UITableViewController {
                 self.tableView.reloadData()
             }
         }
+        
+        self.refresh.endRefreshing()
     }
     
     
     // Query joined data from database.
     @objc func queryJoinedEventData() {
+        
         self.spinner.startAnimating()
+        if self.joinedEventData.count == 0 {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
+                self.spinner.stopAnimating()
+            }
+        }
+        
         self.tableView.separatorStyle = .none
         self.joinedEventData.removeAll()
         
@@ -133,8 +146,9 @@ class MainVC: UITableViewController {
                 self.joinedEventData.insert(event, at: 0)
                 self.spinner.stopAnimating()
                 self.tableView.separatorStyle = .singleLine
-                self.refresh.endRefreshing()
                 self.tableView.reloadData()
+                self.refresh.endRefreshing()
+                
             }
         }
     }
@@ -232,32 +246,37 @@ class MainVC: UITableViewController {
     @IBAction func segmentedControlChanged(_ sender: Any) {
         
         switch self.eventSegmentedControl.selectedSegmentIndex {
-        case 0:
+            //        case 0:
+            //
+            //            if self.hostEventData.count == 0
+            
             // Show background view if current user is nil.
-            guard Auth.auth().currentUser != nil else {
-                self.tableView.backgroundView = backgroundViewWithoutLogin
-                self.tableView.separatorStyle = .none
-                return
-            }
-            self.queryHostEventData()
+            //            guard Auth.auth().currentUser != nil else {
+            //                self.tableView.backgroundView = backgroundViewWithoutLogin
+            //                self.tableView.separatorStyle = .none
+            //                return
+            //            }
             
         case 1:
+            
             // Show background view if current user is nil.
             guard Auth.auth().currentUser != nil else {
                 self.tableView.backgroundView = backgroundViewWithoutLogin
                 self.tableView.separatorStyle = .none
                 return
             }
-            self.queryJoinedEventData()
             
+            self.queryJoinedEventData()
+
         default:
             break
         }
-        
+        self.tableView.reloadData()
+    
     }
     
     // MARK: - Navigation
-        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "eventContent" {
             
@@ -290,7 +309,7 @@ class MainVC: UITableViewController {
         guard Auth.auth().currentUser != nil else {
             
             let alert = UIAlertController(title: "尚未登入", message: "登入來開始你的第一個聚吧！", preferredStyle: .alert)
-    
+            
             let agree = UIAlertAction(title: "登入", style: .default) { (action) in
                 
                 let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginVC

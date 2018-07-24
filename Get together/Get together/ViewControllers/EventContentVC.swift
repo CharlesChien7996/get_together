@@ -30,9 +30,9 @@ class EventContentVC: UITableViewController {
         case 1:
             return 44
         case 2:
-            return 70
+            return 100
         case 3:
-            return 80
+            return 110
         case 4 :
             return 44
         case 5:
@@ -82,7 +82,7 @@ class EventContentVC: UITableViewController {
         super.viewDidLoad()
         
         self.setLocationAnnotation()
-        
+        self.queryEventList()
         self.queryOrganiserData()
         self.queryMemberData()
         self.memberCollectionView.dataSource = self
@@ -117,7 +117,7 @@ class EventContentVC: UITableViewController {
             
             let eventID = dict["eventID"] as! String
             self.eventIDs.insert(eventID)
-        }
+        
         
         guard self.eventIDs.contains(self.event.eventID) || self.event.organiserID == uid else{
             
@@ -141,7 +141,7 @@ class EventContentVC: UITableViewController {
             
             return
         }
-        //        }
+        }
     }
     
     
@@ -222,6 +222,13 @@ class EventContentVC: UITableViewController {
             }
         }
     }
+    
+    @IBAction func backPressed(_ sender: Any) {
+
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    
     
 }
 

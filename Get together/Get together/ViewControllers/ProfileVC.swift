@@ -1,24 +1,45 @@
-//
-//  ProfileVC.swift
-//  Get together
-//
-//  Created by 簡士荃 on 2018/7/5.
-//  Copyright © 2018年 Charles. All rights reserved.
-//
-
 import UIKit
 import Firebase
 
-class ProfileVC: UIViewController {
+class ProfileVC: UITableViewController {
 
+    @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var logoutBtn: UIButton!
+    @IBOutlet weak var userEmail: UILabel!
+    @IBOutlet weak var userName: UILabel!
+    var user: User!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        if Auth.auth().currentUser == nil {
+        
+        guard let currentUser = Auth.auth().currentUser else {
             self.logoutBtn.isHidden = true
+            self.userEmail.text = "尚未登入"
+            self.userName.text = "尚未登入"
+            return
         }
-        // Do any additional setup after loading the view.
+        
+        let userRef = FirebaseManager.shared.databaseReference.child("user").child(currentUser.uid)
+
+        FirebaseManager.shared.getData(userRef, type: .value) { (allObject, dict) in
+
+            
+            self.user = User(userID: dict["userID"] as! String,
+                            email: dict["email"] as! String,
+                            name: dict["name"] as! String,
+                            profileImageURL: dict["profileImageURL"] as! String)
+            
+            self.userEmail.text = self.user.email
+            self.userName.text = self.user.name
+            
+            FirebaseManager.shared.getImage(urlString: self.user.profileImageURL) { (image) in
+                self.user.image = image
+                self.profileImageView.image = image
+            }
+        }
     }
+    
+    
     @IBAction func logoutPressed(_ sender: Any) {
         do {
             try Auth.auth().signOut()
@@ -28,21 +49,16 @@ class ProfileVC: UIViewController {
             print("error: \(error)")
         }
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
 
-    /*
+    
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        
+        if segue.identifier == "editProfileInfo" {
+            let editProfileInfoVC = segue.destination as! EditProfileInfoVC
+            
+            editProfileInfoVC.user = self.user
+        }
     }
-    */
-
+    
 }

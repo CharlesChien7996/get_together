@@ -15,24 +15,24 @@ class LocationVC: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     var resultSearchController: UISearchController!
     
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        super.viewWillDisappear(animated)
-        switch self.mapView.mapType {
-        case .hybrid:
-            self.mapView.mapType = .standard
-            
-        case .standard:
-            self.mapView.mapType = .hybrid
-            
-        default:
-            break
-        }
-        self.mapView.showsUserLocation = false
-        self.mapView.delegate = nil
-        self.mapView.removeFromSuperview()
-        self.mapView = nil
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//
+//        super.viewWillDisappear(animated)
+//        switch self.mapView.mapType {
+//        case .hybrid:
+//            self.mapView.mapType = .standard
+//
+//        case .standard:
+//            self.mapView.mapType = .hybrid
+//
+//        default:
+//            break
+//        }
+//        self.mapView.showsUserLocation = false
+//        self.mapView.delegate = nil
+//        self.mapView.removeFromSuperview()
+//        self.mapView = nil
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,8 +50,12 @@ class LocationVC: UIViewController {
         
         let searchBar = resultSearchController!.searchBar
         searchBar.sizeToFit()
-        searchBar.placeholder = "輸入地址或關鍵字來搜尋地點"
-        
+        let textFieldInsideUISearchBar = searchBar.value(forKey: "searchField") as? UITextField
+        let textFieldInsideUISearchBarLabel = textFieldInsideUISearchBar!.value(forKey: "placeholderLabel") as? UILabel
+        textFieldInsideUISearchBarLabel?.font = textFieldInsideUISearchBarLabel?.font.withSize(14)
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "取消"
+    
+        searchBar.placeholder = "輸入地址或關鍵字來搜尋地點..."
         navigationItem.titleView = resultSearchController?.searchBar
         resultSearchController?.hidesNavigationBarDuringPresentation = false
         resultSearchController?.dimsBackgroundDuringPresentation = true
