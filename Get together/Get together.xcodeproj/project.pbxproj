@@ -28,6 +28,7 @@
 		D63E804420FF166900C0E010 /* LocationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804320FF166900C0E010 /* LocationVC.swift */; };
 		D63E804620FF220200C0E010 /* LocationSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804520FF220200C0E010 /* LocationSearchVC.swift */; };
 		D66F261821072F80002B4752 /* EditProfileInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D66F261721072F80002B4752 /* EditProfileInfoVC.swift */; };
+		D699258521088C0700B9D895 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D699258421088C0700B9D895 /* Notification.swift */; };
 		D6D36F28210077C9001CE892 /* MemberSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D36F27210077C9001CE892 /* MemberSearchVC.swift */; };
 		D6E1B49D210623A700823F86 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6E1B49C210623A700823F86 /* GoogleService-Info.plist */; };
 		D6F3742920FCAD6C000C6D2E /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */; };
@@ -57,6 +58,7 @@
 		D63E804320FF166900C0E010 /* LocationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationVC.swift; sourceTree = "<group>"; };
 		D63E804520FF220200C0E010 /* LocationSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchVC.swift; sourceTree = "<group>"; };
 		D66F261721072F80002B4752 /* EditProfileInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileInfoVC.swift; sourceTree = "<group>"; };
+		D699258421088C0700B9D895 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		D6D36F27210077C9001CE892 /* MemberSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberSearchVC.swift; sourceTree = "<group>"; };
 		D6E1B49C210623A700823F86 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 		D6A50FE920FC825B00217A51 /* DataModels */ = {
 			isa = PBXGroup;
 			children = (
+				D699258421088C0700B9D895 /* Notification.swift */,
 				D60E340220FC80D9003BD0FD /* Event.swift */,
 				D60E340420FC80D9003BD0FD /* Member.swift */,
 				D60E340320FC80D9003BD0FD /* User.swift */,
@@ -301,6 +304,7 @@
 				D6194B29210710EC0077222F /* ProfileVC.swift in Sources */,
 				D60E33E120FC7F73003BD0FD /* AppDelegate.swift in Sources */,
 				D60E33FE20FC80CD003BD0FD /* MainVC.swift in Sources */,
+				D699258521088C0700B9D895 /* Notification.swift in Sources */,
 				D60E33FF20FC80CD003BD0FD /* ResetPasswordVC.swift in Sources */,
 				D60E341320FC8173003BD0FD /* NotificationVC.swift in Sources */,
 				D63E804620FF220200C0E010 /* LocationSearchVC.swift in Sources */,

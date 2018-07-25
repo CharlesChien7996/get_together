@@ -16,16 +16,36 @@ class AddEventVC: UITableViewController {
     @IBOutlet weak var eventLocation: UILabel!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var eventDescription: UITextView!
+    var isEdit = false
     
     var members: [User] = []
     var isOn = false
     let ref = Database.database().reference()
     var user: User!
+    var event: Event!
     var memberStrings: Set<String> = []
-    
+    var region: MKCoordinateRegion!
+    var annotation: MKPointAnnotation!
+    var deletedMembers: [User] = []
+
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if self.isEdit == true {
+            self.eventImageView.image = self.event.image
+            self.eventTitle.text = self.event.title
+            self.eventTitle.becomeFirstResponder()
+            self.eventDate.text = self.event.date
+            self.eventLocation.text = self.event.location
+            self.mapView.addAnnotation(self.annotation)
+            self.mapView.setRegion(self.region, animated: false)
+            self.eventDescription.text = self.event.description
+            self.eventDescription.textColor = UIColor.black
+        }
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
 
         self.collectionView.dataSource = self
         self.eventDescription.delegate = self
@@ -223,16 +243,33 @@ class AddEventVC: UITableViewController {
         FirebaseManager.shared.uploadImage(imageRef, image: thumbnailImage) { (url) in
             
             if let user = Auth.auth().currentUser {
-                let childRef = self.ref.childByAutoId()
+                var eventID: String!
                 
-                let event = Event(eventID:childRef.key, organiserID: user.uid, title: self.eventTitle.text!, date: self.eventDate.text!, location: self.eventLocation.text!, description: self.eventDescription.text, eventImageURL: String(describing: url))
+                if self.isEdit == true {
+                    eventID = self.event.eventID
+                    if !self.deletedMembers.isEmpty {
+                        for member in self.deletedMembers {
+                            self.ref.child("memberList").child(self.event.eventID).child(member.userID).removeValue()
+                            self.ref.child("eventList").child(member.userID).child(self.event.eventID).removeValue()
+                            let notification = Notifacation(eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員", isRead: false, isRemoved: true)
+                            
+                            self.ref.child("notification").child(member.userID).child(eventID).setValue(notification.uploadNotification())
+                        }
+                    }
+                    
+                }else {
+                    eventID = self.ref.childByAutoId().key
+                }
                 
-                self.ref.child("event").child(childRef.key).setValue(event.uploadedEventData())
+                self.event = Event(eventID:eventID, organiserID: user.uid, title: self.eventTitle.text!, date: self.eventDate.text!, location: self.eventLocation.text!, description: self.eventDescription.text, eventImageURL: String(describing: url))
+                
+                self.ref.child("event").child(eventID).setValue(self.event.uploadedEventData())
                 
                 for member in self.members {
                     
                     // Upload data to notification.
-                    self.ref.child("notification").child(member.userID).child(childRef.key).setValue(self.uploadedMemberListData(childRef.key, userName: self.user.name, eventName: event.title))
+                    let notification = Notifacation(eventID: self.event.eventID, message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」", isRead: false, isRemoved: false)
+                    self.ref.child("notification").child(member.userID).child(eventID).setValue(notification.uploadNotification())
                     
                 }
             }
@@ -243,7 +280,18 @@ class AddEventVC: UITableViewController {
     func uploadedMemberListData(_ ref:String, userName: String, eventName: String) -> Dictionary<String, Any> {
         
         return ["eventID": ref,
-                "message": "\"\(userName)\" 邀請您加入 「\(eventName)」"]
+                "message": "\"\(userName)\" 邀請您加入 「\(eventName)」",
+                "isRemoved": false,
+                "isRead": false]
+        
+    }
+    
+    func removedMemberListData(_ ref:String, userName: String, eventName: String) -> Dictionary<String, Any> {
+        
+        return ["eventID": ref,
+                "message": "\"\(userName)\" 將您從 「\(eventName)」 移出成員",
+                "isRemoved": true,
+                "isread": false]
     }
     
     
@@ -268,14 +316,6 @@ class AddEventVC: UITableViewController {
                 
             }
         }
-    }
-    
-    @IBAction func unwindPressed(segue: UIStoryboardSegue) {
-    }
-    
-    
-    @IBAction func backPressed(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
     }
     
 }
@@ -316,9 +356,12 @@ extension AddEventVC: UICollectionViewDataSource, MemberCollectionViewCellDelega
     
     func deleteData(cell: MemberCollectionViewCell) {
         if let indexPath = self.collectionView.indexPath(for: cell) {
-            self.members.remove(at: indexPath.item)
-            
+            let removeItem = self.members.remove(at: indexPath.item)
+            if self.isEdit == true {
+                self.deletedMembers.append(removeItem)
+            }
             self.collectionView.deleteItems(at: [indexPath])
+            
         }
     }
     
@@ -328,18 +371,27 @@ extension AddEventVC: UICollectionViewDataSource, MemberCollectionViewCellDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let memberCell = collectionView.dequeueReusableCell(withReuseIdentifier: "member", for: indexPath) as! MemberCollectionViewCell
         let member = members[indexPath.item]
-        let urlString = member.profileImageURL
         memberCell.delegate = self
-        
-        FirebaseManager.shared.getImage(urlString: urlString) { (image) in
-            member.image = image
-            DispatchQueue.main.async {
-                memberCell.memberName.text = member.name
-                memberCell.memberProfileImage.image = member.image
+
+        if self.isEdit == true {
+            memberCell.memberName.text = member.name
+            memberCell.memberProfileImage.image = member.image
+        }else {
+            
+            let urlString = member.profileImageURL
+            
+            FirebaseManager.shared.getImage(urlString: urlString) { (image) in
+                member.image = image
+                DispatchQueue.main.async {
+                    memberCell.memberName.text = member.name
+                    memberCell.memberProfileImage.image = member.image
+                }
             }
         }
+
         return memberCell
     }
 }

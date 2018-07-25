@@ -16,12 +16,16 @@ class EventContentVC: UITableViewController {
     @IBOutlet weak var eventLocationMap: MKMapView!
     @IBOutlet weak var eventDescription: UILabel!
     
+    @IBOutlet weak var editBtn: UIBarButtonItem!
     
     var event: Event!
     var eventIDs: Set<String> = []
     let ref = Database.database().reference()
     var memberData: [User] = []
     var imageCache = FirebaseManager.shared.imageCache
+    var region: MKCoordinateRegion!
+    var annotation: MKPointAnnotation!
+
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
@@ -69,23 +73,23 @@ class EventContentVC: UITableViewController {
             
             annotation.coordinate = location.coordinate
             annotation.title = self.event.location
+            self.annotation = annotation
             self.eventLocationMap.addAnnotation(annotation)
             let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
             let region = MKCoordinateRegion(center: annotation.coordinate, span: span)
+            self.region = region
             self.eventLocationMap.setRegion(region, animated: false)
-            
-            
         }
     }
+    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.setLocationAnnotation()
-        self.queryEventList()
-        self.queryOrganiserData()
-        self.queryMemberData()
-        self.memberCollectionView.dataSource = self
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.editBtn.title = ""
         
         self.eventTitle.text = self.event.title
         self.eventDate.text = self.event.date
@@ -93,33 +97,33 @@ class EventContentVC: UITableViewController {
         self.eventDescription.text = self.event.description
         self.eventImageView.image = self.event.image
         
+        guard let currentUser = Auth.auth().currentUser else {
+            return
+        }
+        
+        
+        
+        
+        
+        if currentUser.uid == self.event.organiserID {
+            self.editBtn.title = "編輯"
+            self.editBtn.isEnabled = true
+        }
+        
+        self.setLocationAnnotation()
+//        self.queryEventList()
+        self.queryOrganiserData()
+        self.queryMemberData()
+        self.memberCollectionView.dataSource = self
+        
+        
+        
         
         // 建立時間格式
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"
-    }
-    
-    func queryEventList() {
         
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("Fail to get uid")
-            return
-        }
-        
-        let ref = Database.database().reference().child("eventList").child(uid)
-        
-        FirebaseManager.shared.getDataBySingleEvent(ref, type: .childAdded) { (allObject, dict) in
-            
-            guard let dict = dict else {
-                print("Fail to get data")
-                return
-            }
-            
-            let eventID = dict["eventID"] as! String
-            self.eventIDs.insert(eventID)
-        
-        
-        guard self.eventIDs.contains(self.event.eventID) || self.event.organiserID == uid else{
+        guard self.eventIDs.contains(self.event.eventID) || self.event.organiserID == currentUser.uid else{
             
             let alert = UIAlertController(title: "提示", message: "是否同意加入\(self.event.title)?", preferredStyle: .alert)
             let agree = UIAlertAction(title: "同意", style: .default) { (action) in
@@ -141,7 +145,32 @@ class EventContentVC: UITableViewController {
             
             return
         }
+        
+    }
+    
+    
+    
+    func queryEventList() {
+        
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("Fail to get uid")
+            return
         }
+        
+        let ref = Database.database().reference().child("eventList").child(uid)
+        
+        FirebaseManager.shared.getDataBySingleEvent(ref, type: .childAdded) { (allObject, dict) in
+            
+            guard let dict = dict else {
+                print("Fail to get data")
+                return
+            }
+            
+            let eventID = dict["eventID"] as! String
+            self.eventIDs.insert(eventID)
+        }
+        
+        
     }
     
     
@@ -223,13 +252,19 @@ class EventContentVC: UITableViewController {
         }
     }
     
-    @IBAction func backPressed(_ sender: Any) {
-
-        self.navigationController?.popViewController(animated: true)
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editEvent" {
+            let editEventVC = segue.destination as! AddEventVC
+            editEventVC.isEdit = true
+            editEventVC.event = self.event
+            editEventVC.members = self.memberData
+            editEventVC.annotation = self.annotation
+            editEventVC.region = self.region
+        }
     }
     
-    
-    
+
 }
 
 
@@ -255,6 +290,7 @@ extension EventContentVC: UICollectionViewDataSource {
         if let image = self.imageCache.object(forKey: member.profileImageURL as NSString) as? UIImage {
             
             memberCell.memberProfileImage.image = image
+            member.image = image
         }else {
             
             // Download image from firebase storage.
@@ -267,6 +303,7 @@ extension EventContentVC: UICollectionViewDataSource {
                 
                 self.imageCache.setObject(image, forKey: member.profileImageURL as NSString)
                 memberCell.memberProfileImage.image = image
+                member.image = image
             }
         }
         

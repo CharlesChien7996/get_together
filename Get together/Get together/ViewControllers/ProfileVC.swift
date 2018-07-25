@@ -5,6 +5,7 @@ class ProfileVC: UITableViewController {
 
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var logoutBtn: UIButton!
+    @IBOutlet weak var editBtn: UIBarButtonItem!
     @IBOutlet weak var userEmail: UILabel!
     @IBOutlet weak var userName: UILabel!
     var user: User!
@@ -12,8 +13,13 @@ class ProfileVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+
+        
         guard let currentUser = Auth.auth().currentUser else {
             self.logoutBtn.isHidden = true
+            self.editBtn.title = ""
+            self.editBtn.isEnabled = false
             self.userEmail.text = "尚未登入"
             self.userName.text = "尚未登入"
             return

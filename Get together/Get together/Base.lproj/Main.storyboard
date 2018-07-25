@@ -873,7 +873,7 @@
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="JXv-hn-l8N">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="selectedImageTintColor" red="0.50588235294117645" green="0.84313725490196079" blue="0.89411764705882357" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
                     <connections>
                         <segue destination="ivK-Hn-7Va" kind="relationship" relationship="viewControllers" id="q81-51-tfX"/>
@@ -889,7 +889,7 @@
         <scene sceneID="Wly-cL-Lf5">
             <objects>
                 <navigationController storyboardIdentifier="naviVC" automaticallyAdjustsScrollViewInsets="NO" id="ivK-Hn-7Va" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="event" id="OTg-c1-OiU">
+                    <tabBarItem key="tabBarItem" title="" image="event" selectedImage="event2" id="OTg-c1-OiU">
                         <inset key="imageInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="-12"/>
                     </tabBarItem>
                     <toolbarItems/>
@@ -898,6 +898,9 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Y7y-m9-sxr">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="tOW-rt-N2g" kind="relationship" relationship="rootViewController" id="gHu-9t-u9T"/>
                     </connections>
@@ -931,11 +934,6 @@
                         <viewLayoutGuide key="safeArea" id="KXr-0Q-PDK"/>
                     </view>
                     <navigationItem key="navigationItem" title="搜尋地點" id="6Zh-vj-Ohx">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="back" id="2lP-Y1-Ro4">
-                            <connections>
-                                <segue destination="F8k-sM-Ros" kind="unwind" unwindAction="backPressedWithSegue:" id="kNx-4T-QLl"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="確定" id="4wb-vJ-zx8">
                             <connections>
                                 <action selector="confirmPressed:" destination="NlF-h5-A62" id="wzn-nl-lgU"/>
@@ -948,7 +946,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aVK-u3-leK" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="F8k-sM-Ros" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4593" y="170"/>
         </scene>
@@ -1151,7 +1148,7 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y6d-KL-kY0">
-                                                    <rect key="frame" x="108" y="76" width="0.0" height="0.0"/>
+                                                    <rect key="frame" x="107" y="76" width="0.0" height="0.0"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -1415,17 +1412,17 @@
                                         <rect key="frame" x="0.0" y="1146" width="375" height="268"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="LsW-j7-LbP" id="KFR-4z-Ccp">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="268"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="267.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="描述" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mhb-ww-Fdw">
-                                                    <rect key="frame" x="16" y="16" width="35" height="21"/>
+                                                    <rect key="frame" x="16" y="16" width="35" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="為你的活動添加一點描述吧！" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ePg-dd-1x0">
-                                                    <rect key="frame" x="16" y="53" width="343" height="214.5"/>
+                                                    <rect key="frame" x="16" y="52.5" width="343" height="214.5"/>
                                                     <color key="backgroundColor" name="selectedMenuItemTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1453,11 +1450,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="EGf-6i-b3T">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="back" id="yw0-hH-ZE9">
-                            <connections>
-                                <action selector="backPressed:" destination="rgY-nI-orQ" id="zqV-sh-z0D"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="完成" id="R4L-rL-hRM">
                             <connections>
                                 <action selector="done:" destination="rgY-nI-orQ" id="Qm2-mz-v7Y"/>
@@ -1487,7 +1479,7 @@
         <scene sceneID="ZWD-zP-IR1">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="h5j-eG-ZtZ" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="envelope" id="du9-43-ecp">
+                    <tabBarItem key="tabBarItem" title="" image="envelope" selectedImage="envelope2" id="du9-43-ecp">
                         <inset key="imageInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="-12"/>
                     </tabBarItem>
                     <toolbarItems/>
@@ -1543,16 +1535,9 @@
                             <outlet property="delegate" destination="XHi-dI-PmD" id="777-cb-NSM"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="搜尋成員" id="7gS-dt-fcg">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="back" id="dYf-Xp-b6B">
-                            <connections>
-                                <segue destination="B0L-9H-WMq" kind="unwind" unwindAction="backPressedWithSegue:" id="Igy-z0-UhD"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="搜尋成員" id="7gS-dt-fcg"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WPb-lM-4oq" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="B0L-9H-WMq" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4593" y="855"/>
         </scene>
@@ -1854,15 +1839,16 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="lPD-IN-Pba">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="back" id="q8e-iL-fvA">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="編輯" id="iMj-yK-TEz">
                             <connections>
-                                <action selector="backPressed:" destination="qfP-Hk-2kc" id="Oea-dQ-CHW"/>
+                                <action selector="editPressed:" destination="qfP-Hk-2kc" id="PZf-Vd-8tF"/>
+                                <segue destination="rgY-nI-orQ" kind="show" identifier="editEvent" id="4iQ-iQ-qYP"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="編輯" id="iMj-yK-TEz"/>
                     </navigationItem>
                     <size key="freeformSize" width="375" height="1200"/>
                     <connections>
+                        <outlet property="editBtn" destination="iMj-yK-TEz" id="EQ1-sp-Xrh"/>
                         <outlet property="eventDate" destination="LhN-B1-12M" id="177-0P-D11"/>
                         <outlet property="eventDescription" destination="R07-AP-Weh" id="htY-pU-NbM"/>
                         <outlet property="eventImageView" destination="JB0-yv-nOy" id="aCg-6M-7v7"/>
@@ -1882,7 +1868,7 @@
         <scene sceneID="dEf-p9-tlw">
             <objects>
                 <tableViewController id="ptm-gr-fMA" customClass="ProfileVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="GXK-pM-qyR">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="GXK-pM-qyR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -1890,7 +1876,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="375" height="240"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="brJ-zu-2G0">
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profileImage" translatesAutoresizingMaskIntoConstraints="NO" id="brJ-zu-2G0">
                                     <rect key="frame" x="112" y="45" width="150" height="150"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="150" id="6VP-Vs-1ru"/>
@@ -1932,8 +1918,8 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ulx-hi-r0t">
-                                                    <rect key="frame" x="73" y="11" width="286" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <rect key="frame" x="73" y="13.5" width="286" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -1965,8 +1951,8 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kes-Jd-d5G">
-                                                    <rect key="frame" x="119" y="12" width="240" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <rect key="frame" x="119" y="13.5" width="240" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -2033,6 +2019,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="editBtn" destination="Nod-4D-Ogx" id="H64-CY-Exh"/>
                         <outlet property="logoutBtn" destination="fpf-oM-Co0" id="avb-oK-1kn"/>
                         <outlet property="profileImageView" destination="brJ-zu-2G0" id="8aB-N9-VWA"/>
                         <outlet property="userEmail" destination="Ulx-hi-r0t" id="Wgm-sI-Ty9"/>
@@ -2431,7 +2418,7 @@
         <scene sceneID="xVb-yI-BoT">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="EVH-o6-TgE" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="profile" id="AGv-hc-5SM">
+                    <tabBarItem key="tabBarItem" title="" image="profile" selectedImage="profile2" id="AGv-hc-5SM">
                         <inset key="imageInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="-12"/>
                     </tabBarItem>
                     <toolbarItems/>
@@ -2575,6 +2562,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="個人頁面" id="Svt-FU-qLE">
+                        <barButtonItem key="backBarButtonItem" title="&lt;" id="Jmu-Jx-psf"/>
                         <barButtonItem key="rightBarButtonItem" title="完成" id="LKk-AW-h6p">
                             <connections>
                                 <action selector="donePressed:" destination="tjW-qM-chr" id="SWJ-zm-pM9"/>
@@ -2593,20 +2581,23 @@
     </scenes>
     <resources>
         <image name="add" width="29" height="29"/>
-        <image name="back" width="20" height="20"/>
         <image name="check" width="29" height="29"/>
         <image name="default" width="640" height="640"/>
         <image name="envelope" width="29" height="29"/>
+        <image name="envelope2" width="29" height="29"/>
         <image name="event" width="29" height="29"/>
+        <image name="event2" width="29" height="29"/>
         <image name="exit" width="20" height="20"/>
         <image name="lock" width="29" height="29"/>
         <image name="mail" width="29" height="29"/>
         <image name="profile" width="29" height="29"/>
-        <image name="profileImage" width="75" height="75"/>
+        <image name="profile2" width="29" height="29"/>
+        <image name="profileImage" width="512" height="512"/>
         <image name="search" width="256" height="256"/>
         <image name="user" width="29" height="29"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="z67-S9-OrP"/>
+        <segue reference="4iQ-iQ-qYP"/>
     </inferredMetricsTieBreakers>
 </document>

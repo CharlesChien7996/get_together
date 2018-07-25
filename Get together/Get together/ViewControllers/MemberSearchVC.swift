@@ -71,6 +71,7 @@ class MemberSearchVC: UITableViewController {
         if let image = self.imageCache.object(forKey: selectedMember.profileImageURL as NSString) as? UIImage {
             
             cell.imageView?.image = image
+            selectedMember.image = image
         }else {
             
             // Download image from firebase storage.
@@ -82,6 +83,7 @@ class MemberSearchVC: UITableViewController {
                 }
                 
                 cell.imageView?.image = image
+                selectedMember.image = image
                 self.imageCache.setObject(image, forKey: selectedMember.profileImageURL as NSString)
             }
         }

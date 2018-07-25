@@ -12,10 +12,15 @@ class MainVC: UITableViewController {
     var hostEventData:[Event] = []
     let ref = FirebaseManager.shared.databaseReference
     var imageCache = FirebaseManager.shared.imageCache
+    var eventIDs: Set<String> = []
+    var notificationData: [Notifacation] = []
+    var unreads: [Notifacation] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         // Show background view if current user is nil.
         guard Auth.auth().currentUser != nil else {
             self.tableView.backgroundView = backgroundViewWithoutLogin
@@ -26,7 +31,8 @@ class MainVC: UITableViewController {
         self.setUpActivityUndicatorView()
         
         self.queryHostEventData()
-        
+        self.queryEventList()
+        self.queryNotification()
         self.tableView.rowHeight = 100
     }
     
@@ -47,7 +53,7 @@ class MainVC: UITableViewController {
         self.refresh.addTarget(self, action: #selector(queryJoinedEventData), for: .valueChanged)
         
         self.tableView.addSubview(self.refresh)
-
+        
     }
     
     // Set up UIActivityUndicatorView.
@@ -62,6 +68,65 @@ class MainVC: UITableViewController {
         
     }
     
+    func queryNotification() {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("Fail to get uid")
+            return
+        }
+        
+        let notificationRef = self.ref.child("notification").child(uid)
+        FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
+            self.unreads.removeAll()
+            
+            for snap in allObjects {
+                let dict = snap.value as! [String : Any]
+                
+                
+                let notification = Notifacation(eventID: dict["eventID"] as! String,
+                                                message: dict["message"] as! String,
+                                                isRead: dict["isRead"] as! Bool,
+                                                isRemoved: dict["isRemoved"] as! Bool)
+                
+                self.notificationData.insert(notification, at: 0)
+                if notification.isRead == false {
+                    self.unreads.insert(notification, at: 0)
+                }
+                let item = self.tabBarController?.tabBar.items![1]
+                
+                item?.badgeValue = String(self.unreads.count)
+                if item?.badgeValue == "0" {
+                    item?.badgeValue = nil
+                }
+                
+                let navi = self.tabBarController?.viewControllers?[1] as! UINavigationController
+                let notificationVC = navi.viewControllers.first as! NotificationVC
+                notificationVC.notificationData = self.notificationData
+                
+            }
+        }
+    }
+    
+    
+    func queryEventList() {
+        
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("Fail to get uid")
+            return
+        }
+        
+        let ref = Database.database().reference().child("eventList").child(uid)
+        
+        FirebaseManager.shared.getDataBySingleEvent(ref, type: .childAdded) { (allObject, dict) in
+            
+            guard let dict = dict else {
+                print("Fail to get data")
+                return
+            }
+            
+            let eventID = dict["eventID"] as! String
+            self.eventIDs.insert(eventID)
+        }
+    }
     
     // Query data host by self from database.
     @objc func queryHostEventData() {
@@ -267,12 +332,12 @@ class MainVC: UITableViewController {
             }
             
             self.queryJoinedEventData()
-
+            
         default:
             break
         }
         self.tableView.reloadData()
-    
+        
     }
     
     // MARK: - Navigation
@@ -295,6 +360,7 @@ class MainVC: UITableViewController {
             case 1:
                 selectedEvent = self.joinedEventData[indexPath.row]
                 eventContentVC.event = selectedEvent
+                eventContentVC.eventIDs = self.eventIDs
                 
             default:
                 break

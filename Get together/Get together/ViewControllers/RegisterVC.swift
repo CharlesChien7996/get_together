@@ -99,12 +99,15 @@ class RegisterVC: UIViewController {
         }
     }
     
+    
     @IBAction func uploadProfileImage(_ sender: Any) {
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = self
+        imagePicker.allowsEditing = true
         self.present(imagePicker, animated: true, completion: nil)
     }
+    
     
     @IBAction func cancelPressed(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -137,6 +140,7 @@ class RegisterVC: UIViewController {
             self.ref.child("user").child(uid).setValue(user.uploadedUserData())
         }
     }
+    
     
     // Adjust frame when keyboard is showing.
     override func viewWillAppear(_ animated: Bool) {
@@ -220,7 +224,14 @@ extension RegisterVC: UIImagePickerControllerDelegate, UINavigationControllerDel
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+        let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage
+        var editedImage = info[UIImagePickerControllerEditedImage] as? UIImage
+        
+        if editedImage == nil{
+            editedImage = originalImage
+        }
+        
+        if let image = editedImage {
             
             self.profileImageView.image = image
         }
