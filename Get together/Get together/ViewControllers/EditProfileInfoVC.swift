@@ -6,7 +6,7 @@ class EditProfileInfoVC: UITableViewController {
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var usernameTextField: UITextField!
     
-    var user: User!
+    var user: GUser!
     let ref = FirebaseManager.shared.databaseReference
     
     override func viewDidLoad() {
@@ -55,7 +55,7 @@ class EditProfileInfoVC: UITableViewController {
         
         FirebaseManager.shared.uploadImage(imageRef, image: thumbnailImage) { (url) in
             
-            let user = User(userID: uid, email: self.user.email, name: self.usernameTextField.text!, profileImageURL: String(describing: url))
+            let user = GUser(userID: uid, email: self.user.email, name: self.usernameTextField.text!, profileImageURL: String(describing: url))
             self.ref.child("user").child(uid).setValue(user.uploadedUserData())
         }
     }

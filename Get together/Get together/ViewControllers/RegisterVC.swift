@@ -17,8 +17,6 @@ class RegisterVC: UIViewController {
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var stackView: UIStackView!
     
-    
-    let ref = Database.database().reference()
     var originalFrame: CGRect?
     
     
@@ -70,8 +68,10 @@ class RegisterVC: UIViewController {
                 
                 let alertController = UIAlertController(title:"註冊成功", message:"登入開始使用吧",preferredStyle: .alert)
                 let defaultAction = UIAlertAction(title: "OK", style: .default) { (UIAlertAction) in
+                    
                     self.dismiss(animated: true, completion: nil)
                 }
+                
                 alertController.addAction(defaultAction)
                 self.present(alertController, animated: true, completion: nil)
             }
@@ -101,6 +101,7 @@ class RegisterVC: UIViewController {
     
     
     @IBAction func uploadProfileImage(_ sender: Any) {
+        
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = self
@@ -110,18 +111,20 @@ class RegisterVC: UIViewController {
     
     
     @IBAction func cancelPressed(_ sender: Any) {
+        
         self.dismiss(animated: true, completion: nil)
     }
     
     
     func uploadUserData() {
         
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("Fail to get uid.")
+        guard let currentUser = FirebaseManager.shared.getCurrentUser() else {
+            print("Fail to get current user")
             return
         }
         
-        let imageName = uid
+        print(currentUser)
+        let imageName = currentUser.uid
         let imageRef = Storage.storage().reference().child("userProfileImage").child(imageName)
         
         guard let image = self.profileImageView.image else{
@@ -136,8 +139,11 @@ class RegisterVC: UIViewController {
         
         FirebaseManager.shared.uploadImage(imageRef, image: thumbnailImage) { (url) in
             
-            let user = User(userID: uid, email: self.emailTextField.text!, name: self.usernameTextField.text!, profileImageURL: String(describing: url))
-            self.ref.child("user").child(uid).setValue(user.uploadedUserData())
+            let user = GUser(userID: currentUser.uid, email: self.emailTextField.text!,
+                             name: self.usernameTextField.text!,
+                             profileImageURL: String(describing: url))
+            
+            FirebaseManager.shared.databaseReference.child("user").child(currentUser.uid).setValue(user.uploadedUserData())
         }
     }
     
@@ -146,21 +152,13 @@ class RegisterVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let user = Auth.auth().currentUser
-        
-        if user != nil {
-            let tabBarVC = self.storyboard?.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
-            DispatchQueue.main.async {
-                self.present(tabBarVC, animated: true, completion: nil)
-                
-            }
-        }
-        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(notification:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self)
     }
@@ -175,27 +173,33 @@ class RegisterVC: UIViewController {
         var visibleRect = self.view.frame;
         self.originalFrame = visibleRect
         
-        if textFrame.maxY > currentKeyboardFrame.minY {
+        guard textFrame.maxY > currentKeyboardFrame.minY else{
             
-            let difference = textFrame.maxY - currentKeyboardFrame.minY
-            visibleRect.origin.y = visibleRect.origin.y - (difference+16)
-            UIView.animate(withDuration: duration) {
-                self.view.frame = visibleRect
-            }
+            return
+        }
+        
+        let difference = textFrame.maxY - currentKeyboardFrame.minY
+        visibleRect.origin.y = visibleRect.origin.y - (difference+16)
+        UIView.animate(withDuration: duration) {
+            self.view.frame = visibleRect
         }
     }
     
+    
     @objc func keyboardWillHide(notification : Notification)  {
+        
         UIView.animate(withDuration: 0.5) {
             self.view.frame.origin.y = 0
         }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
         self.view.endEditing(true)
     }
     
 }
+
 
 extension RegisterVC: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
@@ -203,14 +207,17 @@ extension RegisterVC: UITextFieldDelegate {
         if self.emailTextField.text!.isEmpty == false {
             self.emailCheck.text! = ""
         }
+        
         if self.passwordTextField.text!.isEmpty == false {
             self.passwordCheck.text! = ""
         }
         
         if self.checkPasswordTextField.text!.isEmpty == false {
+            
             if self.checkPasswordTextField.text! != self.passwordTextField.text! {
                 self.checkPasswordCheck.text = "好像跟密碼不一樣耶，重試看看吧"
             }else {
+                
                 self.checkPasswordCheck.text! = ""
             }
         }
@@ -220,6 +227,7 @@ extension RegisterVC: UITextFieldDelegate {
     }
 }
 
+
 extension RegisterVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -228,6 +236,7 @@ extension RegisterVC: UIImagePickerControllerDelegate, UINavigationControllerDel
         var editedImage = info[UIImagePickerControllerEditedImage] as? UIImage
         
         if editedImage == nil{
+            
             editedImage = originalImage
         }
         
@@ -235,6 +244,7 @@ extension RegisterVC: UIImagePickerControllerDelegate, UINavigationControllerDel
             
             self.profileImageView.image = image
         }
+        
         self.dismiss(animated: true, completion: nil)
     }
 }

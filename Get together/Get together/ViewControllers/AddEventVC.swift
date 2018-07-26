@@ -19,21 +19,22 @@ class AddEventVC: UITableViewController {
     var isEdit = false
     
     
-    var members: [User] = []
+    var members: [GUser] = []
     var isOn = false
     let ref = Database.database().reference()
-    var user: User!
+    var user: GUser!
     var event: Event!
 
     var region: MKCoordinateRegion!
     var annotation: MKPointAnnotation!
-    var deletedMembers: [User] = []
-    var editedMembers: [User]!
+    var deletedMembers: [GUser] = []
+    var editedMembers: [GUser]!
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+
         if self.isEdit == true {
             
             self.eventImageView.image = self.event.image
@@ -281,6 +282,10 @@ class AddEventVC: UITableViewController {
                 
                 for member in self.editedMembers {
                     
+                    let eventList = EventList(eventID: self.event.eventID, isReply: false)
+                    self.ref.child("memberList").child(eventList.eventID).child(member.userID).child("memberID").setValue(member.userID)
+                    self.ref.child("eventList").child(member.userID).child(eventList.eventID).setValue(eventList.uploadedEventListData())
+                    
                     // Upload data to notification.
                     let notification = Notifacation(notifacationID: notifacationID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」", remark: "", isRead: false, isRemoved: false)
                     self.ref.child("notification").child(member.userID).child(notifacationID).setValue(notification.uploadNotification())
@@ -288,24 +293,6 @@ class AddEventVC: UITableViewController {
                 }
             }
         }
-    }
-    
-    
-    func uploadedMemberListData(_ ref:String, userName: String, eventName: String) -> Dictionary<String, Any> {
-        
-        return ["eventID": ref,
-                "message": "\"\(userName)\" 邀請您加入 「\(eventName)」",
-                "isRemoved": false,
-                "isRead": false]
-        
-    }
-    
-    func removedMemberListData(_ ref:String, userName: String, eventName: String) -> Dictionary<String, Any> {
-        
-        return ["eventID": ref,
-                "message": "\"\(userName)\" 將您從 「\(eventName)」 移出成員",
-                "isRemoved": true,
-                "isread": false]
     }
     
     
@@ -318,7 +305,7 @@ class AddEventVC: UITableViewController {
             guard let dict = dict else {
                 return
             }
-            self.user = User(userID: uid, email: dict["email"] as! String,
+            self.user = GUser(userID: uid, email: dict["email"] as! String,
                              name: dict["name"] as! String,
                              profileImageURL: dict["profileImageURL"] as! String)
             
@@ -461,7 +448,7 @@ extension AddEventVC: LoginVCDelegate {
 
 extension AddEventVC: MemberSearchVCDelegate {
     
-    func didUpdateMember(_ updatedMember: User) {
+    func didUpdateMember(_ updatedMember: GUser) {
         
         guard let currentUser = Auth.auth().currentUser else {
             return

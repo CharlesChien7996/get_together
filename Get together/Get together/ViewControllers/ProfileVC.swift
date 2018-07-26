@@ -8,7 +8,7 @@ class ProfileVC: UITableViewController {
     @IBOutlet weak var editBtn: UIBarButtonItem!
     @IBOutlet weak var userEmail: UILabel!
     @IBOutlet weak var userName: UILabel!
-    var user: User!
+    var user: GUser!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +34,7 @@ class ProfileVC: UITableViewController {
                 return
             }
             
-            self.user = User(userID: dict["userID"] as! String,
+            self.user = GUser(userID: dict["userID"] as! String,
                             email: dict["email"] as! String,
                             name: dict["name"] as! String,
                             profileImageURL: dict["profileImageURL"] as! String)

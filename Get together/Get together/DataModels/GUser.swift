@@ -1,14 +1,14 @@
 import Foundation
 import UIKit
 
-class User: Hashable {
+class GUser: Hashable {
     
     var hashValue : Int {
         get {
             return "\(self.userID)".hashValue
         }
     }
-    static func == (lhs: User, rhs: User) -> Bool {
+    static func == (lhs: GUser, rhs: GUser) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
     

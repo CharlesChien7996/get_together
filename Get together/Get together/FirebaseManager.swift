@@ -10,7 +10,6 @@ class FirebaseManager {
     }
     let databaseReference: DatabaseReference = Database.database().reference()
     var imageCache = NSCache<NSString, AnyObject>()
-
     
     func getData(_ reference:DatabaseQuery, type: DataEventType, completionHandler: @escaping (_ allObjects: [DataSnapshot], _ dict: Dictionary<String,Any>?) -> Void) {
         
@@ -123,4 +122,12 @@ class FirebaseManager {
         }
     }
     
+    
+    func getCurrentUser() -> User? {
+        
+        let currentUser = Auth.auth().currentUser
+
+        return currentUser
+        
+    }
 }

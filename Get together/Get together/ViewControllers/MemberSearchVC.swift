@@ -2,15 +2,15 @@ import UIKit
 import Firebase
 
 protocol MemberSearchVCDelegate: class {
-    func didUpdateMember(_ updatedMember: User)
+    func didUpdateMember(_ updatedMember: GUser)
 }
 
 class MemberSearchVC: UITableViewController {
     
     var memberSearchResultController: UISearchController!
     
-    var memberData: [User] = []
-    var matchingItems: [User] = []
+    var memberData: [GUser] = []
+    var matchingItems: [GUser] = []
     weak var delegate: MemberSearchVCDelegate?
     var imageCache = FirebaseManager.shared.imageCache
 
@@ -29,7 +29,7 @@ class MemberSearchVC: UITableViewController {
                 return
             }
             
-            let member = User(userID: dict["userID"] as! String,
+            let member = GUser(userID: dict["userID"] as! String,
                               email: dict["email"] as! String,
                               name: dict["name"] as! String,
                               profileImageURL: dict["profileImageURL"] as! String)

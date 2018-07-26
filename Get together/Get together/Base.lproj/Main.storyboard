@@ -767,8 +767,8 @@
                                                 <constraint firstAttribute="width" constant="80" id="thl-PE-iws"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="讀取中" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IF7-mc-RTV">
-                                            <rect key="frame" x="112" y="37" width="247" height="24"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IF7-mc-RTV">
+                                            <rect key="frame" x="112" y="49" width="247" height="0.0"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                             <color key="textColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <nil key="highlightedColor"/>
@@ -2604,7 +2604,7 @@
         <image name="user" width="29" height="29"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="1ca-CF-K02"/>
-        <segue reference="4iQ-iQ-qYP"/>
+        <segue reference="z67-S9-OrP"/>
+        <segue reference="NVV-KE-FoM"/>
     </inferredMetricsTieBreakers>
 </document>

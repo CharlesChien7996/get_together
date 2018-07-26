@@ -17,15 +17,15 @@ class EventContentVC: UITableViewController {
     @IBOutlet weak var eventDescription: UILabel!
     
     @IBOutlet weak var editBtn: UIBarButtonItem!
-    var user: User!
+    var user: GUser!
     var event: Event!
     var eventIDs: Set<String> = []
     let ref = Database.database().reference()
-    var memberData: [User] = []
+    var memberData: [GUser] = []
     var imageCache = FirebaseManager.shared.imageCache
     var region: MKCoordinateRegion!
     var annotation: MKPointAnnotation!
-
+    var eventListData: [EventList] = []
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
@@ -83,11 +83,11 @@ class EventContentVC: UITableViewController {
         }
     }
     
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.editBtn.title = ""
@@ -142,67 +142,68 @@ class EventContentVC: UITableViewController {
                 let dict = snap.value as! [String : Any]
                 
                 
-                let eventID = dict["eventID"] as! String
-                self.eventIDs.insert(eventID)
-            }
-
-        guard self.eventIDs.contains(self.event.eventID) || self.event.organiserID == uid else{
-            
-            let alert = UIAlertController(title: "提示", message: "是否同意加入\(self.event.title)?", preferredStyle: .alert)
-            let notificationID = self.ref.childByAutoId().key
-            
-            let agree = UIAlertAction(title: "同意", style: .default) { (action) in
+                let eventList = EventList(eventID: dict["eventID"] as! String,
+                                          isReply: dict["isReply"] as! Bool)
                 
-                guard let currentUser = Auth.auth().currentUser else{
+                
+                
+                guard eventList.isReply == true || self.event.organiserID == uid else{
+                    
+                    let alert = UIAlertController(title: "提示", message: "是否同意加入\(self.event.title)?", preferredStyle: .alert)
+                    let notificationID = self.ref.childByAutoId().key
+                    
+                    let agree = UIAlertAction(title: "同意", style: .default) { (action) in
+                        
+                        guard let currentUser = Auth.auth().currentUser else{
+                            return
+                        }
+                        
+                        self.ref.child("eventList").child(currentUser.uid).child(self.event.eventID).updateChildValues(["isReply" : true])
+                        let notification = Notifacation(notifacationID: notificationID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 同意加入 「\(self.event.title)」", remark: "" , isRead: false, isRemoved: false)
+                        self.ref.child("notification").child(self.event.organiserID).child(notificationID).setValue(notification.uploadNotification())
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                    
+                    let reject = UIAlertAction(title: "拒絕", style: .cancel) { (action) in
+                        
+                        let notificationRef = self.ref.child("notification")
+                        FirebaseManager.shared.getData(notificationRef.child(self.user.userID), type: .childAdded) { (allObjects, dict) in
+                            
+                            guard let dict = dict else {
+                                print("fail to get dict")
+                                return
+                            }
+                            
+                            let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
+                                                            eventID: dict["eventID"] as! String,
+                                                            message: dict["message"] as! String,
+                                                            remark: dict["remark"] as! String,
+                                                            isRead: dict["isRead"] as! Bool,
+                                                            isRemoved: dict["isRemoved"] as! Bool)
+                            
+                            if self.event.eventID == notification.eventID {
+                                notificationRef.child(self.user.userID).child(notification.notifacationID).updateChildValues(["isRemoved" : true])
+                                notificationRef.child(self.user.userID).child(notification.notifacationID).updateChildValues(["remark" : "已不在此聚成員內"])
+                            }
+                            
+                            let newNotification = Notifacation(notifacationID: notificationID,
+                                                               eventID: self.event.eventID,
+                                                               message: "\"\(self.user.name)\" 拒絕了 「\(self.event.title)」 的加入邀請", remark: "", isRead: false, isRemoved: false)
+                            
+                            notificationRef.child(self.event.organiserID).child(notificationID).setValue(newNotification.uploadNotification())
+                            
+                        }
+                        self.ref.child("memberList").child(self.event.eventID).child(self.user.userID).removeValue()
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                    
+                    alert.addAction(agree)
+                    alert.addAction(reject)
+                    self.present(alert, animated: true, completion: nil)
+                    
                     return
                 }
-                
-                self.ref.child("memberList").child(self.event.eventID).child(currentUser.uid).child("memberID").setValue(currentUser.uid)
-                self.ref.child("eventList").child(currentUser.uid).child(self.event.eventID).child("eventID").setValue(self.event.eventID)
-                let notification = Notifacation(notifacationID: notificationID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 同意加入 「\(self.event.title)」", remark: "" , isRead: false, isRemoved: false)
-                self.ref.child("notification").child(self.event.organiserID).child(notificationID).setValue(notification.uploadNotification())
-                self.navigationController?.popViewController(animated: true)
             }
-            
-            let reject = UIAlertAction(title: "拒絕", style: .cancel) { (action) in
-
-                let notificationRef = self.ref.child("notification")
-                FirebaseManager.shared.getData(notificationRef.child(self.user.userID), type: .childAdded) { (allObjects, dict) in
-                    
-                    guard let dict = dict else {
-                        print("fail to get dict")
-                        return
-                    }
-                    
-                    let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
-                                                    eventID: dict["eventID"] as! String,
-                                                    message: dict["message"] as! String,
-                                                    remark: dict["remark"] as! String,
-                                                    isRead: dict["isRead"] as! Bool,
-                                                    isRemoved: dict["isRemoved"] as! Bool)
-                    
-                    if self.event.eventID == notification.eventID {
-                        notificationRef.child(self.user.userID).child(notification.notifacationID).updateChildValues(["isRemoved" : true])
-                        notificationRef.child(self.user.userID).child(notification.notifacationID).updateChildValues(["remark" : "已不在此聚成員內"])
-                    }
-                    
-                    let newNotification = Notifacation(notifacationID: notificationID,
-                                                       eventID: self.event.eventID,
-                                                       message: "\"\(self.user.name)\" 拒絕了 「\(self.event.title)」 的加入邀請", remark: "", isRead: false, isRemoved: false)
-                    
-                    notificationRef.child(self.event.organiserID).child(notificationID).setValue(newNotification.uploadNotification())
-                    
-                }
-                
-                self.navigationController?.popViewController(animated: true)
-            }
-            
-            alert.addAction(agree)
-            alert.addAction(reject)
-            self.present(alert, animated: true, completion: nil)
-            
-            return
-        }
         }
     }
     
@@ -219,7 +220,7 @@ class EventContentVC: UITableViewController {
                 return
             }
             
-            let user = User(userID: dict["userID"] as! String,
+            let user = GUser(userID: dict["userID"] as! String,
                             email: dict["email"] as! String,
                             name: dict["name"] as! String,
                             profileImageURL: dict["profileImageURL"] as! String)
@@ -264,7 +265,7 @@ class EventContentVC: UITableViewController {
                 return
             }
             
-            self.user = User(userID: dict["userID"] as! String,
+            self.user = GUser(userID: dict["userID"] as! String,
                              email: dict["email"] as! String,
                              name: dict["name"] as! String,
                              profileImageURL: dict["profileImageURL"] as! String)
@@ -301,7 +302,7 @@ class EventContentVC: UITableViewController {
                         return
                     }
                     
-                    let user = User(userID: dict["userID"] as! String,
+                    let user = GUser(userID: dict["userID"] as! String,
                                     email: dict["email"] as! String,
                                     name: dict["name"] as! String,
                                     profileImageURL: dict["profileImageURL"] as! String)
@@ -325,7 +326,7 @@ class EventContentVC: UITableViewController {
         }
     }
     
-
+    
 }
 
 

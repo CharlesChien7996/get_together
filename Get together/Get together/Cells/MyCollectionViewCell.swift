@@ -6,6 +6,7 @@ class MemberCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var memberProfileImage: UIImageView!
+    @IBOutlet weak var statusLabel: UILabel!
     
     @IBOutlet weak var memberName: UILabel!
     

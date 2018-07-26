@@ -7,7 +7,7 @@ class NotificationVC: UITableViewController {
     var joinedEventData: [Event] = []
     var notificationData: [Notifacation] = []
     
-    var user: User!
+    var user: GUser!
     var eventIDs: Set<String> = []
     let ref = FirebaseManager.shared.databaseReference
     override func viewDidLoad() {
@@ -93,14 +93,6 @@ class NotificationVC: UITableViewController {
             cell.detailTextLabel?.text = notification.remark
         return cell
     }
-    
-    
-
-    
-    
-    
-    
-    
     
     /*
      // Override to support conditional editing of the table view.
