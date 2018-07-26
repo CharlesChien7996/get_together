@@ -24,6 +24,11 @@ class MemberSearchVC: UITableViewController {
         let ref = Database.database().reference().child("user")
         FirebaseManager.shared.getData(ref, type: .childAdded) { (snap, dict) in
             
+            guard let dict = dict else{
+                print("Fail to get dict")
+                return
+            }
+            
             let member = User(userID: dict["userID"] as! String,
                               email: dict["email"] as! String,
                               name: dict["name"] as! String,

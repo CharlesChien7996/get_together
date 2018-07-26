@@ -16,7 +16,6 @@ class MainVC: UITableViewController {
     var notificationData: [Notifacation] = []
     var unreads: [Notifacation] = []
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -29,9 +28,10 @@ class MainVC: UITableViewController {
         }
         self.setUpRefreshView()
         self.setUpActivityUndicatorView()
-        
+
+//        self.queryEventList()
+
         self.queryHostEventData()
-        self.queryEventList()
         self.queryNotification()
         self.tableView.rowHeight = 100
     }
@@ -69,6 +69,7 @@ class MainVC: UITableViewController {
     }
     
     func queryNotification() {
+        
         guard let uid = Auth.auth().currentUser?.uid else {
             print("Fail to get uid")
             return
@@ -77,13 +78,16 @@ class MainVC: UITableViewController {
         let notificationRef = self.ref.child("notification").child(uid)
         FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
             self.unreads.removeAll()
+            self.notificationData.removeAll()
             
             for snap in allObjects {
                 let dict = snap.value as! [String : Any]
                 
                 
-                let notification = Notifacation(eventID: dict["eventID"] as! String,
+                let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
+                                                eventID: dict["eventID"] as! String,
                                                 message: dict["message"] as! String,
+                                                remark: dict["remark"] as! String,
                                                 isRead: dict["isRead"] as! Bool,
                                                 isRemoved: dict["isRemoved"] as! Bool)
                 
@@ -101,32 +105,13 @@ class MainVC: UITableViewController {
                 let navi = self.tabBarController?.viewControllers?[1] as! UINavigationController
                 let notificationVC = navi.viewControllers.first as! NotificationVC
                 notificationVC.notificationData = self.notificationData
+                notificationVC.tableView.reloadData()
                 
             }
         }
     }
     
     
-    func queryEventList() {
-        
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("Fail to get uid")
-            return
-        }
-        
-        let ref = Database.database().reference().child("eventList").child(uid)
-        
-        FirebaseManager.shared.getDataBySingleEvent(ref, type: .childAdded) { (allObject, dict) in
-            
-            guard let dict = dict else {
-                print("Fail to get data")
-                return
-            }
-            
-            let eventID = dict["eventID"] as! String
-            self.eventIDs.insert(eventID)
-        }
-    }
     
     // Query data host by self from database.
     @objc func queryHostEventData() {
@@ -148,6 +133,11 @@ class MainVC: UITableViewController {
         }
         
         FirebaseManager.shared.getData(eventRef, type: .childAdded) { (allObject, dict)   in
+            
+            guard let dict = dict else{
+                print("Fail to get dict")
+                return
+            }
             
             let event = Event(eventID: dict["eventID"] as! String,
                               organiserID: dict["organiserID"] as! String,
@@ -193,6 +183,11 @@ class MainVC: UITableViewController {
         
         FirebaseManager.shared.getData(eventListRef, type: .childAdded) { (allObject, dict)   in
             
+            guard let dict = dict else{
+                print("Fail to get dict")
+                return
+            }
+            
             var events: [String] = []
             let eventID = dict["eventID"] as! String
             events.append(eventID)
@@ -200,6 +195,12 @@ class MainVC: UITableViewController {
             let ref = Database.database().reference().child("event").child(events[0])
             
             FirebaseManager.shared.getData(ref, type: .value) { (allObject, dict)  in
+                
+                guard let dict = dict else{
+                    print("Fail to get dict")
+                    return
+                }
+                
                 let event = Event(eventID: dict["eventID"] as! String,
                                   organiserID: dict["organiserID"] as! String,
                                   title: dict["title"] as! String,
@@ -346,10 +347,11 @@ class MainVC: UITableViewController {
         if segue.identifier == "eventContent" {
             
             let eventContentVC = segue.destination as! EventContentVC
+            
             guard let indexPath = self.tableView.indexPathForSelectedRow else{
                 return
             }
-            var selectedEvent: Event
+            var selectedEvent: Event!
             
             switch self.eventSegmentedControl.selectedSegmentIndex {
                 

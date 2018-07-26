@@ -15,29 +15,9 @@ class NotificationVC: UITableViewController {
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.queryEventData()
-        self.queryEventList()
+        
     }
     
-    func queryEventList() {
-        
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("Fail to get uid")
-            return
-        }
-        
-        let ref = Database.database().reference().child("eventList").child(uid)
-        
-        FirebaseManager.shared.getDataBySingleEvent(ref, type: .childAdded) { (allObject, dict) in
-            
-            guard let dict = dict else {
-                print("Fail to get data")
-                return
-            }
-            
-            let eventID = dict["eventID"] as! String
-            self.eventIDs.insert(eventID)
-        }
-    }
     
     // Query joined data from database.
     func queryEventData() {
@@ -84,8 +64,7 @@ class NotificationVC: UITableViewController {
                 task.resume()
                 
                 
-                self.joinedEventData.insert(event, at: 0)
-                self.tableView.reloadData()
+                self.joinedEventData.append(event)
             }
         }
         
@@ -110,39 +89,13 @@ class NotificationVC: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "noticeCell", for: indexPath)
         let notification = self.notificationData[indexPath.row]
-        DispatchQueue.main.async {
             cell.textLabel?.text = notification.message
-        }
+            cell.detailTextLabel?.text = notification.remark
         return cell
     }
     
     
-    // Convert image into thumbnail.
-    func thumbnail(_ image: UIImage?) -> UIImage? {
-        guard let image = image else {
-            print("Fail to get imageData")
-            return nil
-        }
-        
-        let thumbnailSize = CGSize(width: 80, height: 80)
-        let scale = UIScreen.main.scale
-        
-        UIGraphicsBeginImageContextWithOptions(thumbnailSize, false, scale)
-        
-        let widthRatio = thumbnailSize.width / image.size.width
-        let heightRatio = thumbnailSize.height / image.size.height
-        
-        let ratio = max(widthRatio, heightRatio)
-        
-        let imageSize = CGSize(width: image.size.width*ratio, height: image.size.height*ratio)
-        let cgRect = CGRect(x: -(imageSize.width - thumbnailSize.width) / 2, y: -(imageSize.height - thumbnailSize.height) / 2, width: imageSize.width, height: imageSize.height)
-        image.draw(in: cgRect)
-        
-        let smallImage = UIGraphicsGetImageFromCurrentImageContext()
-        
-        UIGraphicsEndImageContext()
-        return smallImage
-    }
+
     
     
     
@@ -186,12 +139,13 @@ class NotificationVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let notification = self.notificationData[indexPath.row]
+        
         guard let uid = Auth.auth().currentUser?.uid else {
             print("Fail to get uid")
             return
         }
-        self.ref.child("notification").child(uid).child(notification.eventID).updateChildValues(["isRead" : true])
-        
+        self.ref.child("notification").child(uid).child(notification.notifacationID).updateChildValues(["isRead" : true])
+
     }
     
     

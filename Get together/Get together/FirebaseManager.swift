@@ -12,12 +12,12 @@ class FirebaseManager {
     var imageCache = NSCache<NSString, AnyObject>()
 
     
-    func getData(_ reference:DatabaseQuery, type: DataEventType, completionHandler: @escaping (_ allObjects: [DataSnapshot], _ dict: Dictionary<String,Any>) -> Void) {
+    func getData(_ reference:DatabaseQuery, type: DataEventType, completionHandler: @escaping (_ allObjects: [DataSnapshot], _ dict: Dictionary<String,Any>?) -> Void) {
         
         
         reference.observe(type) { (snapshot: DataSnapshot) in
             
-            completionHandler(snapshot.children.allObjects as! [DataSnapshot], snapshot.value as! [String : Any])
+            completionHandler(snapshot.children.allObjects as! [DataSnapshot], snapshot.value as? [String : Any])
             
         }
     }

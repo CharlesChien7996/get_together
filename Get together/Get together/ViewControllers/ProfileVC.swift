@@ -29,6 +29,10 @@ class ProfileVC: UITableViewController {
 
         FirebaseManager.shared.getData(userRef, type: .value) { (allObject, dict) in
 
+            guard let dict = dict else{
+                print("Fail to get dict")
+                return
+            }
             
             self.user = User(userID: dict["userID"] as! String,
                             email: dict["email"] as! String,

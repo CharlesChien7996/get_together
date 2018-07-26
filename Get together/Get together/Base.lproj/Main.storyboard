@@ -993,7 +993,7 @@
             </objects>
             <point key="canvasLocation" x="5324" y="170"/>
         </scene>
-        <!--活動邀請-->
+        <!--通知-->
         <scene sceneID="MIG-uO-5q1">
             <objects>
                 <tableViewController id="ENE-ZH-QSV" customClass="NotificationVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
@@ -1002,7 +1002,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="noticeCell" textLabel="fuR-9y-VSj" rowHeight="100" style="IBUITableViewCellStyleDefault" id="Aup-Cl-TZO">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="noticeCell" textLabel="fuR-9y-VSj" detailTextLabel="JMh-tS-EGV" rowHeight="100" style="IBUITableViewCellStyleSubtitle" id="Aup-Cl-TZO">
                                 <rect key="frame" x="0.0" y="28" width="375" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Aup-Cl-TZO" id="Vn7-ux-yfS">
@@ -1010,9 +1010,16 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fuR-9y-VSj">
-                                            <rect key="frame" x="16" y="0.0" width="343" height="99.5"/>
+                                            <rect key="frame" x="16" y="30" width="33.5" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JMh-tS-EGV">
+                                            <rect key="frame" x="16" y="53.5" width="44" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -1028,7 +1035,7 @@
                             <outlet property="delegate" destination="ENE-ZH-QSV" id="cxG-6a-DOf"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="活動邀請" id="Hf0-eB-u8Y"/>
+                    <navigationItem key="navigationItem" title="通知" id="Hf0-eB-u8Y"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kUi-4D-m73" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1544,7 +1551,7 @@
         <!--Event ContentVC-->
         <scene sceneID="A8b-tS-bax">
             <objects>
-                <tableViewController id="qfP-Hk-2kc" customClass="EventContentVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="eventContentVC" id="qfP-Hk-2kc" customClass="EventContentVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="HyB-Yq-WDK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="1200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2597,7 +2604,7 @@
         <image name="user" width="29" height="29"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="z67-S9-OrP"/>
+        <segue reference="1ca-CF-K02"/>
         <segue reference="4iQ-iQ-qYP"/>
     </inferredMetricsTieBreakers>
 </document>

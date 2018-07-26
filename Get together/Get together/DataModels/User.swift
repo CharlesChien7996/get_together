@@ -1,7 +1,17 @@
 import Foundation
 import UIKit
 
-class User {
+class User: Hashable {
+    
+    var hashValue : Int {
+        get {
+            return "\(self.userID)".hashValue
+        }
+    }
+    static func == (lhs: User, rhs: User) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+    
     
     var userID: String
     var email: String

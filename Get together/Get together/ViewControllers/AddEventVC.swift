@@ -18,22 +18,24 @@ class AddEventVC: UITableViewController {
     @IBOutlet weak var eventDescription: UITextView!
     var isEdit = false
     
+    
     var members: [User] = []
     var isOn = false
     let ref = Database.database().reference()
     var user: User!
     var event: Event!
-    var memberStrings: Set<String> = []
+
     var region: MKCoordinateRegion!
     var annotation: MKPointAnnotation!
     var deletedMembers: [User] = []
-
+    var editedMembers: [User]!
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         if self.isEdit == true {
+            
             self.eventImageView.image = self.event.image
             self.eventTitle.text = self.event.title
             self.eventTitle.becomeFirstResponder()
@@ -225,7 +227,6 @@ class AddEventVC: UITableViewController {
     // Upload event's data to database.
     func uploadEventData() {
         
-        
         let imageName = UUID().uuidString
         let imageRef = Storage.storage().reference().child("eventImage").child(imageName)
         
@@ -242,18 +243,31 @@ class AddEventVC: UITableViewController {
         
         FirebaseManager.shared.uploadImage(imageRef, image: thumbnailImage) { (url) in
             
+            var removedMemberSet = Set(self.deletedMembers)
+            let memberSet = Set(self.members)
+            
+            let editedSet = memberSet.subtracting(removedMemberSet)
+            self.editedMembers = Array(editedSet)
+            removedMemberSet.subtract(memberSet)
+            self.deletedMembers = Array(removedMemberSet)
+            
+            
             if let user = Auth.auth().currentUser {
                 var eventID: String!
+                let notifacationID = self.ref.childByAutoId().key
+                
                 
                 if self.isEdit == true {
                     eventID = self.event.eventID
+                    
                     if !self.deletedMembers.isEmpty {
+                        
                         for member in self.deletedMembers {
                             self.ref.child("memberList").child(self.event.eventID).child(member.userID).removeValue()
                             self.ref.child("eventList").child(member.userID).child(self.event.eventID).removeValue()
-                            let notification = Notifacation(eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員", isRead: false, isRemoved: true)
+                            let notification = Notifacation(notifacationID: notifacationID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員", remark: "", isRead: false, isRemoved: true)
                             
-                            self.ref.child("notification").child(member.userID).child(eventID).setValue(notification.uploadNotification())
+                            self.ref.child("notification").child(member.userID).child(notifacationID).setValue(notification.uploadNotification())
                         }
                     }
                     
@@ -265,11 +279,11 @@ class AddEventVC: UITableViewController {
                 
                 self.ref.child("event").child(eventID).setValue(self.event.uploadedEventData())
                 
-                for member in self.members {
+                for member in self.editedMembers {
                     
                     // Upload data to notification.
-                    let notification = Notifacation(eventID: self.event.eventID, message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」", isRead: false, isRemoved: false)
-                    self.ref.child("notification").child(member.userID).child(eventID).setValue(notification.uploadNotification())
+                    let notification = Notifacation(notifacationID: notifacationID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」", remark: "", isRead: false, isRemoved: false)
+                    self.ref.child("notification").child(member.userID).child(notifacationID).setValue(notification.uploadNotification())
                     
                 }
             }
@@ -466,6 +480,15 @@ extension AddEventVC: MemberSearchVCDelegate {
         }
         
         self.members.insert(updatedMember, at: 0)
+//        if self.deletedMembers.count > 0 {
+//        for i in 0...self.deletedMembers.count {
+//            if self.deletedMembers[i].userID == updatedMember.userID {
+//                self.deletedMembers.remove(at: i)
+//                break
+//            }
+//        }
+//        }
+
         self.collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
         
     }
