@@ -10,64 +10,179 @@ class NotificationVC: UITableViewController {
     var user: GUser!
     var eventIDs: Set<String> = []
     let ref = FirebaseManager.shared.databaseReference
+    var spinner: UIActivityIndicatorView!
+    var refresher: UIRefreshControl!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        self.queryEventData()
+        self.setUpRefreshView()
+        self.setUpActivityUndicatorView()
+        self.queryNotification()
+    }
+    
+    @objc func queryNotification() {
         
+        self.spinner.startAnimating()
+        if self.notificationData.count == 0 {
+            
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
+                self.spinner.stopAnimating()
+            }
+        }
+        self.tableView.separatorStyle = .none
+
+        
+        guard let currentUser = Auth.auth().currentUser else {
+            print("Fail to get current user")
+            return
+        }
+        
+        let notificationRef = FirebaseManager.shared.databaseReference.child("notification").child(currentUser.uid)
+        
+        FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
+            
+            self.notificationData.removeAll()
+            
+            for snap in allObjects {
+                
+                let dict = snap.value as! [String : Any]
+                let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
+                                                eventID: dict["eventID"] as! String,
+                                                message: dict["message"] as! String,
+                                                remark: dict["remark"] as! String,
+                                                isRead: dict["isRead"] as! Bool,
+                                                isNew: dict["isNew"] as! Bool,
+                                                isRemoved: dict["isRemoved"] as! Bool)
+                
+                self.notificationData.insert(notification, at: 0)
+
+            }
+            for event in self.notificationData {
+                let ref = Database.database().reference().child("event").child(event.eventID)
+                ref.observe(.value) { (snapshot) in
+                    
+                    guard let dict = snapshot.value as? [String : Any] else {
+                        print("Fail to get data")
+                        return
+                    }
+                    let event = Event(eventID: dict["eventID"] as! String,
+                                      organiserID: dict["organiserID"] as! String,
+                                      title: dict["title"] as! String,
+                                      date: dict["date"] as! String,
+                                      location: dict["location"] as! String,
+                                      description: dict["description"] as! String,
+                                      eventImageURL: dict["eventImageURL"] as! String)
+                    
+                    let urlString = event.eventImageURL
+                    
+                    
+                    guard let imageURL = URL(string: urlString) else {
+                        print("Fail to get imageURL")
+                        return
+                    }
+                    
+                    // Download image from firebase storage.
+                    let task = URLSession.shared.dataTask(with: imageURL) { (data, response, error) in
+                        if let error = error {
+                            print("Download image task fail: \(error.localizedDescription)")
+                            return
+                        }
+                        
+                        guard let imageData = data else {
+                            print("Fail to get imageData")
+                            return
+                        }
+                        
+                        let image = UIImage(data: imageData)
+                        event.image = image!
+                    }
+                    task.resume()
+                    
+                    self.joinedEventData.append(event)
+                    self.spinner.stopAnimating()
+                    self.tableView.separatorStyle = .singleLine
+                    self.refresher.endRefreshing()
+                    self.tableView.reloadData()
+
+                }
+            }
+        }
+    }
+    
+//    // Query joined data from database.
+//    func queryEventData() {
+//
+//        for event in self.notificationData {
+//            let ref = Database.database().reference().child("event").child(event.eventID)
+//            ref.observe(.value) { (snapshot) in
+//
+//                guard let dict = snapshot.value as? [String : Any] else {
+//                    print("Fail to get data")
+//                    return
+//                }
+//                let event = Event(eventID: dict["eventID"] as! String,
+//                                  organiserID: dict["organiserID"] as! String,
+//                                  title: dict["title"] as! String,
+//                                  date: dict["date"] as! String,
+//                                  location: dict["location"] as! String,
+//                                  description: dict["description"] as! String,
+//                                  eventImageURL: dict["eventImageURL"] as! String)
+//
+//                let urlString = event.eventImageURL
+//
+//
+//                guard let imageURL = URL(string: urlString) else {
+//                    print("Fail to get imageURL")
+//                    return
+//                }
+//
+//                // Download image from firebase storage.
+//                let task = URLSession.shared.dataTask(with: imageURL) { (data, response, error) in
+//                    if let error = error {
+//                        print("Download image task fail: \(error.localizedDescription)")
+//                        return
+//                    }
+//
+//                    guard let imageData = data else {
+//                        print("Fail to get imageData")
+//                        return
+//                    }
+//
+//                    let image = UIImage(data: imageData)
+//                    event.image = image!
+//                }
+//                task.resume()
+//
+//                self.joinedEventData.append(event)
+//                self.tableView.reloadData()
+//            }
+//        }
+//
+//    }
+    
+    
+    // Set up refresh view.
+    func setUpRefreshView() {
+        
+        self.refresher = UIRefreshControl()
+        self.refresher.tintColor = UIColor.darkGray
+        self.refresher.addTarget(self, action: #selector(queryNotification), for: .valueChanged)
+        self.refresher.addTarget(self, action: #selector(queryNotification), for: .valueChanged)
+        
+        self.tableView.addSubview(self.refresher)
     }
     
     
-    // Query joined data from database.
-    func queryEventData() {
+    // Set up UIActivityUndicatorView.
+    func setUpActivityUndicatorView() {
         
-        for event in self.notificationData {
-            let ref = Database.database().reference().child("event").child(event.eventID)
-            ref.observe(.value) { (snapshot) in
-                
-                guard let dict = snapshot.value as? [String : Any] else {
-                    print("Fail to get data")
-                    return
-                }
-                let event = Event(eventID: dict["eventID"] as! String,
-                                  organiserID: dict["organiserID"] as! String,
-                                  title: dict["title"] as! String,
-                                  date: dict["date"] as! String,
-                                  location: dict["location"] as! String,
-                                  description: dict["description"] as! String,
-                                  eventImageURL: dict["eventImageURL"] as! String)
-                
-                let urlString = event.eventImageURL
-                
-                
-                guard let imageURL = URL(string: urlString) else {
-                    print("Fail to get imageURL")
-                    return
-                }
-                
-                // Download image from firebase storage.
-                let task = URLSession.shared.dataTask(with: imageURL) { (data, response, error) in
-                    if let error = error {
-                        print("Download image task fail: \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    guard let imageData = data else {
-                        print("Fail to get imageData")
-                        return
-                    }
-                    
-                    let image = UIImage(data: imageData)
-                    event.image = image!
-                }
-                task.resume()
-                
-                
-                self.joinedEventData.append(event)
-            }
-        }
-        
+        self.spinner = UIActivityIndicatorView()
+        self.spinner.activityIndicatorViewStyle = .gray
+        self.spinner.center = self.view.center
+        self.spinner.hidesWhenStopped = true
+        self.view.addSubview(self.spinner)
     }
     
     
@@ -94,40 +209,6 @@ class NotificationVC: UITableViewController {
         return cell
     }
     
-    /*
-     // Override to support conditional editing of the table view.
-     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the specified item to be editable.
-     return true
-     }
-     */
-    
-    /*
-     // Override to support editing the table view.
-     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-     if editingStyle == .delete {
-     // Delete the row from the data source
-     tableView.deleteRows(at: [indexPath], with: .fade)
-     } else if editingStyle == .insert {
-     // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-     }
-     }
-     */
-    
-    /*
-     // Override to support rearranging the table view.
-     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-     
-     }
-     */
-    
-    /*
-     // Override to support conditional rearranging of the table view.
-     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the item to be re-orderable.
-     return true
-     }
-     */
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let notification = self.notificationData[indexPath.row]
@@ -157,7 +238,6 @@ class NotificationVC: UITableViewController {
             let selectedEvent = self.joinedEventData[indexPath.row]
             
             eventContentVC.event = selectedEvent
-            eventContentVC.eventIDs = self.eventIDs
             
         }
     }

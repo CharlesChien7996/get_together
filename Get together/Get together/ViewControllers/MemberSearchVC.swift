@@ -2,13 +2,13 @@ import UIKit
 import Firebase
 
 protocol MemberSearchVCDelegate: class {
+    
     func didUpdateMember(_ updatedMember: GUser)
 }
 
 class MemberSearchVC: UITableViewController {
     
     var memberSearchResultController: UISearchController!
-    
     var memberData: [GUser] = []
     var matchingItems: [GUser] = []
     weak var delegate: MemberSearchVCDelegate?
@@ -19,10 +19,10 @@ class MemberSearchVC: UITableViewController {
         super.viewDidLoad()
         
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "取消"
-
         
-        let ref = Database.database().reference().child("user")
-        FirebaseManager.shared.getData(ref, type: .childAdded) { (snap, dict) in
+        let ref = FirebaseManager.shared.databaseReference.child("user")
+        
+        FirebaseManager.shared.getData(ref, type: .childAdded) { (allObjects, dict) in
             
             guard let dict = dict else{
                 print("Fail to get dict")
@@ -53,11 +53,13 @@ class MemberSearchVC: UITableViewController {
         self.navigationItem.titleView = memberSearchBar
     }
     
+    
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
     }
+    
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -103,7 +105,6 @@ class MemberSearchVC: UITableViewController {
         self.delegate?.didUpdateMember(selectedMember)
         
         self.navigationController?.popViewController(animated: true)
-        
     }
     
     
@@ -117,11 +118,14 @@ class MemberSearchVC: UITableViewController {
     
 }
 
+
+// MARK: - UISearchResultsUpdating
 extension MemberSearchVC : UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         
         guard let searchText = searchController.searchBar.text else{
+            
             return
         }
         

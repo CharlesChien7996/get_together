@@ -123,11 +123,5 @@ class FirebaseManager {
     }
     
     
-    func getCurrentUser() -> User? {
-        
-        let currentUser = Auth.auth().currentUser
 
-        return currentUser
-        
-    }
 }

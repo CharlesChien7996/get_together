@@ -118,12 +118,11 @@ class RegisterVC: UIViewController {
     
     func uploadUserData() {
         
-        guard let currentUser = FirebaseManager.shared.getCurrentUser() else {
+        guard let currentUser = Auth.auth().currentUser else {
             print("Fail to get current user")
             return
         }
         
-        print(currentUser)
         let imageName = currentUser.uid
         let imageRef = Storage.storage().reference().child("userProfileImage").child(imageName)
         

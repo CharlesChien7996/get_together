@@ -15,25 +15,6 @@ class LocationVC: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     var resultSearchController: UISearchController!
     
-//    override func viewWillDisappear(_ animated: Bool) {
-//
-//        super.viewWillDisappear(animated)
-//        switch self.mapView.mapType {
-//        case .hybrid:
-//            self.mapView.mapType = .standard
-//
-//        case .standard:
-//            self.mapView.mapType = .hybrid
-//
-//        default:
-//            break
-//        }
-//        self.mapView.showsUserLocation = false
-//        self.mapView.delegate = nil
-//        self.mapView.removeFromSuperview()
-//        self.mapView = nil
-//    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -94,6 +75,7 @@ class LocationVC: UIViewController {
     
     
     @IBAction func confirmPressed(_ sender: Any) {
+        
         self.delegate?.getCoordinate(self.selectedPin.coordinate)
         self.navigationController?.popViewController(animated: true)
     }
@@ -131,5 +113,4 @@ extension LocationVC: HandleMapSearch {
         let region = MKCoordinateRegionMake(placemark.coordinate, span)
         mapView.setRegion(region, animated: true)
     }
-    
 }

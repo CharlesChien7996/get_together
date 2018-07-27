@@ -20,10 +20,9 @@ class MainVC: UITableViewController {
         super.viewDidLoad()
     
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-        self.tableView.rowHeight = 100
 
         // Show background view if current user is nil.
-        guard FirebaseManager.shared.getCurrentUser() != nil else {
+        guard Auth.auth().currentUser != nil else {
             self.tableView.backgroundView = backgroundViewWithoutLogin
             self.tableView.separatorStyle = .none
             return
@@ -35,6 +34,12 @@ class MainVC: UITableViewController {
         self.queryHostEventData()
         self.queryNotification()
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//
+//        self.hostEventData.removeAll()
+//        self.joinedEventData.removeAll()
+//    }
     
     
     // Background view's login button be pressed.
@@ -66,8 +71,9 @@ class MainVC: UITableViewController {
     }
     
     func queryNotification() {
-        
-        guard let currentUser = FirebaseManager.shared.getCurrentUser() else {
+        self.notificationData.removeAll()
+
+        guard let currentUser = Auth.auth().currentUser else {
             print("Fail to get current user")
             return
         }
@@ -77,21 +83,18 @@ class MainVC: UITableViewController {
         FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
             
             self.unreads.removeAll()
-            self.notificationData.removeAll()
-            let navi = self.tabBarController?.viewControllers?[1] as! UINavigationController
-            let notificationVC = navi.viewControllers.first as! NotificationVC
             
             for snap in allObjects {
                 
                 let dict = snap.value as! [String : Any]
+                
                 let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
                                                 eventID: dict["eventID"] as! String,
                                                 message: dict["message"] as! String,
                                                 remark: dict["remark"] as! String,
                                                 isRead: dict["isRead"] as! Bool,
+                                                isNew: dict["isNew"] as! Bool,
                                                 isRemoved: dict["isRemoved"] as! Bool)
-                
-                self.notificationData.insert(notification, at: 0)
                 
                 if notification.isRead == false {
                     
@@ -104,18 +107,15 @@ class MainVC: UITableViewController {
                 if item?.badgeValue == "0" {
                     item?.badgeValue = nil
                 }
-                
-                notificationVC.notificationData = self.notificationData
             }
-            
-            notificationVC.tableView.reloadData()
         }
     }
     
     
     // Query data host by self from database.
     @objc func queryHostEventData() {
-        
+        self.hostEventData.removeAll()
+
         self.spinner.startAnimating()
         if self.hostEventData.count == 0{
             
@@ -123,20 +123,19 @@ class MainVC: UITableViewController {
                 self.spinner.stopAnimating()
             }
         }
-        
+
         self.tableView.separatorStyle = .none
         
         let eventRef = FirebaseManager.shared.databaseReference.child("event").queryOrdered(byChild: "date")
         
-        guard let currentUser = FirebaseManager.shared.getCurrentUser() else {
+        guard let currentUser = Auth.auth().currentUser else {
             
             print("Fail to get current user")
             return
         }
         
         FirebaseManager.shared.getData(eventRef, type: .childAdded) { (allObject, dict)   in
-            
-            self.hostEventData.removeAll()
+
             
             guard let dict = dict else{
                 
@@ -176,9 +175,10 @@ class MainVC: UITableViewController {
             }
         }
         
+        self.joinedEventData.removeAll()
         self.tableView.separatorStyle = .none
         
-        guard let currentUser = FirebaseManager.shared.getCurrentUser() else {
+        guard let currentUser = Auth.auth().currentUser else {
             
             print("Fail to get current user")
             return
@@ -188,7 +188,6 @@ class MainVC: UITableViewController {
         
         FirebaseManager.shared.getData(eventListRef, type: .childAdded) { (allObject, dict)   in
             
-            self.joinedEventData.removeAll()
 
             guard let dict = dict else{
                 
@@ -333,7 +332,7 @@ class MainVC: UITableViewController {
             
         case 1:
             // Show background view if current user is nil.
-            guard FirebaseManager.shared.getCurrentUser() != nil else {
+            guard Auth.auth().currentUser != nil else {
                 
                 self.tableView.backgroundView = backgroundViewWithoutLogin
                 self.tableView.separatorStyle = .none
@@ -383,7 +382,7 @@ class MainVC: UITableViewController {
     // Check current user.
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         
-        guard FirebaseManager.shared.getCurrentUser() != nil else {
+        guard Auth.auth().currentUser != nil else {
             
             let alert = UIAlertController(title: "尚未登入", message: "登入來開始你的第一個聚吧！", preferredStyle: .alert)
             

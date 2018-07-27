@@ -85,7 +85,7 @@ class LoginVC: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
         
-        guard FirebaseManager.shared.getCurrentUser() != nil else {
+        guard Auth.auth().currentUser != nil else {
             print("Fail to get current user")
             return
         }
