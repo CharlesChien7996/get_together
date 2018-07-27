@@ -17,7 +17,7 @@ class ProfileVC: UITableViewController {
 
         
         guard let currentUser = Auth.auth().currentUser else {
-            self.logoutBtn.isHidden = true
+            self.logoutBtn.setTitle("登入", for: .normal)
             self.editBtn.title = ""
             self.editBtn.isEnabled = false
             self.userEmail.text = "尚未登入"
@@ -51,6 +51,14 @@ class ProfileVC: UITableViewController {
     
     
     @IBAction func logoutPressed(_ sender: Any) {
+        
+        guard Auth.auth().currentUser != nil else {
+            let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginVC
+            self.present(loginVC, animated: true, completion: nil)
+            return
+        }
+
+        
         do {
             try Auth.auth().signOut()
             let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginVC

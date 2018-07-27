@@ -118,7 +118,7 @@ class EventContentVC: UITableViewController {
             }
             
             annotation.coordinate = location.coordinate
-            annotation.title = self.event.location
+            annotation.title = placemarks[0].locality
             self.annotation = annotation
             self.eventLocationMap.addAnnotation(annotation)
             let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)

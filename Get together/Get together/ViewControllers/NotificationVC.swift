@@ -4,6 +4,7 @@ import Firebase
 
 class NotificationVC: UITableViewController {
     
+    @IBOutlet var backgroundViewWithoutLogin: UIView!
     var joinedEventData: [Event] = []
     var notificationData: [Notifacation] = []
     
@@ -17,6 +18,14 @@ class NotificationVC: UITableViewController {
         super.viewDidLoad()
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        
+        // Show background view if current user is nil.
+        guard Auth.auth().currentUser != nil else {
+            self.tableView.backgroundView = backgroundViewWithoutLogin
+            self.tableView.separatorStyle = .none
+            return
+        }
+        
         self.setUpRefreshView()
         self.setUpActivityUndicatorView()
         self.queryNotification()
@@ -203,6 +212,11 @@ class NotificationVC: UITableViewController {
     }
     
     
+    @IBAction func loginPressed(_ sender: Any) {
+        
+        let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginVC
+        self.present(loginVC, animated: true, completion: nil)
+    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -210,7 +224,8 @@ class NotificationVC: UITableViewController {
         let notification = self.notificationData[indexPath.row]
         
         if !notification.isRead {
-            cell.backgroundColor = UIColor.magenta
+            cell.backgroundColor = UIColor.cyan.withAlphaComponent(0.1)
+            cell.textLabel?.backgroundColor = UIColor.clear
         }else {
             cell.backgroundColor = UIColor.white
         }

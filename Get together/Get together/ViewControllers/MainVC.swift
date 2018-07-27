@@ -15,6 +15,7 @@ class MainVC: UITableViewController {
     var eventIDs: Set<String> = []
     var notificationData: [Notifacation] = []
     var unreads: [Notifacation] = []
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +48,7 @@ class MainVC: UITableViewController {
         let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginVC
         self.present(loginVC, animated: true, completion: nil)
     }
+    
     
     // Set up refresh view.
     func setUpRefreshView() {
@@ -330,6 +332,12 @@ class MainVC: UITableViewController {
         switch self.eventSegmentedControl.selectedSegmentIndex {
             
         case 0:
+            guard Auth.auth().currentUser != nil else {
+                
+                self.tableView.backgroundView = backgroundViewWithoutLogin
+                self.tableView.separatorStyle = .none
+                return
+            }
             self.queryHostEventData()
             
         case 1:

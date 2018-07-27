@@ -170,7 +170,7 @@ class AddEventVC: UITableViewController {
             
         }else if self.isOn == true {
             
-            self.selectDateBtn.setImage(UIImage(named: "down"), for: .normal)
+            self.selectDateBtn.setImage(UIImage(named: "color_down"), for: .normal)
 
             self.isOn = false
             self.eventDatePicker.isHidden = true
