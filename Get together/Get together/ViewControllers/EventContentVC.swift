@@ -149,7 +149,7 @@ class EventContentVC: UITableViewController {
                 let eventList = EventList(eventID: dict["eventID"] as! String,
                                           isReply: dict["isReply"] as! Bool)
                 
-                if (eventList.eventID == self.event.eventID && eventList.isReply == false) || self.event.organiserID == currentUser.uid {
+                if (eventList.eventID == self.event.eventID && eventList.isReply == false) {
                     
                     let alert = UIAlertController(title: "提示", message: "是否同意加入\(self.event.title)?", preferredStyle: .alert)
                     

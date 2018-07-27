@@ -60,6 +60,8 @@ class NotificationVC: UITableViewController {
                 self.notificationData.insert(notification, at: 0)
 
             }
+            self.joinedEventData.removeAll()
+
             for event in self.notificationData {
                 let ref = Database.database().reference().child("event").child(event.eventID)
                 ref.observe(.value) { (snapshot) in
@@ -102,13 +104,14 @@ class NotificationVC: UITableViewController {
                     task.resume()
                     
                     self.joinedEventData.append(event)
-                    self.spinner.stopAnimating()
-                    self.tableView.separatorStyle = .singleLine
-                    self.refresher.endRefreshing()
-                    self.tableView.reloadData()
-
+                        self.spinner.stopAnimating()
+                        self.tableView.separatorStyle = .singleLine
+                        self.tableView.reloadData()
                 }
+
             }
+            self.refresher.endRefreshing()
+
         }
     }
     
@@ -205,6 +208,13 @@ class NotificationVC: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "noticeCell", for: indexPath)
         let notification = self.notificationData[indexPath.row]
+        
+        if !notification.isRead {
+            cell.backgroundColor = UIColor.magenta
+        }else {
+            cell.backgroundColor = UIColor.white
+        }
+        
             cell.textLabel?.text = notification.message
             cell.detailTextLabel?.text = notification.remark
         return cell

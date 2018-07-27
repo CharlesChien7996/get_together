@@ -5,7 +5,7 @@ class MainVC: UITableViewController {
     
     @IBOutlet weak var eventSegmentedControl: UISegmentedControl!
     @IBOutlet var backgroundViewWithoutLogin: UIView!
-
+    
     var spinner: UIActivityIndicatorView!
     var refresher: UIRefreshControl!
     
@@ -18,9 +18,8 @@ class MainVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
-
+        
         // Show background view if current user is nil.
         guard Auth.auth().currentUser != nil else {
             self.tableView.backgroundView = backgroundViewWithoutLogin
@@ -30,13 +29,13 @@ class MainVC: UITableViewController {
         
         self.setUpRefreshView()
         self.setUpActivityUndicatorView()
-
+        
         self.queryHostEventData()
         self.queryNotification()
     }
     
 //    override func viewWillAppear(_ animated: Bool) {
-//
+//        
 //        self.hostEventData.removeAll()
 //        self.joinedEventData.removeAll()
 //    }
@@ -72,7 +71,7 @@ class MainVC: UITableViewController {
     
     func queryNotification() {
         self.notificationData.removeAll()
-
+        
         guard let currentUser = Auth.auth().currentUser else {
             print("Fail to get current user")
             return
@@ -96,7 +95,7 @@ class MainVC: UITableViewController {
                                                 isNew: dict["isNew"] as! Bool,
                                                 isRemoved: dict["isRemoved"] as! Bool)
                 
-                if notification.isRead == false {
+                if !notification.isRead {
                     
                     self.unreads.insert(notification, at: 0)
                 }
@@ -114,8 +113,7 @@ class MainVC: UITableViewController {
     
     // Query data host by self from database.
     @objc func queryHostEventData() {
-        self.hostEventData.removeAll()
-
+        
         self.spinner.startAnimating()
         if self.hostEventData.count == 0{
             
@@ -123,7 +121,7 @@ class MainVC: UITableViewController {
                 self.spinner.stopAnimating()
             }
         }
-
+        
         self.tableView.separatorStyle = .none
         
         let eventRef = FirebaseManager.shared.databaseReference.child("event").queryOrdered(byChild: "date")
@@ -134,30 +132,34 @@ class MainVC: UITableViewController {
             return
         }
         
-        FirebaseManager.shared.getData(eventRef, type: .childAdded) { (allObject, dict)   in
+        FirebaseManager.shared.getData(eventRef, type: .value) { (allObjects, dict)   in
+            
+            
+            self.hostEventData.removeAll()
 
-            
-            guard let dict = dict else{
+            for snap in allObjects {
                 
-                print("Fail to get dict")
-                return
-            }
-            
-            let event = Event(eventID: dict["eventID"] as! String,
-                              organiserID: dict["organiserID"] as! String,
-                              title: dict["title"] as! String,
-                              date: dict["date"] as! String,
-                              location: dict["location"] as! String,
-                              description: dict["description"] as! String,
-                              eventImageURL: dict["eventImageURL"] as! String)
-            
-            
-            if currentUser.uid == event.organiserID {
-                self.hostEventData.insert(event, at: 0)
-                self.spinner.stopAnimating()
-                self.tableView.separatorStyle = .singleLine
-                self.refresher.endRefreshing()
-                self.tableView.reloadData()
+                let dict = snap.value as! [String: Any]
+                
+                
+                
+                let event = Event(eventID: dict["eventID"] as! String,
+                                  organiserID: dict["organiserID"] as! String,
+                                  title: dict["title"] as! String,
+                                  date: dict["date"] as! String,
+                                  location: dict["location"] as! String,
+                                  description: dict["description"] as! String,
+                                  eventImageURL: dict["eventImageURL"] as! String)
+                
+                
+                if currentUser.uid == event.organiserID {
+                    self.hostEventData.insert(event, at: 0)
+                    self.spinner.stopAnimating()
+                    self.tableView.separatorStyle = .singleLine
+                    self.refresher.endRefreshing()
+                    self.tableView.reloadData()
+                    
+                }
             }
         }
         
@@ -188,7 +190,7 @@ class MainVC: UITableViewController {
         
         FirebaseManager.shared.getData(eventListRef, type: .childAdded) { (allObject, dict)   in
             
-
+            
             guard let dict = dict else{
                 
                 print("Fail to get dict")
@@ -223,10 +225,10 @@ class MainVC: UITableViewController {
                                   eventImageURL: dict["eventImageURL"] as! String)
                 
                 self.joinedEventData.insert(event, at: 0)
-                self.spinner.stopAnimating()
-                self.tableView.separatorStyle = .singleLine
-                self.tableView.reloadData()
-                self.refresher.endRefreshing()
+                    self.spinner.stopAnimating()
+                    self.tableView.separatorStyle = .singleLine
+                    self.tableView.reloadData()
+                    self.refresher.endRefreshing()
             }
         }
     }

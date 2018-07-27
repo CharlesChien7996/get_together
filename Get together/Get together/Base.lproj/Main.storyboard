@@ -1199,7 +1199,7 @@
                                                     <color key="tintColor" red="0.70064729439940621" green="1" blue="0.40941331638568723" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     <state key="normal" image="add"/>
                                                     <connections>
-                                                        <segue destination="XHi-dI-PmD" kind="show" identifier="memberSearch" id="L1I-tH-ThX"/>
+                                                        <segue destination="XHi-dI-PmD" kind="show" identifier="memberSearch" animates="NO" id="L1I-tH-ThX"/>
                                                     </connections>
                                                 </button>
                                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PL1-Gb-G6f">
@@ -1321,7 +1321,7 @@
                                                         <constraint firstAttribute="height" constant="30" id="zAd-j5-IoZ"/>
                                                     </constraints>
                                                     <color key="tintColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <state key="normal" image="down">
+                                                    <state key="normal" image="color_down">
                                                         <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <userDefinedRuntimeAttributes>
@@ -1421,17 +1421,17 @@
                                         <rect key="frame" x="0.0" y="1146" width="375" height="268"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="LsW-j7-LbP" id="KFR-4z-Ccp">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="268"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="267.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="描述" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mhb-ww-Fdw">
-                                                    <rect key="frame" x="16" y="16" width="35" height="20.5"/>
+                                                    <rect key="frame" x="16" y="16" width="35" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="為你的活動添加一點描述吧！" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ePg-dd-1x0">
-                                                    <rect key="frame" x="16" y="52.5" width="343" height="214.5"/>
+                                                    <rect key="frame" x="16" y="52" width="343" height="215.5"/>
                                                     <color key="backgroundColor" name="selectedMenuItemTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1509,7 +1509,7 @@
         <!--搜尋成員-->
         <scene sceneID="gcZ-gj-sD4">
             <objects>
-                <tableViewController storyboardIdentifier="memberSearchTable" id="XHi-dI-PmD" customClass="MemberSearchVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="memberSearchTable" clearsSelectionOnViewWillAppear="NO" id="XHi-dI-PmD" customClass="MemberSearchVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="JGZ-sx-XBZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2606,8 +2606,8 @@
     <resources>
         <image name="add" width="29" height="29"/>
         <image name="check" width="29" height="29"/>
+        <image name="color_down" width="20" height="20"/>
         <image name="default" width="640" height="640"/>
-        <image name="down" width="29" height="29"/>
         <image name="envelope" width="29" height="29"/>
         <image name="envelope2" width="29" height="29"/>
         <image name="event" width="29" height="29"/>

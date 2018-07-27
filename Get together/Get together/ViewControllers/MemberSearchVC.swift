@@ -51,6 +51,8 @@ class MemberSearchVC: UITableViewController {
         self.memberSearchResultController?.dimsBackgroundDuringPresentation = false
         memberSearchResultController?.hidesNavigationBarDuringPresentation = false
         self.navigationItem.titleView = memberSearchBar
+        definesPresentationContext = true
+
     }
     
     
@@ -74,7 +76,7 @@ class MemberSearchVC: UITableViewController {
         
         cell.textLabel?.text = selectedMember.name
         cell.detailTextLabel?.text = selectedMember.email
-        
+        cell.imageView?.image = #imageLiteral(resourceName: "profileImage")
         if let image = self.imageCache.object(forKey: selectedMember.profileImageURL as NSString) as? UIImage {
             
             cell.imageView?.image = image
@@ -125,12 +127,12 @@ extension MemberSearchVC : UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         
         guard let searchText = searchController.searchBar.text else{
-            
             return
         }
         
         self.filterMemberData(for: searchText)
         self.tableView.reloadData()
+
     }
 }
 
