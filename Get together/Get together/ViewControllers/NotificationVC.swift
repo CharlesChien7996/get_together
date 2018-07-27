@@ -48,6 +48,7 @@ class NotificationVC: UITableViewController {
             for snap in allObjects {
                 
                 let dict = snap.value as! [String : Any]
+                
                 let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
                                                 eventID: dict["eventID"] as! String,
                                                 message: dict["message"] as! String,

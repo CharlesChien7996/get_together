@@ -17,6 +17,7 @@ class AddEventVC: UITableViewController {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var eventDescription: UITextView!
     
+    @IBOutlet weak var selectDateBtn: UIButton!
     
     var isOn = false
     var isEdit = false
@@ -114,7 +115,7 @@ class AddEventVC: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-            
+        
             let height = self.heightHandle(indexPath: indexPath)
             
             return height
@@ -163,11 +164,14 @@ class AddEventVC: UITableViewController {
         
         if self.isOn == false {
             
+            self.selectDateBtn.setImage(UIImage(named: "up"), for: .normal)
             self.isOn = true
             self.eventDatePicker.isHidden = false
             
         }else if self.isOn == true {
             
+            self.selectDateBtn.setImage(UIImage(named: "down"), for: .normal)
+
             self.isOn = false
             self.eventDatePicker.isHidden = true
         }
