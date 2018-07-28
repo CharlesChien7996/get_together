@@ -224,7 +224,7 @@ class NotificationVC: UITableViewController {
         let notification = self.notificationData[indexPath.row]
         
         if !notification.isRead {
-            cell.backgroundColor = UIColor.cyan.withAlphaComponent(0.1)
+            cell.backgroundColor = UIColor.orange.withAlphaComponent(0.1)
             cell.textLabel?.backgroundColor = UIColor.clear
         }else {
             cell.backgroundColor = UIColor.white

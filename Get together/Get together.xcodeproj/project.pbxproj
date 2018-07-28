@@ -31,6 +31,7 @@
 		D699258521088C0700B9D895 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D699258421088C0700B9D895 /* Notification.swift */; };
 		D6D36F28210077C9001CE892 /* MemberSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D36F27210077C9001CE892 /* MemberSearchVC.swift */; };
 		D6E1B49D210623A700823F86 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6E1B49C210623A700823F86 /* GoogleService-Info.plist */; };
+		D6F28C58210C13D7005DE460 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F28C57210C13D7005DE460 /* MainViewController.swift */; };
 		D6F3742920FCAD6C000C6D2E /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +62,7 @@
 		D699258421088C0700B9D895 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		D6D36F27210077C9001CE892 /* MemberSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberSearchVC.swift; sourceTree = "<group>"; };
 		D6E1B49C210623A700823F86 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D6F28C57210C13D7005DE460 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		F8DF832103232BC24883B0F3 /* Pods-Get together.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Get together.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Get together/Pods-Get together.debug.xcconfig"; sourceTree = "<group>"; };
 		F9C9BDEFB792E2F94B33714E /* Pods-Get together.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Get together.release.xcconfig"; path = "Pods/Target Support Files/Pods-Get together/Pods-Get together.release.xcconfig"; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 		D6A50FE820FC824200217A51 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				D6F28C57210C13D7005DE460 /* MainViewController.swift */,
 				D60E33F920FC80CD003BD0FD /* LoginVC.swift */,
 				D60E33F320FC80CD003BD0FD /* RegisterVC.swift */,
 				D60E33F720FC80CD003BD0FD /* ResetPasswordVC.swift */,
@@ -288,6 +291,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6F28C58210C13D7005DE460 /* MainViewController.swift in Sources */,
 				D60E340520FC80D9003BD0FD /* Event.swift in Sources */,
 				D60E33FD20FC80CD003BD0FD /* EventContentVC.swift in Sources */,
 				D6D36F28210077C9001CE892 /* MemberSearchVC.swift in Sources */,
