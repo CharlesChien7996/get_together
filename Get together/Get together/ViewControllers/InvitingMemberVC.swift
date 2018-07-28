@@ -6,15 +6,29 @@ class InvitingMemberVC: UITableViewController {
     var invitingMemberData: [GUser] = []
     var event: Event!
     var imageCache = FirebaseManager.shared.imageCache
-    
+    var spinner: UIActivityIndicatorView!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setUpActivityUndicatorView()
+
         self.queryInvitingMemberData()
-        print(self.event.eventID)
     }
     
     func queryInvitingMemberData() {
+        
+        self.spinner.startAnimating()
+        self.tableView.separatorStyle = .none
+
+        if self.invitingMemberData.count == 0 {
+            
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
+                self.spinner.stopAnimating()
+
+            }
+        }
+
         
         let ref = FirebaseManager.shared.databaseReference
         let invitingMembetListRef = ref.child("invitingMemberList").child(self.event.eventID)
@@ -45,10 +59,23 @@ class InvitingMemberVC: UITableViewController {
                                      profileImageURL: dict["profileImageURL"] as! String)
                     
                     self.invitingMemberData.append(user)
+                    self.spinner.stopAnimating()
+                    self.tableView.separatorStyle = .singleLine
                     self.tableView.reloadData()
                 }
             }
         }
+    }
+    
+    
+    // Set up UIActivityUndicatorView.
+    func setUpActivityUndicatorView() {
+        
+        self.spinner = UIActivityIndicatorView()
+        self.spinner.activityIndicatorViewStyle = .gray
+        self.spinner.center = self.view.center
+        self.spinner.hidesWhenStopped = true
+        self.view.addSubview(self.spinner)
     }
     
     

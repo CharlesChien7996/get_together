@@ -49,8 +49,11 @@ class EventContentVC: UITableViewController {
         
         if currentUser.uid == self.event.organiserID {
             
-            self.editBtn.title = "編輯"
-            self.editBtn.isEnabled = true
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
+                self.editBtn.title = "編輯"
+                self.editBtn.isEnabled = true
+            }
+            
         }
         
         self.setLocationAnnotation()
@@ -63,10 +66,41 @@ class EventContentVC: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        
-        return UITableViewAutomaticDimension
-    }
+
+        switch indexPath.section {
+
+        case 0 where UIScreen.main.bounds.width == 414:
+            return 414
+
+        case 0 where UIScreen.main.bounds.width == 375:
+            return 375
+
+        case 0 where UIScreen.main.bounds.width == 320:
+            return 320
+
+        case 1:
+            return UITableViewAutomaticDimension
+
+        case 2:
+            return 100
+
+        case 3:
+            return 110
+
+        case 4:
+            return 44
+
+        case 5:
+            return 177
+
+        case 6:
+            return UITableViewAutomaticDimension
+
+        default:
+            break
+        }
+
+        return 44    }
     
     
     func setLocationAnnotation() {

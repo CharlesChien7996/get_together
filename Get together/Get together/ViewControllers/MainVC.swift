@@ -1,7 +1,7 @@
 import UIKit
 import Firebase
 
-class MainViewController: UIViewController {
+class MainVC: UIViewController {
     
     @IBOutlet weak var eventSegmentedControl: UISegmentedControl!
     @IBOutlet var backgroundViewWithoutLogin: UIView!
@@ -21,6 +21,7 @@ class MainViewController: UIViewController {
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.tableView.dataSource = self
+        self.tableView.delegate = self
         
         // Show background view if current user is nil.
         guard Auth.auth().currentUser != nil else {
@@ -164,7 +165,6 @@ class MainViewController: UIViewController {
             }
         }
         
-        self.joinedEventData.removeAll()
         self.tableView.separatorStyle = .none
         
         guard let currentUser = Auth.auth().currentUser else {
@@ -175,23 +175,17 @@ class MainViewController: UIViewController {
         
         let eventListRef = FirebaseManager.shared.databaseReference.child("eventList").child(currentUser.uid)
         
-        FirebaseManager.shared.getData(eventListRef, type: .childAdded) { (allObject, dict)   in
+        FirebaseManager.shared.getData(eventListRef, type: .value) { (allObjects, dict)   in
             
-            
-            guard let dict = dict else{
+            self.joinedEventData.removeAll()
+
+            for snap in allObjects {
                 
-                print("Fail to get dict")
-                return
-            }
+                
             
-//            let eventList = EventList(eventID: dict["eventID"] as! String,
-//                                      isReply: dict["isReply"] as! Bool)
-//
-//            guard eventList.isReply == true else{
-//
-//                print("User reply yet")
-//                return
-//            }
+                let dict = snap.value as! [String: Any]
+                
+            
             let eventID = dict["eventID"] as! String
             
             let ref = Database.database().reference().child("event").child(eventID)
@@ -217,6 +211,7 @@ class MainViewController: UIViewController {
                 self.tableView.separatorStyle = .singleLine
                 self.tableView.reloadData()
                 self.refresher.endRefreshing()
+            }
             }
         }
     }
@@ -321,7 +316,8 @@ class MainViewController: UIViewController {
 }
 
 
-extension MainViewController: UITableViewDataSource {
+extension MainVC: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var returnValue = 0
         
@@ -401,5 +397,10 @@ extension MainViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.tableView.deselectRow(at: indexPath, animated: true)
+
     }
 }

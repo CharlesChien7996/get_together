@@ -124,57 +124,6 @@ class NotificationVC: UITableViewController {
         }
     }
     
-//    // Query joined data from database.
-//    func queryEventData() {
-//
-//        for event in self.notificationData {
-//            let ref = Database.database().reference().child("event").child(event.eventID)
-//            ref.observe(.value) { (snapshot) in
-//
-//                guard let dict = snapshot.value as? [String : Any] else {
-//                    print("Fail to get data")
-//                    return
-//                }
-//                let event = Event(eventID: dict["eventID"] as! String,
-//                                  organiserID: dict["organiserID"] as! String,
-//                                  title: dict["title"] as! String,
-//                                  date: dict["date"] as! String,
-//                                  location: dict["location"] as! String,
-//                                  description: dict["description"] as! String,
-//                                  eventImageURL: dict["eventImageURL"] as! String)
-//
-//                let urlString = event.eventImageURL
-//
-//
-//                guard let imageURL = URL(string: urlString) else {
-//                    print("Fail to get imageURL")
-//                    return
-//                }
-//
-//                // Download image from firebase storage.
-//                let task = URLSession.shared.dataTask(with: imageURL) { (data, response, error) in
-//                    if let error = error {
-//                        print("Download image task fail: \(error.localizedDescription)")
-//                        return
-//                    }
-//
-//                    guard let imageData = data else {
-//                        print("Fail to get imageData")
-//                        return
-//                    }
-//
-//                    let image = UIImage(data: imageData)
-//                    event.image = image!
-//                }
-//                task.resume()
-//
-//                self.joinedEventData.append(event)
-//                self.tableView.reloadData()
-//            }
-//        }
-//
-//    }
-    
     
     // Set up refresh view.
     func setUpRefreshView() {

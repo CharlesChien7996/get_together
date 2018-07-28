@@ -19,7 +19,6 @@ class RegisterVC: UIViewController {
     
     var originalFrame: CGRect?
     
-    
     @IBOutlet weak var register: UIButton!
     
     override func viewDidLoad() {
