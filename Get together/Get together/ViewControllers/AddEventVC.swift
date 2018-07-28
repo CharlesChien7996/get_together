@@ -39,7 +39,6 @@ class AddEventVC: UITableViewController {
         self.collectionView.dataSource = self
         self.eventDescription.delegate = self
         self.eventDescription.textColor = UIColor.lightGray
-
         
         // Prepare defult event date.
         let dateformatter = DateFormatter()
@@ -108,7 +107,7 @@ class AddEventVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-       let height = self.heightHandle(indexPath: indexPath)
+        let height = self.heightHandle(indexPath: indexPath)
         
         return height
     }
@@ -116,9 +115,9 @@ class AddEventVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         
-            let height = self.heightHandle(indexPath: indexPath)
-            
-            return height
+        let height = self.heightHandle(indexPath: indexPath)
+        
+        return height
     }
     
     
@@ -171,7 +170,7 @@ class AddEventVC: UITableViewController {
         }else if self.isOn == true {
             
             self.selectDateBtn.setImage(UIImage(named: "color_down"), for: .normal)
-
+            
             self.isOn = false
             self.eventDatePicker.isHidden = true
         }
@@ -208,11 +207,6 @@ class AddEventVC: UITableViewController {
             return
         }
         
-        if self.members.count <= 0 {
-            
-            self.showAlert("描述", message: "等等，還沒邀請成員呢！")
-            return
-        }
         
         if self.eventLocation.text == "尚未選擇" {
             
@@ -232,7 +226,7 @@ class AddEventVC: UITableViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-
+    
     // Upload event's data to database.
     func uploadEventData() {
         
@@ -246,9 +240,8 @@ class AddEventVC: UITableViewController {
             return
         }
         
-        guard let thumbnailImage = FirebaseManager.shared.thumbnail(image,
-                                                                    widthSize: Int(image.size.width / 4),
-                                                                    heightSize: Int(image.size.height / 4)) else{
+        guard let thumbnailImage = FirebaseManager.shared.thumbnail(image, widthSize: Int(300),heightSize: Int(300)) else{
+            
             print("Fail to get thumbnailImage")
             return
         }
@@ -272,30 +265,30 @@ class AddEventVC: UITableViewController {
             if self.isEdit == true {
                 
                 eventID = self.event.eventID
-                
-                if !self.deletedMembers.isEmpty {
-                    
-                    for member in self.deletedMembers {
-                        
-                        ref.child("memberList").child(self.event.eventID).child(member.userID).removeValue()
-                        ref.child("eventList").child(member.userID).child(self.event.eventID).removeValue()
-                        
-                        let notification = Notifacation(notifacationID: autoID,
-                                                        eventID: self.event.eventID,
-                                                        message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",
-                                                        remark: "",
-                                                        isRead: false,
-                                                        isNew: true,
-                                                        isRemoved: true)
-                        
-                        ref.child("notification").child(member.userID).child(autoID).setValue(notification.uploadNotification())
-                    }
-                }
-                
             }else {
                 
                 eventID = autoID
             }
+            
+            if !self.deletedMembers.isEmpty {
+                
+                for member in self.deletedMembers {
+                    
+                    ref.child("memberList").child(self.event.eventID).child(member.userID).removeValue()
+                    ref.child("eventList").child(member.userID).child(self.event.eventID).removeValue()
+                    
+                    let notification = Notifacation(notifacationID: autoID,
+                                                    eventID: self.event.eventID,
+                                                    message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",
+                        remark: "已不在此聚成員內",
+                        isRead: false,
+                        isNew: true,
+                        isRemoved: true)
+                    
+                    ref.child("notification").child(member.userID).child(autoID).setValue(notification.uploadNotification())
+                }
+            }
+            
             
             self.event = Event(eventID:eventID,
                                organiserID: currentUser.uid,
@@ -309,19 +302,13 @@ class AddEventVC: UITableViewController {
             
             for member in self.editedMembers {
                 
-                let eventList = EventList(eventID: self.event.eventID, isReply: false)
+                let invitingEventList = EventList(eventID: self.event.eventID, isReply: false)
                 
-                ref.child("memberList").child(eventList.eventID).child(member.userID).child("memberID").setValue(member.userID)
-                ref.child("eventList").child(member.userID).child(eventList.eventID).setValue(eventList.uploadedEventListData())
+            ref.child("invitingMemberList").child(invitingEventList.eventID).child(member.userID).child("invitingMemberID").setValue(member.userID)
+            ref.child("invitingEventList").child(member.userID).child(invitingEventList.eventID).setValue(invitingEventList.uploadedEventListData())
                 
                 // Upload data to notification.
-                let notification = Notifacation(notifacationID: autoID,
-                                                eventID: self.event.eventID,
-                                                message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」",
-                                                remark: "",
-                                                isRead: false,
-                                                isNew: true,
-                                                isRemoved: false)
+                let notification = Notifacation(notifacationID: autoID,eventID: self.event.eventID,message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」",remark: "",isRead: false,isNew: true,isRemoved: false)
                 
                 ref.child("notification").child(member.userID).child(autoID).setValue(notification.uploadNotification())
             }
@@ -383,7 +370,7 @@ extension AddEventVC: UITextViewDelegate {
             self.eventDescription.textColor = UIColor.black
         }
         
-//        self.eventDescription.becomeFirstResponder()
+        //        self.eventDescription.becomeFirstResponder()
     }
 }
 
@@ -398,12 +385,12 @@ extension AddEventVC: UICollectionViewDataSource, MemberCollectionViewCellDelega
             return
         }
         
-            let removeItem = self.members.remove(at: indexPath.item)
-            if self.isEdit == true {
-                
-                self.deletedMembers.append(removeItem)
-            }
-            self.collectionView.deleteItems(at: [indexPath])
+        let removeItem = self.members.remove(at: indexPath.item)
+        if self.isEdit == true {
+            
+            self.deletedMembers.append(removeItem)
+        }
+        self.collectionView.deleteItems(at: [indexPath])
     }
     
     

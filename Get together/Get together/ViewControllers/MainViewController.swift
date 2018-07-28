@@ -184,16 +184,17 @@ class MainViewController: UIViewController {
                 return
             }
             
-            let eventList = EventList(eventID: dict["eventID"] as! String,
-                                      isReply: dict["isReply"] as! Bool)
+//            let eventList = EventList(eventID: dict["eventID"] as! String,
+//                                      isReply: dict["isReply"] as! Bool)
+//
+//            guard eventList.isReply == true else{
+//
+//                print("User reply yet")
+//                return
+//            }
+            let eventID = dict["eventID"] as! String
             
-            guard eventList.isReply == true else{
-                
-                print("User reply yet")
-                return
-            }
-            
-            let ref = Database.database().reference().child("event").child(eventList.eventID)
+            let ref = Database.database().reference().child("event").child(eventID)
             
             FirebaseManager.shared.getData(ref, type: .value) { (allObject, dict)  in
                 

@@ -262,8 +262,9 @@ class NotificationVC: UITableViewController {
             }
             
             let selectedEvent = self.joinedEventData[indexPath.row]
-            
+            let selectedNotification = self.notificationData[indexPath.row]
             eventContentVC.event = selectedEvent
+            eventContentVC.notification = selectedNotification
             
         }
     }

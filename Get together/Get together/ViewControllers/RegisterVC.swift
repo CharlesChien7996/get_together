@@ -131,7 +131,7 @@ class RegisterVC: UIViewController {
             return
         }
         
-        guard let thumbnailImage = FirebaseManager.shared.thumbnail(image, widthSize: Int(image.size.width / 5), heightSize: Int(image.size.height / 5)) else {
+        guard let thumbnailImage = FirebaseManager.shared.thumbnail(image, widthSize: Int(100), heightSize: Int(100)) else {
             print("Fail to get image")
             return
         }
