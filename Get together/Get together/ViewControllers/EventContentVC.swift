@@ -326,6 +326,7 @@ class EventContentVC: UITableViewController {
             editEventVC.isEdit = true
             editEventVC.event = self.event
             editEventVC.members = self.memberData
+            editEventVC.originalMemers = self.memberData
             editEventVC.annotation = self.annotation
             editEventVC.region = self.region
         }

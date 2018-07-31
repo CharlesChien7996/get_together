@@ -113,7 +113,7 @@ class MemberSearchVC: UITableViewController {
     func filterMemberData(for searchText: String) {
         
         self.matchingItems = self.memberData.filter() { (member) -> Bool in
-            let isMatch = member.email.localizedCaseInsensitiveContains(searchText)
+            let isMatch = member.name.localizedCaseInsensitiveContains(searchText) || member.email.localizedCaseInsensitiveContains(searchText)
             return isMatch
         }
     }

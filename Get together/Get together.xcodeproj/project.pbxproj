@@ -26,10 +26,10 @@
 		D6194B29210710EC0077222F /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6194B28210710EC0077222F /* ProfileVC.swift */; };
 		D63E804420FF166900C0E010 /* LocationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804320FF166900C0E010 /* LocationVC.swift */; };
 		D63E804620FF220200C0E010 /* LocationSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804520FF220200C0E010 /* LocationSearchVC.swift */; };
+		D6468D3E210EF25600514635 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6468D3D210EF25600514635 /* GoogleService-Info.plist */; };
 		D66F261821072F80002B4752 /* EditProfileInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D66F261721072F80002B4752 /* EditProfileInfoVC.swift */; };
 		D699258521088C0700B9D895 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D699258421088C0700B9D895 /* Notification.swift */; };
 		D6D36F28210077C9001CE892 /* MemberSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D36F27210077C9001CE892 /* MemberSearchVC.swift */; };
-		D6E1B49D210623A700823F86 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6E1B49C210623A700823F86 /* GoogleService-Info.plist */; };
 		D6F28C58210C13D7005DE460 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F28C57210C13D7005DE460 /* MainVC.swift */; };
 		D6F3742920FCAD6C000C6D2E /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */; };
 		D6FC08DC210C80C20017664D /* InvitingMemberVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6FC08DB210C80C20017664D /* InvitingMemberVC.swift */; };
@@ -57,10 +57,11 @@
 		D6194B28210710EC0077222F /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
 		D63E804320FF166900C0E010 /* LocationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationVC.swift; sourceTree = "<group>"; };
 		D63E804520FF220200C0E010 /* LocationSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchVC.swift; sourceTree = "<group>"; };
+		D6468D3C210EE80B00514635 /* Get together.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Get together.entitlements"; sourceTree = "<group>"; };
+		D6468D3D210EF25600514635 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D66F261721072F80002B4752 /* EditProfileInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileInfoVC.swift; sourceTree = "<group>"; };
 		D699258421088C0700B9D895 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		D6D36F27210077C9001CE892 /* MemberSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberSearchVC.swift; sourceTree = "<group>"; };
-		D6E1B49C210623A700823F86 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D6F28C57210C13D7005DE460 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		D6FC08DB210C80C20017664D /* InvitingMemberVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitingMemberVC.swift; sourceTree = "<group>"; };
@@ -118,6 +119,7 @@
 		D60E33DF20FC7F73003BD0FD /* Get together */ = {
 			isa = PBXGroup;
 			children = (
+				D6468D3C210EE80B00514635 /* Get together.entitlements */,
 				D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */,
 				D60E33E020FC7F73003BD0FD /* AppDelegate.swift */,
 				D6A50FE820FC824200217A51 /* ViewControllers */,
@@ -127,7 +129,7 @@
 				D60E33E920FC7F75003BD0FD /* LaunchScreen.storyboard */,
 				D60E33E720FC7F75003BD0FD /* Assets.xcassets */,
 				D60E33EC20FC7F75003BD0FD /* Info.plist */,
-				D6E1B49C210623A700823F86 /* GoogleService-Info.plist */,
+				D6468D3D210EF25600514635 /* GoogleService-Info.plist */,
 			);
 			path = "Get together";
 			sourceTree = "<group>";
@@ -206,6 +208,11 @@
 				TargetAttributes = {
 					D60E33DC20FC7F73003BD0FD = {
 						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -233,7 +240,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D60E33EB20FC7F75003BD0FD /* LaunchScreen.storyboard in Resources */,
-				D6E1B49D210623A700823F86 /* GoogleService-Info.plist in Resources */,
+				D6468D3E210EF25600514635 /* GoogleService-Info.plist in Resources */,
 				D60E33E820FC7F75003BD0FD /* Assets.xcassets in Resources */,
 				D60E33E620FC7F73003BD0FD /* Main.storyboard in Resources */,
 			);
@@ -269,6 +276,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Get together/Pods-Get together-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -276,6 +284,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -456,6 +465,7 @@
 			baseConfigurationReference = F8DF832103232BC24883B0F3 /* Pods-Get together.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Get together/Get together.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D87GQC8RYB;
 				INFOPLIST_FILE = "Get together/Info.plist";
@@ -475,6 +485,7 @@
 			baseConfigurationReference = F9C9BDEFB792E2F94B33714E /* Pods-Get together.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Get together/Get together.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D87GQC8RYB;
 				INFOPLIST_FILE = "Get together/Info.plist";

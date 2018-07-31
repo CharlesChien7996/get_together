@@ -25,6 +25,7 @@ class AddEventVC: UITableViewController {
     var event: Event!
     var members: [GUser] = []
     var deletedMembers: [GUser] = []
+    var originalMemers: [GUser]!
     var editedMembers: [GUser]!
     var region: MKCoordinateRegion!
     var annotation: MKPointAnnotation!
@@ -250,9 +251,10 @@ class AddEventVC: UITableViewController {
             
             var removedMemberSet = Set(self.deletedMembers)
             let memberSet = Set(self.members)
-            
-            let editedSet = memberSet.subtracting(removedMemberSet)
+            let originalMemerSet = Set(self.originalMemers)
+            let editedSet = memberSet.subtracting(removedMemberSet).subtracting(originalMemerSet)
             self.editedMembers = Array(editedSet)
+            
             removedMemberSet.subtract(memberSet)
             self.deletedMembers = Array(removedMemberSet)
             
