@@ -49,10 +49,10 @@ class EventContentVC: UITableViewController {
         
         if currentUser.uid == self.event.organiserID {
             
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
+//            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
                 self.editBtn.title = "編輯"
                 self.editBtn.isEnabled = true
-            }
+//            }
             
         }
         

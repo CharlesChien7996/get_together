@@ -5,7 +5,7 @@ class MainVC: UIViewController {
     
     @IBOutlet weak var eventSegmentedControl: UISegmentedControl!
     @IBOutlet var backgroundViewWithoutLogin: UIView!
-    var spinner: UIActivityIndicatorView!
+    var spinner: UIActivityIndicatorView = UIActivityIndicatorView()
     var refresher: UIRefreshControl!
     
     var joinedEventData:[Event] = []
@@ -31,8 +31,7 @@ class MainVC: UIViewController {
         }
         
         self.setUpRefreshView()
-        self.setUpActivityUndicatorView()
-        
+        FirebaseManager.shared.setUpActivityUndicatorView(self.view, activityIndicatorView: self.spinner)
         self.queryHostEventData(currentUser)
         self.queryNotification(currentUser)
     }
@@ -49,16 +48,6 @@ class MainVC: UIViewController {
         self.tableView.addSubview(self.refresher)
     }
     
-    
-    // Set up UIActivityUndicatorView.
-    func setUpActivityUndicatorView() {
-        
-        self.spinner = UIActivityIndicatorView()
-        self.spinner.activityIndicatorViewStyle = .gray
-        self.spinner.center = self.view.center
-        self.spinner.hidesWhenStopped = true
-        self.view.addSubview(self.spinner)
-    }
     
     @objc func refreshData() {
         
@@ -185,10 +174,7 @@ class MainVC: UIViewController {
                 let dict = snap.value as! [String: Any]
                 
                 let eventID = dict["eventID"] as! String
-                self.eventIDs.insert(eventID, at: 0)
-            }
             
-            for eventID in self.eventIDs {
                 let ref = Database.database().reference().child("event").child(eventID).queryOrdered(byChild: "date")
                 
                 FirebaseManager.shared.getData(ref, type: .value) { (allObject, dict)  in
@@ -207,7 +193,7 @@ class MainVC: UIViewController {
                                       description: dict["description"] as! String,
                                       eventImageURL: dict["eventImageURL"] as! String)
                     
-                    self.joinedEventData.insert(event, at: 0)
+                    self.joinedEventData.append(event)
                     self.spinner.stopAnimating()
                     self.tableView.separatorStyle = .singleLine
                     self.tableView.reloadData()
@@ -350,9 +336,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
             break
         }
         
-        cell.eventTitle?.textColor = UIColor.black
         cell.eventDate?.textColor = UIColor.blue
-        cell.eventImageView.image = nil
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         if let eventDate = dateFormatter.date(from: event.date) {

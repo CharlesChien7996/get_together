@@ -69,7 +69,7 @@ class LoginVC: UIViewController {
             self.emailCheck.text = "這個帳號已經失效，請聯絡客服"
         case .wrongPassword:
             self.passwordCheck.text = "密碼不正確，請重新輸入或使用忘記密碼"
-            //                        case .networkError:
+        //                        case .networkError:
         //                            return "Network error. Please try again."
         default:
             self.emailCheck.text = "未知錯誤"
@@ -153,5 +153,22 @@ extension LoginVC: UITextFieldDelegate {
             self.passwordCheck.text! = ""
         }
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        if textField == self.emailTextField {
+            
+            emailTextField.resignFirstResponder()
+            
+            passwordTextField.becomeFirstResponder()
+            
+        }else {
+            
+            passwordTextField.resignFirstResponder()
+        }
+        
+        return true
+    }
+    
 }
 

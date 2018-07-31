@@ -86,6 +86,7 @@ class RegisterVC: UIViewController {
         switch errorCode {
         case .emailAlreadyInUse:
             self.emailCheck.text = "這個email已經被使用過囉"
+            
         case .invalidEmail, .invalidSender, .invalidRecipientEmail:
             self.emailCheck.text = "email格式不符喔"
             //                        case .networkError:
@@ -102,10 +103,27 @@ class RegisterVC: UIViewController {
     @IBAction func uploadProfileImage(_ sender: Any) {
         
         let imagePicker = UIImagePickerController()
-        imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = self
-        imagePicker.allowsEditing = true
-        self.present(imagePicker, animated: true, completion: nil)
+        
+        let alert = UIAlertController(title: "來源", message: "選擇照片來源", preferredStyle: .alert)
+        let photoLibray = UIAlertAction(title: "相簿", style: .default) { (action) in
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.allowsEditing = true
+            
+            self.present(imagePicker, animated: true, completion: nil)
+            
+        }
+        let camera = UIAlertAction(title: "相機", style: .default) { (action) in
+            imagePicker.sourceType = .camera
+            
+            self.present(imagePicker, animated: true, completion: nil)
+            
+        }
+        let cancel = UIAlertAction(title: "取消", style: .cancel)
+        alert.addAction(photoLibray)
+        alert.addAction(camera)
+        alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
     }
     
     
@@ -200,6 +218,7 @@ class RegisterVC: UIViewController {
 
 
 extension RegisterVC: UITextFieldDelegate {
+    
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
         
         if self.emailTextField.text!.isEmpty == false {
@@ -222,6 +241,33 @@ extension RegisterVC: UITextFieldDelegate {
         if self.usernameTextField.text!.isEmpty == false {
             self.usernameCheck.text = ""
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        
+        switch textField{
+            
+        case self.emailTextField:
+            self.emailTextField.resignFirstResponder()
+            self.passwordTextField.becomeFirstResponder()
+
+        case self.passwordTextField:
+            self.passwordTextField.resignFirstResponder()
+            self.checkPasswordTextField.becomeFirstResponder()
+            
+        case self.checkPasswordTextField:
+            self.checkPasswordTextField.resignFirstResponder()
+            self.usernameTextField.becomeFirstResponder()
+            
+        case self.usernameTextField:
+            self.usernameTextField.resignFirstResponder()
+            
+        default:
+            break
+        }
+        
+        return true
     }
 }
 

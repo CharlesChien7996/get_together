@@ -123,5 +123,13 @@ class FirebaseManager {
     }
     
     
+    // Set up UIActivityUndicatorView.
+    func setUpActivityUndicatorView(_ view: UIView, activityIndicatorView: UIActivityIndicatorView) {
+        
+        activityIndicatorView.activityIndicatorViewStyle = .gray
+        activityIndicatorView.center = view.center
+        activityIndicatorView.hidesWhenStopped = true
+        view.addSubview(activityIndicatorView)
+    }
 
 }

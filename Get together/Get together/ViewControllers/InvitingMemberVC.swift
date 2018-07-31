@@ -19,10 +19,9 @@ class InvitingMemberVC: UITableViewController {
     func queryInvitingMemberData() {
         
         self.spinner.startAnimating()
-        self.tableView.separatorStyle = .none
 
         if self.invitingMemberData.count == 0 {
-            
+
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
                 self.spinner.stopAnimating()
 

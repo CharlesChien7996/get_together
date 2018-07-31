@@ -14,6 +14,7 @@ class EditProfileInfoVC: UITableViewController {
         
         self.usernameTextField.text = self.user.name
         self.profileImageView.image = self.user.image
+        self.usernameTextField.becomeFirstResponder()
     }
     
     @IBAction func donePressed(_ sender: Any) {
@@ -26,10 +27,27 @@ class EditProfileInfoVC: UITableViewController {
     @IBAction func pickImagePressed(_ sender: Any) {
         
         let imagePicker = UIImagePickerController()
-        imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = self
-        imagePicker.allowsEditing = true
-        self.present(imagePicker, animated: true, completion: nil)
+        
+        let alert = UIAlertController(title: "來源", message: "選擇照片來源", preferredStyle: .alert)
+        let photoLibray = UIAlertAction(title: "相簿", style: .default) { (action) in
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.allowsEditing = true
+            
+            self.present(imagePicker, animated: true, completion: nil)
+            
+        }
+        let camera = UIAlertAction(title: "相機", style: .default) { (action) in
+            imagePicker.sourceType = .camera
+            
+            self.present(imagePicker, animated: true, completion: nil)
+            
+        }
+        let cancel = UIAlertAction(title: "取消", style: .cancel)
+        alert.addAction(photoLibray)
+        alert.addAction(camera)
+        alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
     }
     
     // Upload user's data to database.
