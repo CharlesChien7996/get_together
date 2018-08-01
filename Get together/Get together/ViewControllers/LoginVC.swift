@@ -51,6 +51,7 @@ class LoginVC: UIViewController {
     @IBAction func laterPressed(_ sender: Any) {
         let tabBarVC = self.storyboard?.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
         self.present(tabBarVC, animated: true, completion: nil)
+//        self.dismiss(animated: true, completion: nil)
     }
     
     

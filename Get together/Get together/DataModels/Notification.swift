@@ -5,20 +5,20 @@ class Notifacation {
     var notifacationID: String
     var eventID: String
     var isRead: Bool
-    var isNew: Bool
+    var time: String
     var isRemoved: Bool
     var message: String
     var remark: String
 
     
-    init(notifacationID: String, eventID: String, message: String, remark: String, isRead: Bool, isNew: Bool, isRemoved: Bool) {
+    init(notifacationID: String, eventID: String, message: String, remark: String, isRead: Bool, time: String, isRemoved: Bool) {
         
         self.notifacationID = notifacationID
         self.eventID = eventID
         self.message = message
         self.remark = remark
         self.isRead = isRead
-        self.isNew = isNew
+        self.time = time
         self.isRemoved = isRemoved
     }
     
@@ -29,7 +29,7 @@ class Notifacation {
                 "message": self.message,
                 "remark": self.remark,
                 "isRead": self.isRead,
-                "isNew": self.isNew,
+                "time": self.time,
                 "isRemoved": self.isRemoved]
         
     }

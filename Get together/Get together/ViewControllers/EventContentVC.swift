@@ -148,6 +148,9 @@ class EventContentVC: UITableViewController {
             return
         }
         
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let time = dateformatter.string(from: Date())
         let ref = FirebaseManager.shared.databaseReference
         let eventListRef = ref.child("invitingEventList").child(currentUser.uid)
         
@@ -168,7 +171,8 @@ class EventContentVC: UITableViewController {
                     
                     let agree = UIAlertAction(title: "同意", style: .default) { (action) in
                         
-                        let notification = Notifacation(notifacationID: notificationID, eventID: self.event.eventID,message: "\"\(self.user.name)\" 同意加入 「\(self.event.title)」", remark: "" ,isRead: false,isNew: true,isRemoved: false)
+                        
+                        let notification = Notifacation(notifacationID: notificationID, eventID: self.event.eventID,message: "\"\(self.user.name)\" 同意加入 「\(self.event.title)」", remark: "" ,isRead: false,time: time,isRemoved: false)
                         
                         ref.child("notification").child(self.event.organiserID).child(notificationID).setValue(notification.uploadNotification())
                         ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).removeValue()
@@ -186,7 +190,7 @@ class EventContentVC: UITableViewController {
                         notificationRef.child(self.user.userID).child(self.notification.notifacationID).updateChildValues(["remark" : "已不在此聚成員內"])
                         ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).removeValue()
                         ref.child("invitingMemberList").child(self.event.eventID).child(currentUser.uid).removeValue()
-                        let newNotification = Notifacation(notifacationID: notificationID,eventID: self.event.eventID, message: "\"\(self.user.name)\" 拒絕了 「\(self.event.title)」 的加入邀請", remark: "", isRead: false, isNew: true, isRemoved: false)
+                        let newNotification = Notifacation(notifacationID: notificationID,eventID: self.event.eventID, message: "\"\(self.user.name)\" 拒絕了 「\(self.event.title)」 的加入邀請", remark: "", isRead: false, time: time, isRemoved: false)
                         
                         notificationRef.child(self.event.organiserID).child(notificationID).setValue(newNotification.uploadNotification())
                         

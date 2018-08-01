@@ -11,7 +11,6 @@ class MainVC: UIViewController {
     var joinedEventData:[Event] = []
     var hostEventData:[Event] = []
     var imageCache = FirebaseManager.shared.imageCache
-    var eventIDs: [String] = []
     var unreads: [Notifacation] = []
     @IBOutlet weak var tableView: UITableView!
     
@@ -90,7 +89,6 @@ class MainVC: UIViewController {
             }
             
             self.queryHostEventData(currentUser)
-            
         case 1:
             guard let currentUser = Auth.auth().currentUser else {
                 
@@ -99,27 +97,30 @@ class MainVC: UIViewController {
             }
             
             self.queryJoinedEventData(currentUser)
-            
         default:
             break
         }
-        
-        self.tableView.reloadData()
+        if self.joinedEventData.count == 0 {
+            self.tableView.reloadData()
+
+        }
     }
     
     
     // Query data host by self from database.
     func queryHostEventData(_ currentUser: User) {
-        
+
         self.spinner.startAnimating()
         self.tableView.separatorStyle = .none
 
-        if self.hostEventData.count == 0{
-            
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
-                self.spinner.stopAnimating()
-            }
-        }
+//        if self.hostEventData.count == 0{
+//
+//            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
+//                self.spinner.stopAnimating()
+//                self.tableView.separatorStyle = .singleLine
+//                self.tableView.reloadData()
+//            }
+//        }
         
         
         let eventRef = FirebaseManager.shared.databaseReference.child("event").queryOrdered(byChild: "date")
@@ -152,30 +153,31 @@ class MainVC: UIViewController {
     
     // Query joined data from database.
     func queryJoinedEventData(_ currentUser: User) {
-        self.joinedEventData.removeAll()
-        
         self.spinner.startAnimating()
         self.tableView.separatorStyle = .none
+
 
         if self.joinedEventData.count == 0 {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
                 self.spinner.stopAnimating()
+                self.tableView.separatorStyle = .singleLine
+                self.tableView.reloadData()
             }
         }
         
         let eventListRef = FirebaseManager.shared.databaseReference.child("eventList").child(currentUser.uid)
         
         FirebaseManager.shared.getData(eventListRef, type: .value) { (allObjects, dict)   in
-            
-            self.eventIDs.removeAll()
-            
+
+
             for snap in allObjects {
+                self.joinedEventData.removeAll()
                 
                 let dict = snap.value as! [String: Any]
                 
                 let eventID = dict["eventID"] as! String
             
-                let ref = Database.database().reference().child("event").child(eventID).queryOrdered(byChild: "date")
+                let ref = Database.database().reference().child("event").child(eventID)
                 
                 FirebaseManager.shared.getData(ref, type: .value) { (allObject, dict)  in
                     
@@ -193,7 +195,10 @@ class MainVC: UIViewController {
                                       description: dict["description"] as! String,
                                       eventImageURL: dict["eventImageURL"] as! String)
                     
-                    self.joinedEventData.append(event)
+                    self.joinedEventData.insert(event, at: 0)
+                    self.joinedEventData.sort() { (event1, event2) -> Bool in
+                        return event1.date > event2.date
+                    }
                     self.spinner.stopAnimating()
                     self.tableView.separatorStyle = .singleLine
                     self.tableView.reloadData()
@@ -220,7 +225,7 @@ class MainVC: UIViewController {
                                                 message: dict["message"] as! String,
                                                 remark: dict["remark"] as! String,
                                                 isRead: dict["isRead"] as! Bool,
-                                                isNew: dict["isNew"] as! Bool,
+                                                time: dict["time"] as! String,
                                                 isRemoved: dict["isRemoved"] as! Bool)
                 
                 if !notification.isRead {

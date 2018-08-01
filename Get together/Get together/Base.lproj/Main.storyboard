@@ -673,7 +673,7 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
-                                                    <segue destination="i0h-7V-BDH" kind="unwind" unwindAction="cancelPressedWithSegue:" id="eMJ-WI-YH7"/>
+                                                    <action selector="cancelPressed:" destination="MSX-GF-N0R" eventType="touchUpInside" id="N25-ov-GwB"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -702,11 +702,10 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lOu-fB-iFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="i0h-7V-BDH" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="740" y="661"/>
         </scene>
-        <!--MainVC-->
+        <!--聚聚-->
         <scene sceneID="hp5-pG-Q3v">
             <objects>
                 <viewController id="N57-uZ-3cx" customClass="MainVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
@@ -815,10 +814,10 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="NRq-BZ-D9q"/>
                     </view>
-                    <navigationItem key="navigationItem" id="ljF-Wg-sgz">
+                    <navigationItem key="navigationItem" title="聚聚" id="ljF-Wg-sgz">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="QZm-Cv-5XK">
                             <connections>
-                                <segue destination="rgY-nI-orQ" kind="show" id="9sr-Qu-Thw"/>
+                                <segue destination="rgY-nI-orQ" kind="show" identifier="" id="9sr-Qu-Thw"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -1101,7 +1100,7 @@
             </objects>
             <point key="canvasLocation" x="3100" y="1433"/>
         </scene>
-        <!--Add EventVC-->
+        <!--新增活動-->
         <scene sceneID="JrB-pF-ARK">
             <objects>
                 <tableViewController id="rgY-nI-orQ" customClass="AddEventVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
@@ -1258,7 +1257,7 @@
                                                     <color key="tintColor" red="0.70064729439940621" green="1" blue="0.40941331638568723" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     <state key="normal" image="add"/>
                                                     <connections>
-                                                        <segue destination="XHi-dI-PmD" kind="show" identifier="memberSearch" animates="NO" id="L1I-tH-ThX"/>
+                                                        <segue destination="XHi-dI-PmD" kind="show" identifier="memberSearch" id="L1I-tH-ThX"/>
                                                     </connections>
                                                 </button>
                                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PL1-Gb-G6f">
@@ -1380,7 +1379,7 @@
                                                         <constraint firstAttribute="height" constant="30" id="zAd-j5-IoZ"/>
                                                     </constraints>
                                                     <color key="tintColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <state key="normal" image="color_down">
+                                                    <state key="normal" image="down">
                                                         <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <userDefinedRuntimeAttributes>
@@ -1484,13 +1483,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="描述" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mhb-ww-Fdw">
-                                                    <rect key="frame" x="16" y="16" width="35" height="20.5"/>
+                                                    <rect key="frame" x="16" y="16" width="35" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="為你的活動添加一點描述吧！" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ePg-dd-1x0">
-                                                    <rect key="frame" x="16" y="52.5" width="343" height="214.5"/>
+                                                    <rect key="frame" x="16" y="52" width="343" height="215.5"/>
                                                     <color key="backgroundColor" name="selectedMenuItemTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1517,7 +1516,7 @@
                             <outlet property="delegate" destination="rgY-nI-orQ" id="iF3-N6-Rae"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="EGf-6i-b3T">
+                    <navigationItem key="navigationItem" title="新增活動" id="EGf-6i-b3T">
                         <barButtonItem key="rightBarButtonItem" title="完成" id="R4L-rL-hRM">
                             <connections>
                                 <action selector="done:" destination="rgY-nI-orQ" id="Qm2-mz-v7Y"/>
@@ -1610,7 +1609,7 @@
             </objects>
             <point key="canvasLocation" x="4593" y="855"/>
         </scene>
-        <!--Event ContentVC-->
+        <!--活動詳情-->
         <scene sceneID="A8b-tS-bax">
             <objects>
                 <tableViewController storyboardIdentifier="eventContentVC" id="qfP-Hk-2kc" customClass="EventContentVC" customModule="Get_together" customModuleProvider="target" sceneMemberID="viewController">
@@ -1658,24 +1657,22 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NV9-xT-KW3">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NV9-xT-KW3">
                                                     <rect key="frame" x="67" y="7" width="292" height="29.5"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="292" id="DzQ-TB-rLy"/>
-                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="YkN-zn-hSu" secondAttribute="trailing" id="29A-6a-uMw"/>
+                                                <constraint firstAttribute="trailing" secondItem="NV9-xT-KW3" secondAttribute="trailing" constant="16" id="2ce-fl-L4j"/>
                                                 <constraint firstItem="NV9-xT-KW3" firstAttribute="top" secondItem="bXj-JM-oAn" secondAttribute="top" constant="7" id="7tb-eX-IkJ"/>
                                                 <constraint firstAttribute="bottom" secondItem="NV9-xT-KW3" secondAttribute="bottom" constant="7" id="Fch-vV-i77"/>
                                                 <constraint firstItem="YkN-zn-hSu" firstAttribute="leading" secondItem="bXj-JM-oAn" secondAttribute="leading" constant="16" id="ID3-HX-aLX"/>
                                                 <constraint firstItem="YkN-zn-hSu" firstAttribute="centerY" secondItem="bXj-JM-oAn" secondAttribute="centerY" id="Zwi-hB-n41"/>
                                                 <constraint firstItem="NV9-xT-KW3" firstAttribute="leading" secondItem="YkN-zn-hSu" secondAttribute="trailing" constant="16" id="aQ9-uo-lDx"/>
                                                 <constraint firstItem="NV9-xT-KW3" firstAttribute="centerY" secondItem="bXj-JM-oAn" secondAttribute="centerY" id="l59-6a-hGU"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="NV9-xT-KW3" secondAttribute="trailing" constant="16" id="uTe-io-oYa"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -1956,7 +1953,7 @@
                             <outlet property="delegate" destination="qfP-Hk-2kc" id="U5f-ln-KPU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="lPD-IN-Pba">
+                    <navigationItem key="navigationItem" title="活動詳情" id="lPD-IN-Pba">
                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="編輯" id="iMj-yK-TEz">
                             <connections>
                                 <action selector="editPressed:" destination="qfP-Hk-2kc" id="PZf-Vd-8tF"/>
@@ -2039,8 +2036,9 @@
                             <rect key="frame" x="0.0" y="0.0" width="375" height="240"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profileImage" translatesAutoresizingMaskIntoConstraints="NO" id="brJ-zu-2G0">
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="brJ-zu-2G0">
                                     <rect key="frame" x="112" y="45" width="150" height="150"/>
+                                    <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="150" id="6VP-Vs-1ru"/>
                                         <constraint firstAttribute="height" constant="150" id="9bR-T5-NJz"/>
@@ -2344,8 +2342,8 @@
     <resources>
         <image name="add" width="29" height="29"/>
         <image name="check" width="29" height="29"/>
-        <image name="color_down" width="20" height="20"/>
         <image name="default" width="640" height="640"/>
+        <image name="down" width="20" height="20"/>
         <image name="envelope" width="29" height="29"/>
         <image name="envelope2" width="29" height="29"/>
         <image name="event" width="29" height="29"/>
@@ -2359,7 +2357,7 @@
         <image name="user" width="29" height="29"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="1ca-CF-K02"/>
-        <segue reference="9sr-Qu-Thw"/>
+        <segue reference="zGs-19-rV2"/>
+        <segue reference="4iQ-iQ-qYP"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -25,8 +25,8 @@ class AddEventVC: UITableViewController {
     var event: Event!
     var members: [GUser] = []
     var deletedMembers: [GUser] = []
-    var originalMemers: [GUser]!
-    var editedMembers: [GUser]!
+    var originalMemers: [GUser] = []
+    var editedMembers: [GUser] = []
     var region: MKCoordinateRegion!
     var annotation: MKPointAnnotation!
     
@@ -180,13 +180,13 @@ class AddEventVC: UITableViewController {
         
         if self.isOn == false {
             
-            self.selectDateBtn.setImage(UIImage(named: "color_up"), for: .normal)
+            self.selectDateBtn.setImage(UIImage(named: "up"), for: .normal)
             self.isOn = true
             self.eventDatePicker.isHidden = false
             
         }else if self.isOn == true {
             
-            self.selectDateBtn.setImage(UIImage(named: "color_down"), for: .normal)
+            self.selectDateBtn.setImage(UIImage(named: "down"), for: .normal)
             
             self.isOn = false
             self.eventDatePicker.isHidden = true
@@ -224,6 +224,12 @@ class AddEventVC: UITableViewController {
             return
         }
         
+//        if self.members.count <= 0 {
+//
+//            self.showAlert("描述", message: "等等，還沒邀請成員呢！")
+//            return
+//        }
+
         
         if self.eventLocation.text == "尚未選擇" {
             
@@ -257,7 +263,7 @@ class AddEventVC: UITableViewController {
             return
         }
         
-        guard let thumbnailImage = FirebaseManager.shared.thumbnail(image, widthSize: Int(300),heightSize: Int(300)) else{
+        guard let thumbnailImage = FirebaseManager.shared.thumbnail(image, widthSize: 150,heightSize: 150) else{
             
             print("Fail to get thumbnailImage")
             return
@@ -267,6 +273,7 @@ class AddEventVC: UITableViewController {
             
             var removedMemberSet = Set(self.deletedMembers)
             let memberSet = Set(self.members)
+            
             let originalMemerSet = Set(self.originalMemers)
             let editedSet = memberSet.subtracting(removedMemberSet).subtracting(originalMemerSet)
             self.editedMembers = Array(editedSet)
@@ -294,13 +301,16 @@ class AddEventVC: UITableViewController {
                     
                     ref.child("memberList").child(self.event.eventID).child(member.userID).removeValue()
                     ref.child("eventList").child(member.userID).child(self.event.eventID).removeValue()
+                    let dateformatter = DateFormatter()
+                    dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+                    let time = dateformatter.string(from: Date())
                     
                     let notification = Notifacation(notifacationID: autoID,
                                                     eventID: self.event.eventID,
                                                     message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",
                         remark: "已不在此聚成員內",
                         isRead: false,
-                        isNew: true,
+                        time: time,
                         isRemoved: true)
                     
                     ref.child("notification").child(member.userID).child(autoID).setValue(notification.uploadNotification())
@@ -321,12 +331,15 @@ class AddEventVC: UITableViewController {
             for member in self.editedMembers {
                 
                 let invitingEventList = EventList(eventID: self.event.eventID, isReply: false)
+                let dateformatter = DateFormatter()
+                dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+                let time = dateformatter.string(from: Date())
                 
             ref.child("invitingMemberList").child(invitingEventList.eventID).child(member.userID).child("invitingMemberID").setValue(member.userID)
             ref.child("invitingEventList").child(member.userID).child(invitingEventList.eventID).setValue(invitingEventList.uploadedEventListData())
                 
                 // Upload data to notification.
-                let notification = Notifacation(notifacationID: autoID,eventID: self.event.eventID,message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」",remark: "",isRead: false,isNew: true,isRemoved: false)
+                let notification = Notifacation(notifacationID: autoID,eventID: self.event.eventID,message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」",remark: "",isRead: false,time: time,isRemoved: false)
                 
                 ref.child("notification").child(member.userID).child(autoID).setValue(notification.uploadNotification())
             }
