@@ -1,8 +1,9 @@
 import Foundation
 
-class Notifacation {
+class GNotification {
     
-    var notifacationID: String
+    var notificationID: String
+    var userID: String
     var eventID: String
     var isRead: Bool
     var time: String
@@ -11,9 +12,10 @@ class Notifacation {
     var remark: String
 
     
-    init(notifacationID: String, eventID: String, message: String, remark: String, isRead: Bool, time: String, isRemoved: Bool) {
+    init(notificationID: String, userID: String, eventID: String, message: String, remark: String, isRead: Bool, time: String, isRemoved: Bool) {
         
-        self.notifacationID = notifacationID
+        self.notificationID = notificationID
+        self.userID = userID
         self.eventID = eventID
         self.message = message
         self.remark = remark
@@ -24,7 +26,8 @@ class Notifacation {
     
     func uploadNotification() -> Any{
         
-        return ["notifacationID": self.notifacationID,
+        return ["notificationID": self.notificationID,
+                "userID": self.userID,
                 "eventID": self.eventID,
                 "message": self.message,
                 "remark": self.remark,

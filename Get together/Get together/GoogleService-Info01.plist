@@ -7,21 +7,21 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>1097911060547-ols4con15iikb6vb085se7jt5gi7159j.apps.googleusercontent.com</string>
+	<string>889005931533-hfbboralcsu54d6sqk31ru60ktf0gfh3.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1097911060547-ols4con15iikb6vb085se7jt5gi7159j</string>
+	<string>com.googleusercontent.apps.889005931533-hfbboralcsu54d6sqk31ru60ktf0gfh3</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCxLZw85nBYqCwOVdOtI9_sylaL0VAscWU</string>
+	<string>AIzaSyAFuiYTCL33fftmiuHHTzBftkqS8PrPE70</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1097911060547</string>
+	<string>889005931533</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.CharlesChien.Get-together</string>
 	<key>PROJECT_ID</key>
-	<string>test-9047f</string>
+	<string>get-together-e6283</string>
 	<key>STORAGE_BUCKET</key>
-	<string>test-9047f.appspot.com</string>
+	<string>get-together-e6283.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true></true>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -33,8 +33,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1097911060547:ios:649804e768a4481e</string>
+	<string>1:889005931533:ios:649804e768a4481e</string>
 	<key>DATABASE_URL</key>
-	<string>https://test-9047f.firebaseio.com</string>
+	<string>https://get-together-e6283.firebaseio.com</string>
 </dict>
 </plist>
