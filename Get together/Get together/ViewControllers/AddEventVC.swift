@@ -157,15 +157,15 @@ class AddEventVC: UITableViewController {
         let photoLibray = UIAlertAction(title: "相簿", style: .default) { (action) in
             imagePicker.sourceType = .photoLibrary
             imagePicker.allowsEditing = true
-
+            
             self.present(imagePicker, animated: true, completion: nil)
-
+            
         }
         let camera = UIAlertAction(title: "相機", style: .default) { (action) in
             imagePicker.sourceType = .camera
-
+            
             self.present(imagePicker, animated: true, completion: nil)
-
+            
         }
         let cancel = UIAlertAction(title: "取消", style: .cancel)
         alert.addAction(photoLibray)
@@ -224,12 +224,12 @@ class AddEventVC: UITableViewController {
             return
         }
         
-//        if self.members.count <= 0 {
-//
-//            self.showAlert("描述", message: "等等，還沒邀請成員呢！")
-//            return
-//        }
-
+        //        if self.members.count <= 0 {
+        //
+        //            self.showAlert("描述", message: "等等，還沒邀請成員呢！")
+        //            return
+        //        }
+        
         
         if self.eventLocation.text == "尚未選擇" {
             
@@ -253,10 +253,9 @@ class AddEventVC: UITableViewController {
     // Upload event's data to database.
     func uploadEventData() {
         
-        let autoID = FirebaseManager.shared.databaseReference.childByAutoId().key
         var eventID: String!
         let ref = FirebaseManager.shared.databaseReference
-        let imageRef = Storage.storage().reference().child("eventImage").child(autoID)
+        let imageRef = Storage.storage().reference().child("eventImage").child(FirebaseManager.shared.databaseReference.childByAutoId().key)
         
         guard let image = self.eventImageView.image else {
             print("Fail to get event's image")
@@ -292,28 +291,25 @@ class AddEventVC: UITableViewController {
                 eventID = self.event.eventID
             }else {
                 
-                eventID = autoID
+                eventID = FirebaseManager.shared.databaseReference.childByAutoId().key
+                
             }
             
             if !self.deletedMembers.isEmpty {
                 
                 for member in self.deletedMembers {
                     
+                    var notificationID = FirebaseManager.shared.databaseReference.childByAutoId().key
                     ref.child("memberList").child(self.event.eventID).child(member.userID).removeValue()
                     ref.child("eventList").child(member.userID).child(self.event.eventID).removeValue()
                     let dateformatter = DateFormatter()
-                    dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+                    dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                     let time = dateformatter.string(from: Date())
                     
-                    let notification = Notifacation(notifacationID: autoID,
-                                                    eventID: self.event.eventID,
-                                                    message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",
-                        remark: "已不在此聚成員內",
-                        isRead: false,
-                        time: time,
-                        isRemoved: true)
+                    let notification = GNotification(notificationID: notificationID, userID: member.userID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",remark: "已不在此聚成員內",isRead: false, time: time, isRemoved: true)
                     
-                    ref.child("notification").child(member.userID).child(autoID).setValue(notification.uploadNotification())
+                    ref.child("notification").child(notificationID).setValue(notification.uploadNotification())
+                    notificationID = ""
                 }
             }
             
@@ -321,6 +317,7 @@ class AddEventVC: UITableViewController {
             self.event = Event(eventID:eventID,
                                organiserID: currentUser.uid,
                                title: self.eventTitle.text!,
+                               memberIDs: [""],
                                date: self.eventDate.text!,
                                location: self.eventLocation.text!,
                                description: self.eventDescription.text,
@@ -329,19 +326,20 @@ class AddEventVC: UITableViewController {
             ref.child("event").child(eventID).setValue(self.event.uploadedEventData())
             
             for member in self.editedMembers {
-                
+                var notificationID: String? = FirebaseManager.shared.databaseReference.childByAutoId().key
                 let invitingEventList = EventList(eventID: self.event.eventID, isReply: false)
                 let dateformatter = DateFormatter()
-                dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+                dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 let time = dateformatter.string(from: Date())
                 
-            ref.child("invitingMemberList").child(invitingEventList.eventID).child(member.userID).child("invitingMemberID").setValue(member.userID)
-            ref.child("invitingEventList").child(member.userID).child(invitingEventList.eventID).setValue(invitingEventList.uploadedEventListData())
+                ref.child("invitingMemberList").child(invitingEventList.eventID).child(member.userID).child("invitingMemberID").setValue(member.userID)
+                ref.child("invitingEventList").child(member.userID).child(invitingEventList.eventID).setValue(invitingEventList.uploadedEventListData())
                 
                 // Upload data to notification.
-                let notification = Notifacation(notifacationID: autoID,eventID: self.event.eventID,message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」",remark: "",isRead: false,time: time,isRemoved: false)
+                let notification = GNotification(notificationID: notificationID!, userID: member.userID,eventID: self.event.eventID,message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」",remark: "",isRead: false,time: time,isRemoved: false)
                 
-                ref.child("notification").child(member.userID).child(autoID).setValue(notification.uploadNotification())
+                ref.child("notification").child(notificationID!).setValue(notification.uploadNotification())
+                notificationID = ""
             }
         }
     }
@@ -401,7 +399,6 @@ extension AddEventVC: UITextViewDelegate {
             self.eventDescription.textColor = UIColor.black
         }
         
-        //        self.eventDescription.becomeFirstResponder()
     }
 }
 

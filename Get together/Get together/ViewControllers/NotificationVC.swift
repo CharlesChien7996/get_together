@@ -6,7 +6,7 @@ class NotificationVC: UITableViewController {
     
     @IBOutlet var backgroundViewWithoutLogin: UIView!
     var joinedEventData: [Event] = []
-    var notificationData: [Notifacation] = []
+    var notificationData: [GNotification] = []
     
     var user: GUser!
     var eventIDs: Set<String> = []
@@ -58,35 +58,63 @@ class NotificationVC: UITableViewController {
         }
         
         
-        let notificationRef = FirebaseManager.shared.databaseReference.child("notification").child(currentUser.uid).queryOrdered(byChild: "time")
+        let notificationRef = FirebaseManager.shared.databaseReference.child("notification").queryOrdered(byChild: "time")
         
         FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
             
+            self.notificationData.removeAll()
+            self.joinedEventData.removeAll()
             
-            for snap in allObjects {
-                self.notificationData.removeAll()
-                self.joinedEventData.removeAll()
-
+            let myNotification = allObjects.compactMap {(snap) -> GNotification? in
+                
                 let dict = snap.value as! [String : Any]
                 
-                let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
-                                                eventID: dict["eventID"] as! String,
-                                                message: dict["message"] as! String,
-                                                remark: dict["remark"] as! String,
-                                                isRead: dict["isRead"] as! Bool,
-                                                time: dict["time"] as! String,
-                                                isRemoved: dict["isRemoved"] as! Bool)
+                let notification = GNotification(notificationID: dict["notificationID"] as! String,
+                                                 userID: dict["userID"] as! String,
+                                                 eventID: dict["eventID"] as! String,
+                                                 message: dict["message"] as! String,
+                                                 remark: dict["remark"] as! String,
+                                                 isRead: dict["isRead"] as! Bool,
+                                                 time: dict["time"] as! String,
+                                                 isRemoved: dict["isRemoved"] as! Bool)
+                
+                return (currentUser.uid == notification.userID ? notification : nil)
+            }
+            
+            
+            self.notificationData = myNotification
+            self.notificationData.sort() { (GNoti1, GNoti2) -> Bool in
+                return GNoti1.time > GNoti2.time
+            }
+            for notification in self.notificationData {
+                
+                
+                //            for snap in allObjects {
+                //
+                //
+                //                let dict = snap.value as! [String : Any]
+                //
+                //                let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
+                //                                                userID: dict["userID"] as! String,
+                //                                                eventID: dict["eventID"] as! String,
+                //                                                message: dict["message"] as! String,
+                //                                                remark: dict["remark"] as! String,
+                //                                                isRead: dict["isRead"] as! Bool,
+                //                                                time: dict["time"] as! String,
+                //                                                isRemoved: dict["isRemoved"] as! Bool)
                 
                 let ref = Database.database().reference().child("event").child(notification.eventID)
-                ref.observe(.value) { (snapshot) in
+                FirebaseManager.shared.getDataBySingleEvent(ref, type: .value){ (allObjects, dict) in
                     
-                    guard let dict = snapshot.value as? [String : Any] else {
+                    guard let dict = dict else {
                         print("Fail to get data")
                         return
                     }
+                    
                     let event = Event(eventID: dict["eventID"] as! String,
                                       organiserID: dict["organiserID"] as! String,
                                       title: dict["title"] as! String,
+                                      memberIDs: dict["memberIDs"] as! [String],
                                       date: dict["date"] as! String,
                                       location: dict["location"] as! String,
                                       description: dict["description"] as! String,
@@ -99,12 +127,14 @@ class NotificationVC: UITableViewController {
                         event.image = image
                         
                     }
-                    self.notificationData.insert(notification, at: 0)
-                    self.joinedEventData.insert(event, at: 0)
+                    
+                    //                    self.notificationData.insert(notification, at: 0)
+                    self.joinedEventData.append(event)
                     self.spinner.stopAnimating()
                     self.tableView.separatorStyle = .singleLine
                     self.tableView.reloadData()
                 }
+                
             }
         }
     }
@@ -161,11 +191,8 @@ class NotificationVC: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let notification = self.notificationData[indexPath.row]
         
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("Fail to get uid")
-            return
-        }
-        self.ref.child("notification").child(uid).child(notification.notifacationID).updateChildValues(["isRead" : true])
+        
+        self.ref.child("notification").child(notification.notificationID).updateChildValues(["isRead" : true])
         
     }
     

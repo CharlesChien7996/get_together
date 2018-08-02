@@ -24,11 +24,11 @@ class EventContentVC: UITableViewController {
     var annotation: MKPointAnnotation!
     var memberData: [GUser] = []
     var eventListData: [EventList] = []
-    var notification: Notifacation!
+    var notification: GNotification!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.user = FirebaseManager.shared.user
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.editBtn.title = ""
         
@@ -49,58 +49,55 @@ class EventContentVC: UITableViewController {
         
         if currentUser.uid == self.event.organiserID {
             
-//            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
-                self.editBtn.title = "編輯"
-                self.editBtn.isEnabled = true
-//            }
-            
+            self.editBtn.title = "編輯"
+            self.editBtn.isEnabled = true
         }
-        
+        //        FirebaseManager.shared.setUpLoadingView(self)
         self.setLocationAnnotation()
         self.queryEventList()
         self.queryUserData()
-        self.queryOrganiserData()
-        self.queryMemberData()
         self.memberCollectionView.dataSource = self
     }
     
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-
+        
         switch indexPath.section {
-
+            
         case 0 where UIScreen.main.bounds.width == 414:
             return 414
-
+            
         case 0 where UIScreen.main.bounds.width == 375:
             return 375
-
+            
         case 0 where UIScreen.main.bounds.width == 320:
             return 320
-
+            
         case 1:
             return UITableViewAutomaticDimension
-
+            
         case 2:
             return 100
-
+            
         case 3:
             return 110
-
+            
         case 4:
             return 44
-
+            
         case 5:
             return 177
-
+            
         case 6:
             return UITableViewAutomaticDimension
-
+            
         default:
             break
         }
-
-        return 44    }
+        
+        return 44
+        
+    }
     
     
     func setLocationAnnotation() {
@@ -149,7 +146,7 @@ class EventContentVC: UITableViewController {
         }
         
         let dateformatter = DateFormatter()
-        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let time = dateformatter.string(from: Date())
         let ref = FirebaseManager.shared.databaseReference
         let eventListRef = ref.child("invitingEventList").child(currentUser.uid)
@@ -163,7 +160,7 @@ class EventContentVC: UITableViewController {
                 let eventList = EventList(eventID: dict["eventID"] as! String,
                                           isReply: dict["isReply"] as! Bool)
                 
-                if (eventList.eventID == self.event.eventID && eventList.isReply == false) {
+                if eventList.eventID == self.event.eventID && eventList.isReply == false {
                     
                     let alert = UIAlertController(title: "提示", message: "是否同意加入\(self.event.title)?", preferredStyle: .alert)
                     
@@ -172,13 +169,14 @@ class EventContentVC: UITableViewController {
                     let agree = UIAlertAction(title: "同意", style: .default) { (action) in
                         
                         
-                        let notification = Notifacation(notifacationID: notificationID, eventID: self.event.eventID,message: "\"\(self.user.name)\" 同意加入 「\(self.event.title)」", remark: "" ,isRead: false,time: time,isRemoved: false)
+                        let notification = GNotification(notificationID: notificationID, userID: self.event.organiserID, eventID: self.event.eventID,message: "\"\(self.user.name)\" 同意加入 「\(self.event.title)」", remark: "" ,isRead: false,time: time,isRemoved: false)
                         
-                        ref.child("notification").child(self.event.organiserID).child(notificationID).setValue(notification.uploadNotification())
+                        ref.child("notification").child(notificationID).setValue(notification.uploadNotification())
                         ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).removeValue()
                         ref.child("invitingMemberList").child(self.event.eventID).child(currentUser.uid).removeValue()
-                        ref.child("eventList").child(currentUser.uid).child(self.event.eventID).setValue(["eventID":self.event.eventID])
-                        ref.child("memberList").child(self.event.eventID).child(currentUser.uid).child("memberID").setValue(currentUser.uid)
+                        self.event.memberIDs.append(currentUser.uid)
+                        ref.child("event").child(self.event.eventID).updateChildValues(["memberIDs" : self.event.memberIDs])
+                        
                         self.navigationController?.popViewController(animated: true)
                     }
                     
@@ -186,13 +184,13 @@ class EventContentVC: UITableViewController {
                         
                         let notificationRef = ref.child("notification")
                         
-                        notificationRef.child(self.user.userID).child(self.notification.notifacationID).updateChildValues(["isRemoved" : true])
-                        notificationRef.child(self.user.userID).child(self.notification.notifacationID).updateChildValues(["remark" : "已不在此聚成員內"])
+                        notificationRef.child(self.user.userID).child(self.notification.notificationID).updateChildValues(["isRemoved" : true])
+                        notificationRef.child(self.user.userID).child(self.notification.notificationID).updateChildValues(["remark" : "已不在此聚成員內"])
                         ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).removeValue()
                         ref.child("invitingMemberList").child(self.event.eventID).child(currentUser.uid).removeValue()
-                        let newNotification = Notifacation(notifacationID: notificationID,eventID: self.event.eventID, message: "\"\(self.user.name)\" 拒絕了 「\(self.event.title)」 的加入邀請", remark: "", isRead: false, time: time, isRemoved: false)
+                        let newNotification = GNotification(notificationID: notificationID, userID: self.event.organiserID,eventID: self.event.eventID, message: "\"\(self.user.name)\" 拒絕了 「\(self.event.title)」 的加入邀請", remark: "", isRead: false, time: time, isRemoved: false)
                         
-                        notificationRef.child(self.event.organiserID).child(notificationID).setValue(newNotification.uploadNotification())
+                        notificationRef.child(notificationID).setValue(newNotification.uploadNotification())
                         
                         self.navigationController?.popViewController(animated: true)
                     }
@@ -207,36 +205,40 @@ class EventContentVC: UITableViewController {
     }
     
     
-    
-    
-    // Query organiser's data from database.
-    func queryOrganiserData() {
+    func queryUserData() {
         
-        let userRef = FirebaseManager.shared.databaseReference.child("user").child(self.event.organiserID)
+        let userRef = FirebaseManager.shared.databaseReference.child("user")
         
-        FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value) { (allObjects, dict) in
+        FirebaseManager.shared.getData(userRef, type: .value) { (allObjects, dict) in
             
-            guard let dict = dict else {
+            let organisers = allObjects.compactMap{ (snap) -> GUser? in
                 
-                print("fail to get dict")
+                let dict = snap.value as! [String: Any]
+                
+                let user = GUser(userID: dict["userID"] as! String,
+                                 email: dict["email"] as! String,
+                                 name: dict["name"] as! String,
+                                 profileImageURL: dict["profileImageURL"] as! String)
+                
+                return (user.userID == self.event.organiserID ? user : nil)
+                
+            }
+            
+            guard let organiser = organisers.first else {
                 return
             }
             
-            let user = GUser(userID: dict["userID"] as! String,
-                             email: dict["email"] as! String,
-                             name: dict["name"] as! String,
-                             profileImageURL: dict["profileImageURL"] as! String)
-            
-            self.organiserName.text = user.name
+            self.organiserName.text = organiser.name
             
             // Show image from cache if that has been stored in there.
-            if let image = self.imageCache.object(forKey: user.profileImageURL as NSString) as? UIImage {
+            if let image = self.imageCache.object(forKey: organiser.profileImageURL as NSString) as? UIImage {
                 
                 self.organiserProfileImage.image = image
+                
             }else {
                 
                 // Download image from firebase storage.
-                FirebaseManager.shared.getImage(urlString: user.profileImageURL) { (image) in
+                FirebaseManager.shared.getImage(urlString: organiser.profileImageURL) { (image) in
                     
                     guard let image = image else {
                         
@@ -244,82 +246,36 @@ class EventContentVC: UITableViewController {
                         return
                     }
                     
-                    self.imageCache.setObject(image, forKey: user.profileImageURL as NSString)
+                    self.imageCache.setObject(image, forKey: organiser.profileImageURL as NSString)
                     self.organiserProfileImage.image = image
+                    
                 }
             }
-        }
-    }
-    
-    
-    func queryUserData() {
-        
-        guard let currentUser = Auth.auth().currentUser else {
             
-            print("Fail to get current user")
-            return
-        }
-        
-        let userRef = FirebaseManager.shared.databaseReference.child("user").child(currentUser.uid)
-        
-        FirebaseManager.shared.getData(userRef, type: .value) { (allObject, dict) in
             
-            guard let dict = dict else{
+            let members = allObjects.compactMap{ (snap) -> GUser? in
                 
-                print("Fail to get dict")
-                return
+                let dict = snap.value as! [String: Any]
+                
+                let user = GUser(userID: dict["userID"] as! String,
+                                 email: dict["email"] as! String,
+                                 name: dict["name"] as! String,
+                                 profileImageURL: dict["profileImageURL"] as! String)
+                
+                let membersSet = Set(self.event.memberIDs)
+                
+                return (membersSet.contains(user.userID) ? user : nil)
+                
             }
             
-            self.user = GUser(userID: dict["userID"] as! String,
-                              email: dict["email"] as! String,
-                              name: dict["name"] as! String,
-                              profileImageURL: dict["profileImageURL"] as! String)
+            self.memberData = members
+            self.memberCollectionView.reloadData()
+            self.dismiss(animated: true, completion: nil)
             
-            
-            FirebaseManager.shared.getImage(urlString: self.user.profileImageURL) { (image) in
-                
-                self.user.image = image
-            }
         }
+        
     }
     
-    
-    func queryMemberData() {
-        
-        let memberRef = FirebaseManager.shared.databaseReference.child("memberList").child(self.event.eventID)
-        
-        FirebaseManager.shared.getDataBySingleEvent(memberRef, type: .value) { (allObjects, dict) in
-            
-            for snap in allObjects {
-                
-                guard let dict = snap.value as? [String : Any] else {
-                    
-                    print("Fail to get data")
-                    return
-                }
-                
-                let memberID = dict["memberID"] as! String
-                let userRef = FirebaseManager.shared.databaseReference.child("user").child(memberID)
-                
-                FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value){ (allObjects, dict) in
-                    
-                    guard let dict = dict else {
-                        
-                        print("Fail to get dict")
-                        return
-                    }
-                    
-                    let user = GUser(userID: dict["userID"] as! String,
-                                     email: dict["email"] as! String,
-                                     name: dict["name"] as! String,
-                                     profileImageURL: dict["profileImageURL"] as! String)
-                    
-                    self.memberData.insert(user, at: 0)
-                    self.memberCollectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
-                }
-            }
-        }
-    }
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

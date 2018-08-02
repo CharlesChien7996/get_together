@@ -13,18 +13,37 @@ import FirebaseMessaging
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
     override init() {
         FirebaseApp.configure()
-//        Database.database().isPersistenceEnabled = true
+        //        Database.database().isPersistenceEnabled = true
     }
-
-
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-
+        guard let currentUser = Auth.auth().currentUser else {
+            return false
+        }
+        
+        let userRef = FirebaseManager.shared.databaseReference.child("user").child(currentUser.uid)
+        FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value) { (allObjects, dict) in
+            
+            guard let dict = dict else {
+                return
+            }
+            
+            
+            let user = GUser(userID: dict["userID"] as! String,
+                             email: dict["email"] as! String,
+                             name: dict["name"] as! String,
+                             profileImageURL: dict["profileImageURL"] as! String)
+            
+            
+            FirebaseManager.shared.user = user
+        }
         
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
@@ -69,7 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let tabbarController = self.window?.rootViewController as! UITabBarController
         let secondVC = tabbarController.viewControllers![1]
         secondVC.tabBarItem.badgeValue = "1"
-    
+        
     }
     
     func applicationWillTerminate(_ application: UIApplication) {

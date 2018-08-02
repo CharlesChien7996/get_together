@@ -10,12 +10,15 @@ class Event {
     var description: String
     var eventImageURL: String
     var organiserID: String
+    var memberIDs: [String]
     var image: UIImage?
     
-    init(eventID: String, organiserID: String, title: String, date: String, location: String, description: String, eventImageURL: String) {
+    
+    init(eventID: String, organiserID: String, title: String, memberIDs: [String], date: String, location: String, description: String, eventImageURL: String) {
         self.eventID = eventID
         self.title = title
         self.organiserID = organiserID
+        self.memberIDs = memberIDs
         self.date = date
         self.location = location
         self.description = description
@@ -29,6 +32,7 @@ class Event {
         return ["eventID": eventID,
                 "organiserID": organiserID,
                 "title": title,
+                "memberIDs": memberIDs,
                 "date": date,
                 "location": location,
                 "description": description,

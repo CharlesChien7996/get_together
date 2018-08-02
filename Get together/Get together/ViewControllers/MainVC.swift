@@ -5,15 +5,12 @@ class MainVC: UIViewController {
     
     @IBOutlet weak var eventSegmentedControl: UISegmentedControl!
     @IBOutlet var backgroundViewWithoutLogin: UIView!
-    var spinner: UIActivityIndicatorView = UIActivityIndicatorView()
     var refresher: UIRefreshControl!
-    
     var joinedEventData:[Event] = []
     var hostEventData:[Event] = []
     var imageCache = FirebaseManager.shared.imageCache
-    var unreads: [Notifacation] = []
+    var unreads: [GNotification] = []
     @IBOutlet weak var tableView: UITableView!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,9 +27,9 @@ class MainVC: UIViewController {
         }
         
         self.setUpRefreshView()
-        FirebaseManager.shared.setUpActivityUndicatorView(self.view, activityIndicatorView: self.spinner)
+        //        FirebaseManager.shared.setUpLoadingView(self)
         self.queryHostEventData(currentUser)
-        self.queryNotification(currentUser)
+        //        self.queryNotification(currentUser)
     }
     
     
@@ -54,20 +51,9 @@ class MainVC: UIViewController {
             return
         }
         
-        switch self.eventSegmentedControl.selectedSegmentIndex {
-            
-        case 0:
-            self.queryHostEventData(currentUser)
-            break
-            
-        case 1:
-            self.queryJoinedEventData(currentUser)
-            break
-        default:
-            break
-        }
+        self.queryHostEventData(currentUser)
         self.refresher.endRefreshing()
-
+        
     }
     
     // Background view's login button be pressed.
@@ -79,55 +65,22 @@ class MainVC: UIViewController {
     
     @IBAction func segmentedControlChanged(_ sender: Any) {
         
-        switch self.eventSegmentedControl.selectedSegmentIndex {
-            
-        case 0:
-            guard let currentUser = Auth.auth().currentUser else {
-                
-                print("Fail to get current user")
-                return
-            }
-            
-            self.queryHostEventData(currentUser)
-        case 1:
-            guard let currentUser = Auth.auth().currentUser else {
-                
-                print("Fail to get current user")
-                return
-            }
-            
-            self.queryJoinedEventData(currentUser)
-        default:
-            break
+        guard Auth.auth().currentUser != nil else {
+            return
         }
-        if self.joinedEventData.count == 0 {
-            self.tableView.reloadData()
-
-        }
+        self.tableView.reloadData()
     }
     
     
     // Query data host by self from database.
     func queryHostEventData(_ currentUser: User) {
-
-        self.spinner.startAnimating()
-        self.tableView.separatorStyle = .none
-
-//        if self.hostEventData.count == 0{
-//
-//            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
-//                self.spinner.stopAnimating()
-//                self.tableView.separatorStyle = .singleLine
-//                self.tableView.reloadData()
-//            }
-//        }
-        
         
         let eventRef = FirebaseManager.shared.databaseReference.child("event").queryOrdered(byChild: "date")
         
         FirebaseManager.shared.getData(eventRef, type: .value) { (allObjects, dict)   in
             
             self.hostEventData.removeAll()
+            self.joinedEventData.removeAll()
             
             let myEvent = allObjects.compactMap{ (snap) -> Event? in
                 
@@ -135,6 +88,7 @@ class MainVC: UIViewController {
                 let event = Event(eventID: dict["eventID"] as! String,
                                   organiserID: dict["organiserID"] as! String,
                                   title: dict["title"] as! String,
+                                  memberIDs: dict["memberIDs"] as! [String],
                                   date: dict["date"] as! String,
                                   location: dict["location"] as! String,
                                   description: dict["description"] as! String,
@@ -143,90 +97,59 @@ class MainVC: UIViewController {
                 return (event.organiserID == currentUser.uid ? event : nil)
                 
             }
-            self.hostEventData = myEvent.reversed()
-            self.spinner.stopAnimating()
-            self.tableView.separatorStyle = .singleLine
-            self.tableView.reloadData()
-        }
-    }
-    
-    
-    // Query joined data from database.
-    func queryJoinedEventData(_ currentUser: User) {
-        self.spinner.startAnimating()
-        self.tableView.separatorStyle = .none
-
-
-        if self.joinedEventData.count == 0 {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
-                self.spinner.stopAnimating()
-                self.tableView.separatorStyle = .singleLine
-                self.tableView.reloadData()
-            }
-        }
-        
-        let eventListRef = FirebaseManager.shared.databaseReference.child("eventList").child(currentUser.uid)
-        
-        FirebaseManager.shared.getData(eventListRef, type: .value) { (allObjects, dict)   in
-
-
-            for snap in allObjects {
-                self.joinedEventData.removeAll()
+            
+            
+            let joinedEvent = allObjects.compactMap{ (snap) -> Event? in
                 
                 let dict = snap.value as! [String: Any]
+                let event = Event(eventID: dict["eventID"] as! String,
+                                  organiserID: dict["organiserID"] as! String,
+                                  title: dict["title"] as! String,
+                                  memberIDs: dict["memberIDs"] as! [String],
+                                  date: dict["date"] as! String,
+                                  location: dict["location"] as! String,
+                                  description: dict["description"] as! String,
+                                  eventImageURL: dict["eventImageURL"] as! String)
                 
-                let eventID = dict["eventID"] as! String
-            
-                let ref = Database.database().reference().child("event").child(eventID)
+                let membersSet = Set(event.memberIDs)
                 
-                FirebaseManager.shared.getData(ref, type: .value) { (allObject, dict)  in
-                    
-                    guard let dict = dict else{
-                        
-                        print("Fail to get dict")
-                        return
-                    }
-                    
-                    let event = Event(eventID: dict["eventID"] as! String,
-                                      organiserID: dict["organiserID"] as! String,
-                                      title: dict["title"] as! String,
-                                      date: dict["date"] as! String,
-                                      location: dict["location"] as! String,
-                                      description: dict["description"] as! String,
-                                      eventImageURL: dict["eventImageURL"] as! String)
-                    
-                    self.joinedEventData.insert(event, at: 0)
-                    self.joinedEventData.sort() { (event1, event2) -> Bool in
-                        return event1.date > event2.date
-                    }
-                    self.spinner.stopAnimating()
-                    self.tableView.separatorStyle = .singleLine
-                    self.tableView.reloadData()
-                }
+                return (membersSet.contains(currentUser.uid) ? event : nil)
             }
+            
+            self.joinedEventData = joinedEvent.reversed()
+            self.hostEventData = myEvent.reversed()
+            self.tableView.reloadData()
+            self.dismiss(animated: true, completion: nil)
+            
         }
     }
     
     
     func queryNotification(_ currentUser: User) {
         
-        let notificationRef = FirebaseManager.shared.databaseReference.child("notification").child(currentUser.uid)
+        let notificationRef = FirebaseManager.shared.databaseReference.child("notification").queryOrdered(byChild: "time")
         
         FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
-
-            self.unreads.removeAll()
             
-            for snap in allObjects {
+            print(allObjects)
+            let myNotification = allObjects.compactMap {(snap) -> GNotification? in
                 
                 let dict = snap.value as! [String : Any]
                 
-                let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
-                                                eventID: dict["eventID"] as! String,
-                                                message: dict["message"] as! String,
-                                                remark: dict["remark"] as! String,
-                                                isRead: dict["isRead"] as! Bool,
-                                                time: dict["time"] as! String,
-                                                isRemoved: dict["isRemoved"] as! Bool)
+                let notification = GNotification(notificationID: dict["notificationID"] as! String,
+                                                 userID: dict["userID"] as! String,
+                                                 eventID: dict["eventID"] as! String,
+                                                 message: dict["message"] as! String,
+                                                 remark: dict["remark"] as! String,
+                                                 isRead: dict["isRead"] as! Bool,
+                                                 time: dict["time"] as! String,
+                                                 isRemoved: dict["isRemoved"] as! Bool)
+                
+                
+                return (currentUser.uid == notification.userID ? notification : nil)
+            }
+            
+            for notification in myNotification {
                 
                 if !notification.isRead {
                     

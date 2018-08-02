@@ -6,28 +6,21 @@ class InvitingMemberVC: UITableViewController {
     var invitingMemberData: [GUser] = []
     var event: Event!
     var imageCache = FirebaseManager.shared.imageCache
-    var spinner: UIActivityIndicatorView!
-
+    var alert: UIAlertController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.setUpActivityUndicatorView()
+        //        FirebaseManager.shared.setUpLoadingView(self)
         self.queryInvitingMemberData()
+        
     }
     
+    
     func queryInvitingMemberData() {
-        
-        self.spinner.startAnimating()
-
-//        if self.invitingMemberData.count == 0 {
-//
-//            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
-//                self.spinner.stopAnimating()
-//
-//            }
-//        }
-
+        if self.invitingMemberData.isEmpty {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4), execute: {
+            })
+        }
         
         let ref = FirebaseManager.shared.databaseReference
         let invitingMembetListRef = ref.child("invitingMemberList").child(self.event.eventID)
@@ -59,23 +52,11 @@ class InvitingMemberVC: UITableViewController {
                     
                     self.invitingMemberData.append(user)
                     self.tableView.reloadData()
+                    //                    self.dismiss(animated: true, completion: nil)
                 }
             }
-            self.spinner.stopAnimating()
-            self.tableView.separatorStyle = .singleLine
-            self.tableView.reloadData()
+            
         }
-    }
-    
-    
-    // Set up UIActivityUndicatorView.
-    func setUpActivityUndicatorView() {
-        
-        self.spinner = UIActivityIndicatorView()
-        self.spinner.activityIndicatorViewStyle = .gray
-        self.spinner.center = self.view.center
-        self.spinner.hidesWhenStopped = true
-        self.view.addSubview(self.spinner)
     }
     
     
