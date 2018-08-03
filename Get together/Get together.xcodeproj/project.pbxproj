@@ -23,10 +23,9 @@
 		D60E340C20FC80E4003BD0FD /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E340820FC80E4003BD0FD /* MyCollectionViewCell.swift */; };
 		D60E340D20FC80E4003BD0FD /* MyEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E340920FC80E4003BD0FD /* MyEventCell.swift */; };
 		D60E341320FC8173003BD0FD /* NotificationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E341220FC8173003BD0FD /* NotificationVC.swift */; };
-		D60FAE9D2111AACE00AA169B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D60FAE9C2111AACD00AA169B /* GoogleService-Info.plist */; };
-		D611DA4421118FAD005B884E /* GoogleService-Info01.plist in Resources */ = {isa = PBXBuildFile; fileRef = D611DA4321118FAC005B884E /* GoogleService-Info01.plist */; };
 		D611E15E21106EC9001BB4A5 /* EventImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D611E15D21106EC9001BB4A5 /* EventImageCell.swift */; };
 		D6194B29210710EC0077222F /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6194B28210710EC0077222F /* ProfileVC.swift */; };
+		D6198D092114932F00FFA66C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6198D082114932E00FFA66C /* GoogleService-Info.plist */; };
 		D63E804420FF166900C0E010 /* LocationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804320FF166900C0E010 /* LocationVC.swift */; };
 		D63E804620FF220200C0E010 /* LocationSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804520FF220200C0E010 /* LocationSearchVC.swift */; };
 		D66F261821072F80002B4752 /* EditProfileInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D66F261721072F80002B4752 /* EditProfileInfoVC.swift */; };
@@ -56,10 +55,11 @@
 		D60E340820FC80E4003BD0FD /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
 		D60E340920FC80E4003BD0FD /* MyEventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyEventCell.swift; sourceTree = "<group>"; };
 		D60E341220FC8173003BD0FD /* NotificationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationVC.swift; sourceTree = "<group>"; };
-		D60FAE9C2111AACD00AA169B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		D611DA4321118FAC005B884E /* GoogleService-Info01.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info01.plist"; sourceTree = "<group>"; };
 		D611E15D21106EC9001BB4A5 /* EventImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImageCell.swift; sourceTree = "<group>"; };
 		D6194B28210710EC0077222F /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
+		D6198D06211482E900FFA66C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
+		D6198D07211482E900FFA66C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		D6198D082114932E00FFA66C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D63E804320FF166900C0E010 /* LocationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationVC.swift; sourceTree = "<group>"; };
 		D63E804520FF220200C0E010 /* LocationSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchVC.swift; sourceTree = "<group>"; };
 		D6468D3C210EE80B00514635 /* Get together.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Get together.entitlements"; sourceTree = "<group>"; };
@@ -131,8 +131,7 @@
 				D60E33E420FC7F73003BD0FD /* Main.storyboard */,
 				D60E33E920FC7F75003BD0FD /* LaunchScreen.storyboard */,
 				D60E33EC20FC7F75003BD0FD /* Info.plist */,
-				D611DA4321118FAC005B884E /* GoogleService-Info01.plist */,
-				D60FAE9C2111AACD00AA169B /* GoogleService-Info.plist */,
+				D6198D082114932E00FFA66C /* GoogleService-Info.plist */,
 				D60E33E720FC7F75003BD0FD /* Assets.xcassets */,
 				D6468D3C210EE80B00514635 /* Get together.entitlements */,
 			);
@@ -227,7 +226,6 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
 			);
 			mainGroup = D60E33D420FC7F73003BD0FD;
@@ -245,11 +243,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D611DA4421118FAD005B884E /* GoogleService-Info01.plist in Resources */,
 				D60E33EB20FC7F75003BD0FD /* LaunchScreen.storyboard in Resources */,
+				D6198D092114932F00FFA66C /* GoogleService-Info.plist in Resources */,
 				D60E33E820FC7F75003BD0FD /* Assets.xcassets in Resources */,
 				D60E33E620FC7F73003BD0FD /* Main.storyboard in Resources */,
-				D60FAE9D2111AACE00AA169B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +281,7 @@
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -292,6 +290,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -339,6 +338,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				D60E33E520FC7F73003BD0FD /* Base */,
+				D6198D06211482E900FFA66C /* zh-Hant */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -347,6 +347,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				D60E33EA20FC7F75003BD0FD /* Base */,
+				D6198D07211482E900FFA66C /* zh-Hant */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -358,6 +359,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -418,6 +420,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

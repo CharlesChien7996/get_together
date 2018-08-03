@@ -1,5 +1,6 @@
 import UIKit
 import Firebase
+import SVProgressHUD
 
 class EditProfileInfoVC: UITableViewController {
     
@@ -29,7 +30,7 @@ class EditProfileInfoVC: UITableViewController {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         
-        let alert = UIAlertController(title: "來源", message: "選擇照片來源", preferredStyle: .alert)
+        let alert = UIAlertController(title: "來源", message: "選擇照片來源", preferredStyle: .actionSheet)
         let photoLibray = UIAlertAction(title: "相簿", style: .default) { (action) in
             imagePicker.sourceType = .photoLibrary
             imagePicker.allowsEditing = true
@@ -52,7 +53,7 @@ class EditProfileInfoVC: UITableViewController {
     
     // Upload user's data to database.
     func uploadUserData() {
-        
+        SVProgressHUD.show(withStatus: "請稍候...")
         guard let uid = Auth.auth().currentUser?.uid else {
             print("Fail to get uid.")
             return
@@ -75,6 +76,7 @@ class EditProfileInfoVC: UITableViewController {
             
             let user = GUser(userID: uid, email: self.user.email, name: self.usernameTextField.text!, profileImageURL: String(describing: url))
             self.ref.child("user").child(uid).setValue(user.uploadedUserData())
+            SVProgressHUD.dismiss()
         }
     }
     

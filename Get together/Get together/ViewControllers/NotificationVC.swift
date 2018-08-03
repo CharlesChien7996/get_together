@@ -1,6 +1,6 @@
 import UIKit
 import Firebase
-
+import SVProgressHUD
 
 class NotificationVC: UITableViewController {
     
@@ -27,7 +27,6 @@ class NotificationVC: UITableViewController {
         }
         
         self.setUpRefreshView()
-        FirebaseManager.shared.setUpActivityUndicatorView(self.view, activityIndicatorView: self.spinner)
         self.queryNotification(currentUser)
     }
     
@@ -43,16 +42,50 @@ class NotificationVC: UITableViewController {
         
     }
     
-    func queryNotification(_ currentUser: User) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
         
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    
+    @objc func didUserLogin() {
+        
+        guard let currentUser = Auth.auth().currentUser else {
+            return
+        }
+        self.tableView.backgroundView = nil
+        self.tableView.separatorStyle = .singleLine
+        self.queryNotification(currentUser)
+    }
+    
+    
+    @objc func didUserLogout() {
+        
+        
+        self.notificationData.removeAll()
+        self.joinedEventData.removeAll()
+        self.tableView.backgroundView = backgroundViewWithoutLogin
         self.tableView.separatorStyle = .none
-        self.spinner.startAnimating()
-        
+        self.tableView.reloadData()
+    }
+    
+    
+    func queryNotification(_ currentUser: User) {
+
+        SVProgressHUD.show(withStatus: "載入中...")
+
         if self.notificationData.count == 0 {
             
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
-                self.spinner.stopAnimating()
-                self.tableView.separatorStyle = .singleLine
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
+                
+                SVProgressHUD.dismiss()
                 self.tableView.reloadData()
             }
         }
@@ -61,7 +94,9 @@ class NotificationVC: UITableViewController {
         let notificationRef = FirebaseManager.shared.databaseReference.child("notification").queryOrdered(byChild: "time")
         
         FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
-            
+
+            SVProgressHUD.show(withStatus: "載入中...")
+
             self.notificationData.removeAll()
             self.joinedEventData.removeAll()
             
@@ -87,21 +122,6 @@ class NotificationVC: UITableViewController {
                 return GNoti1.time > GNoti2.time
             }
             for notification in self.notificationData {
-                
-                
-                //            for snap in allObjects {
-                //
-                //
-                //                let dict = snap.value as! [String : Any]
-                //
-                //                let notification = Notifacation(notifacationID: dict["notifacationID"] as! String,
-                //                                                userID: dict["userID"] as! String,
-                //                                                eventID: dict["eventID"] as! String,
-                //                                                message: dict["message"] as! String,
-                //                                                remark: dict["remark"] as! String,
-                //                                                isRead: dict["isRead"] as! Bool,
-                //                                                time: dict["time"] as! String,
-                //                                                isRemoved: dict["isRemoved"] as! Bool)
                 
                 let ref = Database.database().reference().child("event").child(notification.eventID)
                 FirebaseManager.shared.getDataBySingleEvent(ref, type: .value){ (allObjects, dict) in
@@ -130,11 +150,11 @@ class NotificationVC: UITableViewController {
                     
                     //                    self.notificationData.insert(notification, at: 0)
                     self.joinedEventData.append(event)
-                    self.spinner.stopAnimating()
-                    self.tableView.separatorStyle = .singleLine
-                    self.tableView.reloadData()
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        SVProgressHUD.dismiss()
+                    }
                 }
-                
             }
         }
     }
@@ -189,6 +209,7 @@ class NotificationVC: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.tableView.deselectRow(at: indexPath, animated: true)
         let notification = self.notificationData[indexPath.row]
         
         

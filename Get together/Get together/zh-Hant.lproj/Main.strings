@@ -1,0 +1,264 @@
+
+/* Class = "UILabel"; text = "尚未選擇"; ObjectID = "0Kb-I6-ZyG"; */
+"0Kb-I6-ZyG.text" = "尚未選擇";
+
+/* Class = "UILabel"; text = "尚未登入"; ObjectID = "2R7-ay-9S6"; */
+"2R7-ay-9S6.text" = "尚未登入";
+
+/* Class = "UIButton"; normalTitle = "登入"; ObjectID = "3M8-bi-Lat"; */
+"3M8-bi-Lat.normalTitle" = "登入";
+
+/* Class = "UITextField"; placeholder = "密碼"; ObjectID = "3O1-tC-tc7"; */
+"3O1-tC-tc7.placeholder" = "密碼";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "3rL-6x-gUk"; */
+"3rL-6x-gUk.headerTitle" = " ";
+
+/* Class = "UIBarButtonItem"; title = "確定"; ObjectID = "4wb-vJ-zx8"; */
+"4wb-vJ-zx8.title" = "確定";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "5tM-bs-gS9"; */
+"5tM-bs-gS9.headerTitle" = " ";
+
+/* Class = "UINavigationItem"; title = "搜尋地點"; ObjectID = "6Zh-vj-Ohx"; */
+"6Zh-vj-Ohx.title" = "搜尋地點";
+
+/* Class = "UINavigationItem"; title = "搜尋成員"; ObjectID = "7gS-dt-fcg"; */
+"7gS-dt-fcg.title" = "搜尋成員";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "88o-4B-vTR"; */
+"88o-4B-vTR.text" = "Subtitle";
+
+/* Class = "UINavigationItem"; title = "新增活動"; ObjectID = "EGf-6i-b3T"; */
+"EGf-6i-b3T.title" = "新增活動";
+
+/* Class = "UINavigationItem"; title = "邀請中成員"; ObjectID = "H93-9g-I5M"; */
+"H93-9g-I5M.title" = "邀請中成員";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "HIG-ax-9aM"; */
+"HIG-ax-9aM.headerTitle" = " ";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "HOh-0V-arI"; */
+"HOh-0V-arI.text" = "Label";
+
+/* Class = "UILabel"; text = "主辦"; ObjectID = "HUp-6v-sRl"; */
+"HUp-6v-sRl.text" = "主辦";
+
+/* Class = "UINavigationItem"; title = "通知"; ObjectID = "Hf0-eB-u8Y"; */
+"Hf0-eB-u8Y.title" = "通知";
+
+/* Class = "UILabel"; text = "時間"; ObjectID = "HiJ-0J-yKC"; */
+"HiJ-0J-yKC.text" = "時間";
+
+/* Class = "UITextField"; placeholder = "Email"; ObjectID = "I7k-Of-tkh"; */
+"I7k-Of-tkh.placeholder" = "Email";
+
+/* Class = "UILabel"; text = "使用者名稱"; ObjectID = "J1j-zA-7BL"; */
+"J1j-zA-7BL.text" = "使用者名稱";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "JMh-tS-EGV"; */
+"JMh-tS-EGV.text" = "Subtitle";
+
+/* Class = "UIBarButtonItem"; title = "<"; ObjectID = "Jmu-Jx-psf"; */
+"Jmu-Jx-psf.title" = "<";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Kes-Jd-d5G"; */
+"Kes-Jd-d5G.text" = "Label";
+
+/* Class = "UIBarButtonItem"; title = "完成"; ObjectID = "LKk-AW-h6p"; */
+"LKk-AW-h6p.title" = "完成";
+
+/* Class = "UITextField"; placeholder = "密碼"; ObjectID = "Lfl-kx-sml"; */
+"Lfl-kx-sml.placeholder" = "密碼";
+
+/* Class = "UIButton"; normalTitle = "忘記密碼？"; ObjectID = "Li9-Q5-UZH"; */
+"Li9-Q5-UZH.normalTitle" = "忘記密碼？";
+
+/* Class = "UILabel"; text = "描述"; ObjectID = "Mhb-ww-Fdw"; */
+"Mhb-ww-Fdw.text" = "描述";
+
+/* Class = "UIButton"; normalTitle = "上傳照片"; ObjectID = "N8R-Iv-wrK"; */
+"N8R-Iv-wrK.normalTitle" = "上傳照片";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "NV9-xT-KW3"; */
+"NV9-xT-KW3.text" = "Label";
+
+/* Class = "UIBarButtonItem"; title = "編輯"; ObjectID = "Nod-4D-Ogx"; */
+"Nod-4D-Ogx.title" = "編輯";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "PYY-Hs-CVu"; */
+"PYY-Hs-CVu.headerTitle" = " ";
+
+/* Class = "UIBarButtonItem"; title = "完成"; ObjectID = "R4L-rL-hRM"; */
+"R4L-rL-hRM.title" = "完成";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "RP1-l6-enk"; */
+"RP1-l6-enk.text" = "Subtitle";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "RbL-8v-IOu"; */
+"RbL-8v-IOu.headerTitle" = " ";
+
+/* Class = "UILabel"; text = "尚未登入"; ObjectID = "RyA-Gt-6u2"; */
+"RyA-Gt-6u2.text" = "尚未登入";
+
+/* Class = "UINavigationItem"; title = "編輯個人頁面"; ObjectID = "Svt-FU-qLE"; */
+"Svt-FU-qLE.title" = "編輯個人頁面";
+
+/* Class = "UIButton"; normalTitle = "註冊"; ObjectID = "T8u-Ku-251"; */
+"T8u-Ku-251.normalTitle" = "註冊";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Ulx-hi-r0t"; */
+"Ulx-hi-r0t.text" = "Label";
+
+/* Class = "UILabel"; text = "地點"; ObjectID = "XRI-a4-40J"; */
+"XRI-a4-40J.text" = "地點";
+
+/* Class = "UIButton"; normalTitle = "取消"; ObjectID = "YfA-8o-P7L"; */
+"YfA-8o-P7L.normalTitle" = "取消";
+
+/* Class = "UILabel"; text = "標題"; ObjectID = "YkN-zn-hSu"; */
+"YkN-zn-hSu.text" = "標題";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "Z9i-qg-wfn"; */
+"Z9i-qg-wfn.headerTitle" = " ";
+
+/* Class = "UIButton"; normalTitle = "登入"; ObjectID = "ZW5-cg-hya"; */
+"ZW5-cg-hya.normalTitle" = "登入";
+
+/* Class = "UIButton"; normalTitle = "稍後再說"; ObjectID = "acM-hf-16c"; */
+"acM-hf-16c.normalTitle" = "稍後再說";
+
+/* Class = "UIButton"; normalTitle = "登入"; ObjectID = "ahI-em-tcg"; */
+"ahI-em-tcg.normalTitle" = "登入";
+
+/* Class = "UILabel"; text = "標題"; ObjectID = "aqG-f1-2ov"; */
+"aqG-f1-2ov.text" = "標題";
+
+/* Class = "UILabel"; text = "Email"; ObjectID = "bb7-AK-y0K"; */
+"bb7-AK-y0K.text" = "Email";
+
+/* Class = "UITextField"; placeholder = "請輸入標題"; ObjectID = "c2n-cM-gcv"; */
+"c2n-cM-gcv.placeholder" = "請輸入標題";
+
+/* Class = "UILabel"; text = "成員"; ObjectID = "cNN-Oc-uEZ"; */
+"cNN-Oc-uEZ.text" = "成員";
+
+/* Class = "UILabel"; text = "地點"; ObjectID = "dop-6E-IHt"; */
+"dop-6E-IHt.text" = "地點";
+
+/* Class = "UILabel"; text = "讀取中"; ObjectID = "duT-Rr-47J"; */
+"duT-Rr-47J.text" = "讀取中";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "e8E-of-Wcw"; */
+"e8E-of-Wcw.headerTitle" = " ";
+
+/* Class = "UITextView"; text = "為你的活動添加一點描述吧！"; ObjectID = "ePg-dd-1x0"; */
+"ePg-dd-1x0.text" = "為你的活動添加一點描述吧！";
+
+/* Class = "UITextField"; placeholder = "Email"; ObjectID = "fHA-xe-VKd"; */
+"fHA-xe-VKd.placeholder" = "Email";
+
+/* Class = "UIButton"; normalTitle = "登出"; ObjectID = "fpf-oM-Co0"; */
+"fpf-oM-Co0.normalTitle" = "登出";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "fuR-9y-VSj"; */
+"fuR-9y-VSj.text" = "Title";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "g9L-M6-yeQ"; */
+"g9L-M6-yeQ.normalTitle" = "Button";
+
+/* Class = "UISegmentedControl"; gQD-Rx-JuW.segmentTitles[0] = "主辦的活動"; ObjectID = "gQD-Rx-JuW"; */
+"gQD-Rx-JuW.segmentTitles[0]" = "主辦的活動";
+
+/* Class = "UISegmentedControl"; gQD-Rx-JuW.segmentTitles[1] = "參與的活動"; ObjectID = "gQD-Rx-JuW"; */
+"gQD-Rx-JuW.segmentTitles[1]" = "參與的活動";
+
+/* Class = "UIButton"; normalTitle = "重設密碼"; ObjectID = "gv3-Kn-fuu"; */
+"gv3-Kn-fuu.normalTitle" = "重設密碼";
+
+/* Class = "UIButton"; normalTitle = "創建新帳戶"; ObjectID = "iLI-F3-y8K"; */
+"iLI-F3-y8K.normalTitle" = "創建新帳戶";
+
+/* Class = "UIBarButtonItem"; title = "編輯"; ObjectID = "iMj-yK-TEz"; */
+"iMj-yK-TEz.title" = "編輯";
+
+/* Class = "UITextField"; placeholder = "Email"; ObjectID = "jkM-vz-eug"; */
+"jkM-vz-eug.placeholder" = "Email";
+
+/* Class = "UIButton"; normalTitle = "取消"; ObjectID = "kUf-zS-Sy3"; */
+"kUf-zS-Sy3.normalTitle" = "取消";
+
+/* Class = "UINavigationItem"; title = "活動詳情"; ObjectID = "lPD-IN-Pba"; */
+"lPD-IN-Pba.title" = "活動詳情";
+
+/* Class = "UILabel"; text = "使用者名稱"; ObjectID = "lb4-GG-nWj"; */
+"lb4-GG-nWj.text" = "使用者名稱";
+
+/* Class = "UINavigationItem"; title = "聚聚"; ObjectID = "ljF-Wg-sgz"; */
+"ljF-Wg-sgz.title" = "聚聚";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "mPv-nN-m62"; */
+"mPv-nN-m62.headerTitle" = " ";
+
+/* Class = "UINavigationItem"; title = "個人頁面"; ObjectID = "mhC-DG-AFD"; */
+"mhC-DG-AFD.title" = "個人頁面";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "nXk-ki-47x"; */
+"nXk-ki-47x.text" = "Title";
+
+/* Class = "UIButton"; normalTitle = "邀請中成員"; ObjectID = "oAs-gY-xQx"; */
+"oAs-gY-xQx.normalTitle" = "邀請中成員";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "q4D-S4-ORt"; */
+"q4D-S4-ORt.headerTitle" = " ";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "qmc-oU-SEC"; */
+"qmc-oU-SEC.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "qwu-Ig-blu"; */
+"qwu-Ig-blu.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "rV2-0h-K2m"; */
+"rV2-0h-K2m.text" = "Label";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "ssb-vM-kwZ"; */
+"ssb-vM-kwZ.text" = "Title";
+
+/* Class = "UITextField"; placeholder = "密碼確認"; ObjectID = "tjd-s5-BPq"; */
+"tjd-s5-BPq.placeholder" = "密碼確認";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "ubd-7R-TC3"; */
+"ubd-7R-TC3.headerTitle" = " ";
+
+/* Class = "UIButton"; normalTitle = "選擇照片"; ObjectID = "ukA-Fw-B3K"; */
+"ukA-Fw-B3K.normalTitle" = "選擇照片";
+
+/* Class = "UIButton"; normalTitle = "上傳圖片"; ObjectID = "uqi-Bp-Nsa"; */
+"uqi-Bp-Nsa.normalTitle" = "上傳圖片";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "vPH-wG-bPF"; */
+"vPH-wG-bPF.headerTitle" = " ";
+
+/* Class = "UILabel"; text = "時間"; ObjectID = "vUz-Ps-cL6"; */
+"vUz-Ps-cL6.text" = "時間";
+
+/* Class = "UILabel"; text = "主辦"; ObjectID = "vYD-FM-53t"; */
+"vYD-FM-53t.text" = "主辦";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "wSB-BH-PYD"; */
+"wSB-BH-PYD.headerTitle" = " ";
+
+/* Class = "UILabel"; text = "成員"; ObjectID = "xG0-Ey-rfz"; */
+"xG0-Ey-rfz.text" = "成員";
+
+/* Class = "UITextField"; placeholder = "使用者名稱"; ObjectID = "xIY-ox-ely"; */
+"xIY-ox-ely.placeholder" = "使用者名稱";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "xMh-Ne-9lJ"; */
+"xMh-Ne-9lJ.normalTitle" = "Button";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "xqi-Jr-mmy"; */
+"xqi-Jr-mmy.headerTitle" = " ";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "y6L-NL-6Fg"; */
+"y6L-NL-6Fg.headerTitle" = " ";

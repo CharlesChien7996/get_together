@@ -1,5 +1,6 @@
 import UIKit
 import Firebase
+import SVProgressHUD
 
 class InvitingMemberVC: UITableViewController {
     
@@ -17,9 +18,15 @@ class InvitingMemberVC: UITableViewController {
     
     
     func queryInvitingMemberData() {
-        if self.invitingMemberData.isEmpty {
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4), execute: {
-            })
+        
+        SVProgressHUD.show(withStatus: "載入中...")
+        if self.invitingMemberData.count == 0 {
+            
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
+                
+                SVProgressHUD.dismiss()
+                self.tableView.reloadData()
+            }
         }
         
         let ref = FirebaseManager.shared.databaseReference
@@ -38,7 +45,8 @@ class InvitingMemberVC: UITableViewController {
                 let invitingMemberRef = ref.child("user").child(invitingMemberID)
                 
                 FirebaseManager.shared.getDataBySingleEvent(invitingMemberRef, type: .value) { (allObjects, dict) in
-                    
+                    SVProgressHUD.show(withStatus: "載入中...")
+
                     guard let dict = dict else {
                         
                         print("Fail to get dict")
@@ -51,11 +59,12 @@ class InvitingMemberVC: UITableViewController {
                                      profileImageURL: dict["profileImageURL"] as! String)
                     
                     self.invitingMemberData.append(user)
-                    self.tableView.reloadData()
-                    //                    self.dismiss(animated: true, completion: nil)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        SVProgressHUD.dismiss()
+                    }
                 }
             }
-            
         }
     }
     
@@ -96,9 +105,12 @@ class InvitingMemberVC: UITableViewController {
                 }
                 
                 self.imageCache.setObject(image, forKey: invitingMember.profileImageURL as NSString)
-                invitingMemberCell.imageView?.image = image
                 
-                
+                DispatchQueue.main.async {
+                    invitingMemberCell.imageView?.image = image
+
+                }
+
             }
             
         }

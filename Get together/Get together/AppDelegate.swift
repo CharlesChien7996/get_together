@@ -1,15 +1,9 @@
-//
-//  AppDelegate.swift
-//  Get together
-//
-//  Created by 簡士荃 on 2018/7/16.
-//  Copyright © 2018年 Charles. All rights reserved.
-//
-
 import UIKit
 import UserNotifications
+import FirebaseAuth
 import Firebase
 import FirebaseMessaging
+import SVProgressHUD
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,30 +14,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //        Database.database().isPersistenceEnabled = true
     }
     
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
-        guard let currentUser = Auth.auth().currentUser else {
-            return false
-        }
-        
-        let userRef = FirebaseManager.shared.databaseReference.child("user").child(currentUser.uid)
-        FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value) { (allObjects, dict) in
-            
-            guard let dict = dict else {
-                return
-            }
-            
-            
-            let user = GUser(userID: dict["userID"] as! String,
-                             email: dict["email"] as! String,
-                             name: dict["name"] as! String,
-                             profileImageURL: dict["profileImageURL"] as! String)
-            
-            
-            FirebaseManager.shared.user = user
-        }
+        SVProgressHUD.setDefaultStyle(.dark)
+
         
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
@@ -71,6 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -85,14 +60,65 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
-        let tabbarController = self.window?.rootViewController as! UITabBarController
-        let secondVC = tabbarController.viewControllers![1]
-        secondVC.tabBarItem.badgeValue = "1"
+        guard let currentUser = Auth.auth().currentUser else {
+            print("Fail to get current user.")
+            return
+        }
+        self.queryNotificationCount(currentUser)
+        
+    
+    }
+    
+    func queryNotificationCount(_ currentUser: User) {
+        
+        let notificationRef = FirebaseManager.shared.databaseReference.child("notification").queryOrdered(byChild: "time")
+        
+        FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
+            
+            let myNotification = allObjects.compactMap {(snap) -> GNotification? in
+                
+                let dict = snap.value as! [String : Any]
+                
+                let notification = GNotification(notificationID: dict["notificationID"] as! String,
+                                                 userID: dict["userID"] as! String,
+                                                 eventID: dict["eventID"] as! String,
+                                                 message: dict["message"] as! String,
+                                                 remark: dict["remark"] as! String,
+                                                 isRead: dict["isRead"] as! Bool,
+                                                 time: dict["time"] as! String,
+                                                 isRemoved: dict["isRemoved"] as! Bool)
+                
+                return (currentUser.uid == notification.userID ? notification : nil)
+            }
+            
+            var unReads: [GNotification] = []
+            
+            for notification in myNotification {
+                
+                if !notification.isRead {
+                    
+                    unReads.insert(notification, at: 0)
+                }
+                
+                let tabbarController = self.window?.rootViewController as! UITabBarController
+                let secondVC = tabbarController.viewControllers![1]
+                DispatchQueue.main.async {
+                    secondVC.tabBarItem.badgeValue = String(unReads.count)
+                    if secondVC.tabBarItem.badgeValue == "0" {
+                        secondVC.tabBarItem.badgeValue = nil
+                    }
+                }
+                
+                
+            }
+        }
         
     }
+
     
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+
     }
     
     /// iOS10 以下的版本接收推播訊息的 delegate

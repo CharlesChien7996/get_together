@@ -55,14 +55,10 @@ class FirebaseManager {
             
             let image = UIImage(data: imageData)
             
-            
-            
             DispatchQueue.main.async {
                 completionHandler(image)
                 
             }
-            
-            
         }
         task.resume()
     }
@@ -99,8 +95,6 @@ class FirebaseManager {
     
     func uploadImage(_ reference: StorageReference, image: UIImage, completionHandler: @escaping (_ imageURL: URL) -> Void){
         
-        
-        
         guard let imageData = UIImageJPEGRepresentation(image, 1) else{
             print("Fail to get imageData")
             return
@@ -125,64 +119,6 @@ class FirebaseManager {
         }
     }
     
-    
-    public func showOverlay(view: UIView) {
-        
-        overlayView.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
-        overlayView.center = view.center
-        overlayView.backgroundColor = UIColor.lightGray
-        overlayView.clipsToBounds = true
-        overlayView.layer.cornerRadius = 10
-        
-        activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        activityIndicator.activityIndicatorViewStyle = .whiteLarge
-        activityIndicator.center = CGPoint(x: overlayView.bounds.width / 2 ,y: overlayView.bounds.height / 2)
-        
-        
-        overlayView.addSubview(activityIndicator)
-        view.addSubview(overlayView)
-        
-        activityIndicator.startAnimating()
-    }
-    
-    public func hideOverlayView() {
-        activityIndicator.stopAnimating()
-        overlayView.removeFromSuperview()
-    }
-    
-    
-    // Set up UIActivityUndicatorView.
-    func setUpActivityUndicatorView(_ view: UIView, activityIndicatorView: UIActivityIndicatorView) {
-        
-        activityIndicatorView.activityIndicatorViewStyle = .gray
-        activityIndicatorView.center = view.center
-        activityIndicatorView.hidesWhenStopped = true
-        view.addSubview(activityIndicatorView)
-    }
-    
-    func setUpLoadingView(_ viewController: UIViewController){
-        
-        let alert = UIAlertController(title:"", message: "載入中...", preferredStyle: .alert)
-        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
-        loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-        loadingIndicator.startAnimating()
-        
-        alert.view.addSubview(loadingIndicator)
-        viewController.present(alert, animated: true, completion: nil)
-    }
-    
-    
-    func setUpLoadingView(_ tableViewController: UITableViewController){
-        
-        let alert = UIAlertController(title:"", message: "載入中...", preferredStyle: .alert)
-        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
-        loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-        loadingIndicator.startAnimating()
-        
-        alert.view.addSubview(loadingIndicator)
-        tableViewController.present(alert, animated: true, completion: nil)
-    }
+
     
 }

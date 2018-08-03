@@ -1,7 +1,9 @@
 import UIKit
 import Firebase
+import SVProgressHUD
 
 class MainVC: UIViewController {
+    
     
     @IBOutlet weak var eventSegmentedControl: UISegmentedControl!
     @IBOutlet var backgroundViewWithoutLogin: UIView!
@@ -11,6 +13,7 @@ class MainVC: UIViewController {
     var imageCache = FirebaseManager.shared.imageCache
     var unreads: [GNotification] = []
     @IBOutlet weak var tableView: UITableView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,12 +28,47 @@ class MainVC: UIViewController {
             self.tableView.separatorStyle = .none
             return
         }
-        
+
         self.setUpRefreshView()
-        //        FirebaseManager.shared.setUpLoadingView(self)
         self.queryHostEventData(currentUser)
-        //        self.queryNotification(currentUser)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
+
+    }
+    
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    
+    
+    @objc func didUserLogin() {
+        
+        guard let currentUser = Auth.auth().currentUser else {
+            return
+        }
+        self.tableView.backgroundView = nil
+        self.tableView.separatorStyle = .singleLine
+        self.queryHostEventData(currentUser)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.queryNotificationCount(currentUser)
+    }
+    
+    
+    @objc func didUserLogout() {
+        
+        self.hostEventData.removeAll()
+        self.joinedEventData.removeAll()
+        self.tableView.backgroundView = backgroundViewWithoutLogin
+        self.tableView.separatorStyle = .none
+        self.tableView.reloadData()
+    }
+    
     
     
     // Set up refresh view.
@@ -74,11 +112,12 @@ class MainVC: UIViewController {
     
     // Query data host by self from database.
     func queryHostEventData(_ currentUser: User) {
-        
+        SVProgressHUD.show(withStatus: "載入中...")
+
         let eventRef = FirebaseManager.shared.databaseReference.child("event").queryOrdered(byChild: "date")
         
         FirebaseManager.shared.getData(eventRef, type: .value) { (allObjects, dict)   in
-            
+            SVProgressHUD.show(withStatus: "載入中...")
             self.hostEventData.removeAll()
             self.joinedEventData.removeAll()
             
@@ -118,53 +157,14 @@ class MainVC: UIViewController {
             
             self.joinedEventData = joinedEvent.reversed()
             self.hostEventData = myEvent.reversed()
-            self.tableView.reloadData()
-            self.dismiss(animated: true, completion: nil)
-            
-        }
-    }
-    
-    
-    func queryNotification(_ currentUser: User) {
-        
-        let notificationRef = FirebaseManager.shared.databaseReference.child("notification").queryOrdered(byChild: "time")
-        
-        FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
-            
-            print(allObjects)
-            let myNotification = allObjects.compactMap {(snap) -> GNotification? in
-                
-                let dict = snap.value as! [String : Any]
-                
-                let notification = GNotification(notificationID: dict["notificationID"] as! String,
-                                                 userID: dict["userID"] as! String,
-                                                 eventID: dict["eventID"] as! String,
-                                                 message: dict["message"] as! String,
-                                                 remark: dict["remark"] as! String,
-                                                 isRead: dict["isRead"] as! Bool,
-                                                 time: dict["time"] as! String,
-                                                 isRemoved: dict["isRemoved"] as! Bool)
-                
-                
-                return (currentUser.uid == notification.userID ? notification : nil)
-            }
-            
-            for notification in myNotification {
-                
-                if !notification.isRead {
-                    
-                    self.unreads.insert(notification, at: 0)
-                }
-                
-                let item = self.tabBarController?.tabBar.items![1]
-                item?.badgeValue = String(self.unreads.count)
-                
-                if item?.badgeValue == "0" {
-                    item?.badgeValue = nil
-                }
+
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                SVProgressHUD.dismiss()
             }
         }
     }
+    
     
     
     // MARK: - Navigation
@@ -296,9 +296,10 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
                     print("Fail to get image")
                     return
                 }
-                
-                event.image = image
-                cell.eventImageView?.image = image
+                DispatchQueue.main.async {
+                    event.image = image
+                    cell.eventImageView?.image = image
+                }
                 self.imageCache.setObject(image, forKey: event.eventImageURL as NSString)
             }
         }

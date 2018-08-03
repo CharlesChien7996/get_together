@@ -1,6 +1,7 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import SVProgressHUD
 
 class LoginVC: UIViewController {
     
@@ -37,21 +38,27 @@ class LoginVC: UIViewController {
             Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { (user, error) in
                 
                 if let error = error {
+                    
                     self.loginErrorHandle(error)
                     return
                 }
-                
-                let tabBarVC = self.storyboard?.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
-                self.present(tabBarVC, animated: true, completion: nil)
+                SVProgressHUD.show(withStatus: "請稍候...")
+                NotificationCenter.default.post(name: NSNotification.Name("login"), object: nil, userInfo: nil)
+                let delegate = UIApplication.shared.delegate as! AppDelegate
+                let tabbarController = delegate.window?.rootViewController as! UITabBarController
+                tabbarController.selectedIndex = 0
+
+                SVProgressHUD.dismiss()
+                self.dismiss(animated: true)
+
             }
         }
     }
     
     
     @IBAction func laterPressed(_ sender: Any) {
-        let tabBarVC = self.storyboard?.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
-        self.present(tabBarVC, animated: true, completion: nil)
-//        self.dismiss(animated: true, completion: nil)
+        
+        self.dismiss(animated: true, completion: nil)
     }
     
     
@@ -70,7 +77,7 @@ class LoginVC: UIViewController {
             self.emailCheck.text = "這個帳號已經失效，請聯絡客服"
         case .wrongPassword:
             self.passwordCheck.text = "密碼不正確，請重新輸入或使用忘記密碼"
-        //                        case .networkError:
+            //                        case .networkError:
         //                            return "Network error. Please try again."
         default:
             self.emailCheck.text = "未知錯誤"
@@ -104,6 +111,7 @@ class LoginVC: UIViewController {
     
     
     @objc func keyboardWillAppear(notification : Notification)  {
+        
         let info = notification.userInfo!
         let currentKeyboardFrame = info[UIKeyboardFrameEndUserInfoKey] as! CGRect
         let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval

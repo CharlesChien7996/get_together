@@ -1,5 +1,6 @@
 import UIKit
 import Firebase
+import SVProgressHUD
 
 class ResetPasswordVC: UIViewController {
     
@@ -17,18 +18,19 @@ class ResetPasswordVC: UIViewController {
         }
         
         Auth.auth().sendPasswordReset(withEmail: self.emailTextField.text!) { (error) in
-            
             if let error = error {
                 
                 print(error.localizedDescription)
                 return
             }
-            
+            SVProgressHUD.show(withStatus: "請稍候...")
+
             self.emailTextField.text = ""
             let alertController = UIAlertController(title: "重設密碼信已寄出", message: "請至信箱確認並重設密碼", preferredStyle: .alert)
             let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alertController.addAction(defaultAction)
             self.present(alertController, animated: true, completion: nil)
+            SVProgressHUD.dismiss()
         }
     }
     @IBAction func cancelPressed(_ sender: Any) {

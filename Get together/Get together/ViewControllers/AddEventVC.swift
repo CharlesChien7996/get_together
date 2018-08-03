@@ -1,8 +1,13 @@
 import UIKit
 import Firebase
-import FirebaseAuth
 import FirebaseStorage
 import MapKit
+import SVProgressHUD
+
+protocol AddEventVCDelegate : class{
+    func didUpdatedEvent(_ updatedEvent: Event)
+}
+
 
 class AddEventVC: UITableViewController {
     
@@ -29,7 +34,7 @@ class AddEventVC: UITableViewController {
     var editedMembers: [GUser] = []
     var region: MKCoordinateRegion!
     var annotation: MKPointAnnotation!
-    
+    weak var delegate: AddEventVCDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -153,7 +158,7 @@ class AddEventVC: UITableViewController {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         
-        let alert = UIAlertController(title: "來源", message: "選擇照片來源", preferredStyle: .alert)
+        let alert = UIAlertController(title: "來源", message: "選擇照片來源", preferredStyle: .actionSheet)
         let photoLibray = UIAlertAction(title: "相簿", style: .default) { (action) in
             imagePicker.sourceType = .photoLibrary
             imagePicker.allowsEditing = true
@@ -243,7 +248,6 @@ class AddEventVC: UITableViewController {
             return
         }
         
-        
         // Upload event's data to firebasedatabase.
         self.uploadEventData()
         self.navigationController?.popViewController(animated: true)
@@ -253,6 +257,7 @@ class AddEventVC: UITableViewController {
     // Upload event's data to database.
     func uploadEventData() {
         
+        SVProgressHUD.show(withStatus: "請稍候...")
         var eventID: String!
         let ref = FirebaseManager.shared.databaseReference
         let imageRef = Storage.storage().reference().child("eventImage").child(FirebaseManager.shared.databaseReference.childByAutoId().key)
@@ -308,6 +313,8 @@ class AddEventVC: UITableViewController {
                     
                     let notification = GNotification(notificationID: notificationID, userID: member.userID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",remark: "已不在此聚成員內",isRead: false, time: time, isRemoved: true)
                     
+                    ref.child("invitingEventList").child(member.userID).child(self.event.eventID).updateChildValues(["isMember" : false])
+
                     ref.child("notification").child(notificationID).setValue(notification.uploadNotification())
                     notificationID = ""
                 }
@@ -322,12 +329,13 @@ class AddEventVC: UITableViewController {
                                location: self.eventLocation.text!,
                                description: self.eventDescription.text,
                                eventImageURL: String(describing: url))
-            
+            self.event.image = thumbnailImage
             ref.child("event").child(eventID).setValue(self.event.uploadedEventData())
+            self.delegate?.didUpdatedEvent(self.event)
             
             for member in self.editedMembers {
                 var notificationID: String? = FirebaseManager.shared.databaseReference.childByAutoId().key
-                let invitingEventList = EventList(eventID: self.event.eventID, isReply: false)
+                let invitingEventList = EventList(eventID: self.event.eventID, isReply: false, isMember: true)
                 let dateformatter = DateFormatter()
                 dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 let time = dateformatter.string(from: Date())
@@ -341,6 +349,7 @@ class AddEventVC: UITableViewController {
                 ref.child("notification").child(notificationID!).setValue(notification.uploadNotification())
                 notificationID = ""
             }
+            SVProgressHUD.dismiss()
         }
     }
     
@@ -444,9 +453,12 @@ extension AddEventVC: UICollectionViewDataSource, MemberCollectionViewCellDelega
             
             FirebaseManager.shared.getImage(urlString: urlString) { (image) in
                 
-                member.image = image
-                memberCell.memberName.text = member.name
-                memberCell.memberProfileImage.image = member.image
+                DispatchQueue.main.async {
+                    
+                    member.image = image
+                    memberCell.memberName.text = member.name
+                    memberCell.memberProfileImage.image = member.image
+                }
             }
         }
         

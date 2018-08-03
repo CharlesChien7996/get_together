@@ -1,6 +1,7 @@
 import UIKit
 import Firebase
 import FirebaseStorage
+import SVProgressHUD
 
 class RegisterVC: UIViewController {
     
@@ -57,12 +58,12 @@ class RegisterVC: UIViewController {
         if self.emailTextField.text!.isEmpty == false && self.passwordTextField.text!.isEmpty == false && self.checkPasswordTextField.text!.isEmpty == false && self.usernameTextField.text!.isEmpty == false && self.checkPasswordTextField.text == self.passwordTextField.text {
             
             Auth.auth().createUser(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { (user, error) in
-                
                 if let error = error {
                     self.handleError(error) 
                     return
                 }
-                
+                SVProgressHUD.show(withStatus: "請稍候...")
+
                 self.uploadUserData()
                 
                 let alertController = UIAlertController(title:"註冊成功", message:"登入開始使用吧",preferredStyle: .alert)
@@ -105,7 +106,7 @@ class RegisterVC: UIViewController {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         
-        let alert = UIAlertController(title: "來源", message: "選擇照片來源", preferredStyle: .alert)
+        let alert = UIAlertController(title: "來源", message: "選擇照片來源", preferredStyle: .actionSheet)
         let photoLibray = UIAlertAction(title: "相簿", style: .default) { (action) in
             imagePicker.sourceType = .photoLibrary
             imagePicker.allowsEditing = true
@@ -115,7 +116,6 @@ class RegisterVC: UIViewController {
         }
         let camera = UIAlertAction(title: "相機", style: .default) { (action) in
             imagePicker.sourceType = .camera
-            
             self.present(imagePicker, animated: true, completion: nil)
             
         }
@@ -160,6 +160,7 @@ class RegisterVC: UIViewController {
                              profileImageURL: String(describing: url))
             
             FirebaseManager.shared.databaseReference.child("user").child(currentUser.uid).setValue(user.uploadedUserData())
+            SVProgressHUD.dismiss()
         }
     }
     
