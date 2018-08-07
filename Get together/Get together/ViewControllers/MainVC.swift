@@ -113,7 +113,15 @@ class MainVC: UIViewController {
     // Query data host by self from database.
     func queryHostEventData(_ currentUser: User) {
         SVProgressHUD.show(withStatus: "載入中...")
-
+        
+        if self.hostEventData.count == 0 && self.joinedEventData.count == 0{
+            
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
+                
+                SVProgressHUD.dismiss()
+                self.tableView.reloadData()
+            }
+        }
         let eventRef = FirebaseManager.shared.databaseReference.child("event").queryOrdered(byChild: "date")
         
         FirebaseManager.shared.getData(eventRef, type: .value) { (allObjects, dict)   in

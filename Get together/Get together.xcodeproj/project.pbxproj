@@ -25,11 +25,12 @@
 		D60E341320FC8173003BD0FD /* NotificationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E341220FC8173003BD0FD /* NotificationVC.swift */; };
 		D611E15E21106EC9001BB4A5 /* EventImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D611E15D21106EC9001BB4A5 /* EventImageCell.swift */; };
 		D6194B29210710EC0077222F /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6194B28210710EC0077222F /* ProfileVC.swift */; };
-		D6198D092114932F00FFA66C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6198D082114932E00FFA66C /* GoogleService-Info.plist */; };
+		D6198D092114932F00FFA66C /* GoogleService-Info-01.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6198D082114932E00FFA66C /* GoogleService-Info-01.plist */; };
 		D63E804420FF166900C0E010 /* LocationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804320FF166900C0E010 /* LocationVC.swift */; };
 		D63E804620FF220200C0E010 /* LocationSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D63E804520FF220200C0E010 /* LocationSearchVC.swift */; };
 		D66F261821072F80002B4752 /* EditProfileInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D66F261721072F80002B4752 /* EditProfileInfoVC.swift */; };
 		D699258521088C0700B9D895 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = D699258421088C0700B9D895 /* Notification.swift */; };
+		D6B9E3102118466600A38080 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6B9E30F2118466600A38080 /* GoogleService-Info.plist */; };
 		D6D36F28210077C9001CE892 /* MemberSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D36F27210077C9001CE892 /* MemberSearchVC.swift */; };
 		D6F28C58210C13D7005DE460 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F28C57210C13D7005DE460 /* MainVC.swift */; };
 		D6F3742920FCAD6C000C6D2E /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */; };
@@ -59,12 +60,13 @@
 		D6194B28210710EC0077222F /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
 		D6198D06211482E900FFA66C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
 		D6198D07211482E900FFA66C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
-		D6198D082114932E00FFA66C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D6198D082114932E00FFA66C /* GoogleService-Info-01.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-01.plist"; sourceTree = "<group>"; };
 		D63E804320FF166900C0E010 /* LocationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationVC.swift; sourceTree = "<group>"; };
 		D63E804520FF220200C0E010 /* LocationSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchVC.swift; sourceTree = "<group>"; };
 		D6468D3C210EE80B00514635 /* Get together.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Get together.entitlements"; sourceTree = "<group>"; };
 		D66F261721072F80002B4752 /* EditProfileInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileInfoVC.swift; sourceTree = "<group>"; };
 		D699258421088C0700B9D895 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		D6B9E30F2118466600A38080 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D6D36F27210077C9001CE892 /* MemberSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberSearchVC.swift; sourceTree = "<group>"; };
 		D6F28C57210C13D7005DE460 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		D6F3742820FCAD6C000C6D2E /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
@@ -131,7 +133,8 @@
 				D60E33E420FC7F73003BD0FD /* Main.storyboard */,
 				D60E33E920FC7F75003BD0FD /* LaunchScreen.storyboard */,
 				D60E33EC20FC7F75003BD0FD /* Info.plist */,
-				D6198D082114932E00FFA66C /* GoogleService-Info.plist */,
+				D6198D082114932E00FFA66C /* GoogleService-Info-01.plist */,
+				D6B9E30F2118466600A38080 /* GoogleService-Info.plist */,
 				D60E33E720FC7F75003BD0FD /* Assets.xcassets */,
 				D6468D3C210EE80B00514635 /* Get together.entitlements */,
 			);
@@ -191,6 +194,7 @@
 				D60E33DA20FC7F73003BD0FD /* Frameworks */,
 				D60E33DB20FC7F73003BD0FD /* Resources */,
 				CC4029C69D5B91B81287AC84 /* [CP] Embed Pods Frameworks */,
+				294000C0E31F2591BCE29D6B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -244,7 +248,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D60E33EB20FC7F75003BD0FD /* LaunchScreen.storyboard in Resources */,
-				D6198D092114932F00FFA66C /* GoogleService-Info.plist in Resources */,
+				D6198D092114932F00FFA66C /* GoogleService-Info-01.plist in Resources */,
+				D6B9E3102118466600A38080 /* GoogleService-Info.plist in Resources */,
 				D60E33E820FC7F75003BD0FD /* Assets.xcassets in Resources */,
 				D60E33E620FC7F73003BD0FD /* Main.storyboard in Resources */,
 			);
@@ -253,6 +258,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		294000C0E31F2591BCE29D6B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Get together/Pods-Get together-resources.sh",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Get together/Pods-Get together-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A1F01AD2F6D8973F05AE5CA1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -278,6 +301,12 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Get together/Pods-Get together-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FacebookCore/FacebookCore.framework",
+				"${BUILT_PRODUCTS_DIR}/FacebookLogin/FacebookLogin.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
@@ -287,6 +316,12 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookLogin.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",

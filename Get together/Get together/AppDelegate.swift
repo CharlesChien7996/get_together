@@ -4,6 +4,9 @@ import FirebaseAuth
 import Firebase
 import FirebaseMessaging
 import SVProgressHUD
+import GoogleSignIn
+import FBSDKCoreKit
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,7 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         SVProgressHUD.setDefaultStyle(.dark)
-
+        
+        GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
+        GIDSignIn.sharedInstance().delegate = self
+        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions )
         
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
@@ -31,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print("不允許...")
                 }
             })
+            
         } else {
             let settings: UIUserNotificationSettings =
                 UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
@@ -45,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
-
+        
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -66,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         self.queryNotificationCount(currentUser)
         
-    
+        
     }
     
     func queryNotificationCount(_ currentUser: User) {
@@ -108,17 +115,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         secondVC.tabBarItem.badgeValue = nil
                     }
                 }
-                
-                
             }
         }
         
     }
-
+    
     
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-
+        
     }
     
     /// iOS10 以下的版本接收推播訊息的 delegate
@@ -169,6 +174,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // 將 Device Token 送到 Server 端...
         
     }
+    
+    
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        
+        return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
+
 }
 
 @available(iOS 10, *)
@@ -217,5 +229,78 @@ extension AppDelegate: MessagingDelegate {
         
         // 用來從 firebase 後台推送單一裝置所必須的 firebase token
         print("Firebase registration token: \(fcmToken)")
+    }
+}
+
+extension AppDelegate: GIDSignInDelegate {
+    
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
+        
+        if let error = error {
+            print(error)
+            return
+        }
+        SVProgressHUD.show(withStatus: "請稍候...")
+
+        guard let authentication = user.authentication else {
+            return
+            
+        }
+        let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
+        Auth.auth().signInAndRetrieveData(with: credential) { (result, error) in
+            
+            if let error = error {
+                
+                guard let errorCode = AuthErrorCode(rawValue: error._code) else {
+                    return
+                }
+                
+                switch errorCode {
+                    
+                case .emailAlreadyInUse:
+                    let alert = UIAlertController(title: "錯誤", message: "這個email已經被使用過囉", preferredStyle: .alert)
+                    let ok = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                    alert.addAction(ok)
+                    self.window?.rootViewController?.presentedViewController?.present(alert, animated: true, completion: nil)
+
+                default:
+                    
+                    let alert = UIAlertController(title: "", message: "未知錯誤", preferredStyle: .alert)
+                    let ok = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                    alert.addAction(ok)
+                    self.window?.rootViewController?.presentedViewController?.present(alert, animated: true, completion: nil)
+                }
+                print(error)
+                return
+            }
+            
+            guard let user = result?.user else {
+                return
+            }
+            
+            guard let email = user.email, let name = user.displayName, let profileImageURL = user.photoURL?.absoluteString else {
+                return
+            }
+            
+
+            let gUser = GUser(userID: user.uid, email: email, name: name, profileImageURL: profileImageURL)
+            let userRef = FirebaseManager.shared.databaseReference.child("user").child(user.uid)
+            
+            FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value){ (allObjects, dict) in
+                
+                if dict?.count == 0 || dict?.count == nil {
+                    
+                    userRef.setValue(gUser.uploadedUserData())
+                }
+                
+                NotificationCenter.default.post(name: NSNotification.Name("login"), object: nil, userInfo: nil)
+                let delegate = UIApplication.shared.delegate as! AppDelegate
+                let tabbarController = delegate.window?.rootViewController as! UITabBarController
+                tabbarController.selectedIndex = 0
+                
+                SVProgressHUD.dismiss()
+                self.window?.rootViewController?.presentedViewController?.dismiss(animated: true, completion: nil)
+        }
+    }
     }
 }

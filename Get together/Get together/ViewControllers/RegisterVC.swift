@@ -24,11 +24,18 @@ class RegisterVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    
         self.emailTextField.delegate = self
         self.passwordTextField.delegate = self
         self.checkPasswordTextField.delegate = self
         self.usernameTextField.delegate = self
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        self.profileImageView.layer.cornerRadius = self.profileImageView.frame.width / 2.0
+        
     }
     
     

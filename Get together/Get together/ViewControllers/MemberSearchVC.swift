@@ -49,7 +49,7 @@ class MemberSearchVC: UITableViewController {
         memberSearchBar.placeholder = "輸入暱稱或Email來搜尋成員..."
         memberSearchBar.barTintColor = UIColor.white
         self.memberSearchResultController?.dimsBackgroundDuringPresentation = false
-        memberSearchResultController?.hidesNavigationBarDuringPresentation = false
+        self.memberSearchResultController?.hidesNavigationBarDuringPresentation = false
         self.navigationItem.titleView = memberSearchBar
         definesPresentationContext = true
 
@@ -77,6 +77,7 @@ class MemberSearchVC: UITableViewController {
         cell.textLabel?.text = selectedMember.name
         cell.detailTextLabel?.text = selectedMember.email
         cell.imageView?.image = #imageLiteral(resourceName: "profileImage")
+        
         if let image = self.imageCache.object(forKey: selectedMember.profileImageURL as NSString) as? UIImage {
             
             cell.imageView?.image = image

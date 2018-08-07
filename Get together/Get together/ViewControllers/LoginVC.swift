@@ -1,7 +1,11 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import GoogleSignIn
+import FacebookCore
+import FacebookLogin
 import SVProgressHUD
+
 
 class LoginVC: UIViewController {
     
@@ -10,14 +14,17 @@ class LoginVC: UIViewController {
     
     @IBOutlet weak var emailCheck: UILabel!
     @IBOutlet weak var passwordCheck: UILabel!
+    @IBOutlet weak var stackView: UIStackView!
     
-    @IBOutlet weak var laterBtn: UIButton!
     var originalFrame : CGRect?
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+
+        GIDSignIn.sharedInstance().uiDelegate = self
+
         self.emailTextField.delegate = self
         self.passwordTextField.delegate = self
     }
@@ -48,10 +55,84 @@ class LoginVC: UIViewController {
                 let tabbarController = delegate.window?.rootViewController as! UITabBarController
                 tabbarController.selectedIndex = 0
 
-                SVProgressHUD.dismiss()
                 self.dismiss(animated: true)
+                SVProgressHUD.dismiss()
 
             }
+        }
+    }
+    
+
+    
+    @IBAction func googleSignInPressed(_ sender: Any) {
+        
+        GIDSignIn.sharedInstance().signIn()
+        //        self.dismiss(animated: true)
+        
+    }
+    
+    
+
+    
+    @IBAction func facebookSignInPressed(_ sender: Any) {
+        
+        
+        SVProgressHUD.show(withStatus: "請稍候...")
+        let loginManager = LoginManager()
+        loginManager.logIn(readPermissions: [.publicProfile, .email], viewController: self) { (result) in
+            
+            switch result {
+            case .success(grantedPermissions: _, declinedPermissions: _, token: _):
+                
+                guard let accessToken = AccessToken.current?.authenticationToken else {
+                    return
+                }
+                
+                let credential = FacebookAuthProvider.credential(withAccessToken: accessToken)
+                Auth.auth().signInAndRetrieveData(with: credential){ (result, error) in
+                    
+                    if let error = error {
+                        
+                        print(error.localizedDescription)
+                        SVProgressHUD.dismiss()
+                        return
+                    }
+                    
+
+                    guard let user = result?.user else {
+                        return
+                    }
+                    
+//                    guard let email = user.email, let name = user.displayName, let profileImageURL = user.photoURL?.absoluteString else {
+//                        return
+//                    }
+                    
+                    let gUser = GUser(userID: user.uid, email: user.email ?? user.phoneNumber ?? "", name: user.displayName ?? "", profileImageURL: user.photoURL?.absoluteString ?? "")
+                    let userRef = FirebaseManager.shared.databaseReference.child("user").child(user.uid)
+                    
+                    FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value){ (allObjects, dict) in
+                        
+                        if dict?.count == 0 || dict?.count == nil {
+                            
+                            userRef.setValue(gUser.uploadedUserData())
+                        }
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name("login"), object: nil, userInfo: nil)
+                        let delegate = UIApplication.shared.delegate as! AppDelegate
+                        let tabbarController = delegate.window?.rootViewController as! UITabBarController
+                        tabbarController.selectedIndex = 0
+                        
+                        SVProgressHUD.dismiss()
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                }
+                
+            case .failed( let error):
+                print(error)
+            case .cancelled:
+                SVProgressHUD.dismiss()
+            }
+            
         }
     }
     
@@ -116,7 +197,7 @@ class LoginVC: UIViewController {
         let currentKeyboardFrame = info[UIKeyboardFrameEndUserInfoKey] as! CGRect
         let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
         
-        let textFrame = self.view.window!.convert(self.laterBtn.frame, from: self.view)
+        let textFrame = self.view.window!.convert(self.stackView.frame, from: self.view)
         var visibleRect = self.view.frame
         self.originalFrame = visibleRect
         
@@ -178,6 +259,10 @@ extension LoginVC: UITextFieldDelegate {
         
         return true
     }
+    
+}
+
+extension LoginVC: GIDSignInUIDelegate {
     
 }
 
