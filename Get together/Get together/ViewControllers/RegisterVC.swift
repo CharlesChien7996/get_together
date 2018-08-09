@@ -15,6 +15,9 @@ class RegisterVC: UIViewController {
     @IBOutlet weak var checkPasswordCheck: UILabel!
     @IBOutlet weak var usernameCheck: UILabel!
     
+    @IBOutlet weak var createUserBtn: UIButton!
+    @IBOutlet weak var cancelBtn: UIButton!
+    
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var stackView: UIStackView!
     
@@ -24,7 +27,7 @@ class RegisterVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         self.emailTextField.delegate = self
         self.passwordTextField.delegate = self
         self.checkPasswordTextField.delegate = self
@@ -35,6 +38,8 @@ class RegisterVC: UIViewController {
         super.viewDidLayoutSubviews()
         
         self.profileImageView.layer.cornerRadius = self.profileImageView.frame.width / 2.0
+        self.createUserBtn.layer.cornerRadius = self.createUserBtn.frame.height / 5.0
+        self.cancelBtn.layer.cornerRadius = self.cancelBtn.frame.height / 5.0
         
     }
     

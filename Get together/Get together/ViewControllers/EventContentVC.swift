@@ -17,6 +17,7 @@ class EventContentVC: UITableViewController {
     @IBOutlet weak var eventDescription: UILabel!
     @IBOutlet weak var editBtn: UIBarButtonItem!
     
+    
     var event: Event!
     var imageCache = FirebaseManager.shared.imageCache
     var region: MKCoordinateRegion!
@@ -24,6 +25,7 @@ class EventContentVC: UITableViewController {
     var memberData: [GUser] = []
     var eventListData: [EventList] = []
     var notification: GNotification!
+    var user: GUser?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +51,7 @@ class EventContentVC: UITableViewController {
             
             self.editBtn.title = "編輯"
             self.editBtn.isEnabled = true
+            
         }
         
         self.setLocationAnnotation()
@@ -56,6 +59,24 @@ class EventContentVC: UITableViewController {
         self.queryUserData()
         self.memberCollectionView.dataSource = self
 
+    }
+    
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        
+        guard let currentUser = Auth.auth().currentUser else {
+            
+            print("Fail to get current user")
+            return 0
+        }
+        
+        if Set(self.event.memberIDs).contains(currentUser.uid) {
+            
+            return 9
+        }else {
+            
+            return 8
+        }
     }
     
     
@@ -94,7 +115,7 @@ class EventContentVC: UITableViewController {
             break
         }
         
-        return 44
+        return 50
     }
     
     
@@ -169,7 +190,7 @@ class EventContentVC: UITableViewController {
                                      name: dict["name"] as! String,
                                      profileImageURL: dict["profileImageURL"] as! String)
                     
-                    
+                    self.user = user
                     
                     if eventList.eventID == self.event.eventID && eventList.isReply == false {
                         
@@ -185,6 +206,51 @@ class EventContentVC: UITableViewController {
                 }
             }
         }
+    }
+    
+    
+    @IBAction func editPressed(_ sender: Any) {
+        
+        guard let currentUser = Auth.auth().currentUser else {
+            
+            print("Fail to get current user")
+            return
+        }
+        
+        let memberSet = Set(self.event.memberIDs)
+        
+        guard memberSet.contains(currentUser.uid) else{
+            print("Current user is not member")
+            return
+        }
+        
+        let alert = UIAlertController(title: "", message: "退出活動後需再次受邀才可以重新加入，是否確認退出？", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "確定", style: .default){ (action) in
+            
+            let newMembers = self.event.memberIDs.filter{$0 != currentUser.uid}
+            let ref = FirebaseManager.shared.databaseReference
+            ref.child("event").child(self.event.eventID).child("memberIDs").setValue(newMembers)
+            
+            let autoID = FirebaseManager.shared.databaseReference.childByAutoId().key
+            let dateformatter = DateFormatter()
+            dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            let time = dateformatter.string(from: Date())
+            
+            let notification = GNotification(notificationID: autoID, userID: self.event.organiserID, eventID: self.event.eventID, message: "\"\(self.user?.name ?? "")\" 退出了 「\(self.event.title)」", remark: "", isRead: false, time: time, isRemoved: false)
+            
+            ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).updateChildValues(["isMember" : false])
+            ref.child("notification").child(autoID).setValue(notification.uploadNotification())
+            
+            
+            self.navigationController?.popViewController(animated: true)
+        }
+        
+        let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        
+        alert.addAction(ok)
+        alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
+        
     }
     
     
@@ -345,6 +411,8 @@ class EventContentVC: UITableViewController {
             invitingMemberVC.event = self.event
         }
     }
+    
+    
 }
 
 

@@ -19,7 +19,8 @@ class ProfileVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         
         guard let currentUser = Auth.auth().currentUser else {
@@ -35,8 +36,7 @@ class ProfileVC: UITableViewController {
         self.logoutBtn.setTitle("登出", for: .normal)
         self.editBtn.title = "編輯"
         self.editBtn.isEnabled = true
-        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
+
         self.queryUserInfo(currentUser)
     }
     

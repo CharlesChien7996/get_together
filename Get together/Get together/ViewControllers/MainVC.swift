@@ -18,6 +18,8 @@ class MainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.tableView.dataSource = self
         self.tableView.delegate = self
@@ -28,16 +30,9 @@ class MainVC: UIViewController {
             self.tableView.separatorStyle = .none
             return
         }
-
         self.setUpRefreshView()
-        self.queryHostEventData(currentUser)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
 
+        self.queryHostEventData(currentUser)
     }
     
     
@@ -52,6 +47,7 @@ class MainVC: UIViewController {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
+        
         self.tableView.backgroundView = nil
         self.tableView.separatorStyle = .singleLine
         self.queryHostEventData(currentUser)
@@ -68,7 +64,6 @@ class MainVC: UIViewController {
         self.tableView.separatorStyle = .none
         self.tableView.reloadData()
     }
-    
     
     
     // Set up refresh view.

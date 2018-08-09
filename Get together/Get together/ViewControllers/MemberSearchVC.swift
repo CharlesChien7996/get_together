@@ -17,7 +17,8 @@ class MemberSearchVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        self.tableView.rowHeight = 60
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "取消"
         
         let ref = FirebaseManager.shared.databaseReference.child("user")
@@ -71,13 +72,15 @@ class MemberSearchVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "memberDataCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "searchMemberCell", for: indexPath)
         let selectedMember = matchingItems[indexPath.row]
         
         cell.textLabel?.text = selectedMember.name
         cell.detailTextLabel?.text = selectedMember.email
-        cell.imageView?.image = #imageLiteral(resourceName: "profileImage")
-        
+        cell.imageView?.image = UIImage(named: "profileImage")
+        cell.imageView?.layer.cornerRadius = 30
+        cell.imageView?.contentMode = .scaleAspectFill
+        cell.imageView?.clipsToBounds = true
         if let image = self.imageCache.object(forKey: selectedMember.profileImageURL as NSString) as? UIImage {
             
             cell.imageView?.image = image
@@ -97,6 +100,7 @@ class MemberSearchVC: UITableViewController {
                 self.imageCache.setObject(image, forKey: selectedMember.profileImageURL as NSString)
             }
         }
+
         
         return cell
     }

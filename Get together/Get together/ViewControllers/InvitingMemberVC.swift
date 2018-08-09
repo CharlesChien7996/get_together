@@ -11,9 +11,9 @@ class InvitingMemberVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        FirebaseManager.shared.setUpLoadingView(self)
-        self.queryInvitingMemberData()
         
+        self.tableView.rowHeight = 60
+        self.queryInvitingMemberData()
     }
     
     
@@ -89,6 +89,10 @@ class InvitingMemberVC: UITableViewController {
         invitingMemberCell.textLabel?.text = invitingMember.name
         invitingMemberCell.detailTextLabel?.text = invitingMember.email
         invitingMemberCell.imageView?.image = #imageLiteral(resourceName: "profileImage")
+        
+        invitingMemberCell.imageView?.layer.cornerRadius = 30
+        invitingMemberCell.imageView?.contentMode = .scaleAspectFill
+        invitingMemberCell.imageView?.clipsToBounds = true
         // Show image from cache if that has been stored in there.
         if let image = self.imageCache.object(forKey: invitingMember.profileImageURL as NSString) as? UIImage {
             

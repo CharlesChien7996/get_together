@@ -16,7 +16,8 @@ class NotificationVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         
         // Show background view if current user is nil.
@@ -25,8 +26,8 @@ class NotificationVC: UITableViewController {
             self.tableView.separatorStyle = .none
             return
         }
-        
         self.setUpRefreshView()
+
         self.queryNotification(currentUser)
     }
     
@@ -42,13 +43,6 @@ class NotificationVC: UITableViewController {
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
-        
-    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -67,7 +61,6 @@ class NotificationVC: UITableViewController {
     
     
     @objc func didUserLogout() {
-        
         
         self.notificationData.removeAll()
         self.joinedEventData.removeAll()

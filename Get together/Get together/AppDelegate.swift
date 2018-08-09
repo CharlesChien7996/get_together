@@ -240,36 +240,18 @@ extension AppDelegate: GIDSignInDelegate {
             print(error)
             return
         }
+        
         SVProgressHUD.show(withStatus: "請稍候...")
 
         guard let authentication = user.authentication else {
             return
             
         }
+        
         let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
         Auth.auth().signInAndRetrieveData(with: credential) { (result, error) in
             
             if let error = error {
-                
-                guard let errorCode = AuthErrorCode(rawValue: error._code) else {
-                    return
-                }
-                
-                switch errorCode {
-                    
-                case .emailAlreadyInUse:
-                    let alert = UIAlertController(title: "錯誤", message: "這個email已經被使用過囉", preferredStyle: .alert)
-                    let ok = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                    alert.addAction(ok)
-                    self.window?.rootViewController?.presentedViewController?.present(alert, animated: true, completion: nil)
-
-                default:
-                    
-                    let alert = UIAlertController(title: "", message: "未知錯誤", preferredStyle: .alert)
-                    let ok = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                    alert.addAction(ok)
-                    self.window?.rootViewController?.presentedViewController?.present(alert, animated: true, completion: nil)
-                }
                 print(error)
                 return
             }
@@ -278,12 +260,9 @@ extension AppDelegate: GIDSignInDelegate {
                 return
             }
             
-            guard let email = user.email, let name = user.displayName, let profileImageURL = user.photoURL?.absoluteString else {
-                return
-            }
-            
 
-            let gUser = GUser(userID: user.uid, email: email, name: name, profileImageURL: profileImageURL)
+            let gUser = GUser(userID: user.uid, email: user.email ?? user.phoneNumber ?? "Google 使用者", name: user.displayName ?? "", profileImageURL: user.photoURL?.absoluteString ?? "")
+            
             let userRef = FirebaseManager.shared.databaseReference.child("user").child(user.uid)
             
             FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value){ (allObjects, dict) in
@@ -299,7 +278,7 @@ extension AppDelegate: GIDSignInDelegate {
                 tabbarController.selectedIndex = 0
                 
                 SVProgressHUD.dismiss()
-                self.window?.rootViewController?.presentedViewController?.dismiss(animated: true, completion: nil)
+                self.window?.rootViewController?.dismiss(animated: true, completion: nil)
         }
     }
     }

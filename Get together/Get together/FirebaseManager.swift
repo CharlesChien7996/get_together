@@ -82,8 +82,10 @@ class FirebaseManager {
         
         let ratio = max(widthRatio, heightRatio)
         
-        let imageSize = CGSize(width: image.size.width*ratio, height: image.size.height*ratio)
-        let cgRect = CGRect(x: -(imageSize.width - thumbnailSize.width) / 2, y: -(imageSize.height - thumbnailSize.height) / 2, width: imageSize.width, height: imageSize.height)
+        let imageSize = CGSize(width: image.size.width * ratio, height: image.size.height * ratio)
+        
+        let cgRect = CGRect(x: -(imageSize.width - thumbnailSize.width) / 2, y: -(imageSize.height - thumbnailSize.height) / 2, width: imageSize.width, height: imageSize.height) 
+        
         image.draw(in: cgRect)
         
         let smallImage = UIGraphicsGetImageFromCurrentImageContext()

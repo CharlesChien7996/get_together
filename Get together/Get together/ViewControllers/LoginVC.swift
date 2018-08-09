@@ -16,6 +16,12 @@ class LoginVC: UIViewController {
     @IBOutlet weak var passwordCheck: UILabel!
     @IBOutlet weak var stackView: UIStackView!
     
+    @IBOutlet weak var loginBtn: UIButton!
+    @IBOutlet weak var registerBtn: UIButton!
+    @IBOutlet weak var googleSignInBtn: UIButton!
+    @IBOutlet weak var facebookLoginBtn: UIButton!
+    
+    
     var originalFrame : CGRect?
     
     
@@ -27,6 +33,17 @@ class LoginVC: UIViewController {
 
         self.emailTextField.delegate = self
         self.passwordTextField.delegate = self
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        self.loginBtn.layer.cornerRadius = self.loginBtn.frame.height / 5.0
+        self.registerBtn.layer.cornerRadius = self.registerBtn.frame.height / 5.0
+        self.googleSignInBtn.layer.cornerRadius = self.googleSignInBtn.frame.height / 5.0
+        self.facebookLoginBtn.layer.cornerRadius = self.facebookLoginBtn.frame.height / 5.0
+
+        
     }
     
     
@@ -49,6 +66,7 @@ class LoginVC: UIViewController {
                     self.loginErrorHandle(error)
                     return
                 }
+                
                 SVProgressHUD.show(withStatus: "請稍候...")
                 NotificationCenter.default.post(name: NSNotification.Name("login"), object: nil, userInfo: nil)
                 let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -77,7 +95,6 @@ class LoginVC: UIViewController {
     @IBAction func facebookSignInPressed(_ sender: Any) {
         
         
-        SVProgressHUD.show(withStatus: "請稍候...")
         let loginManager = LoginManager()
         loginManager.logIn(readPermissions: [.publicProfile, .email], viewController: self) { (result) in
             
@@ -94,10 +111,11 @@ class LoginVC: UIViewController {
                     if let error = error {
                         
                         print(error.localizedDescription)
-                        SVProgressHUD.dismiss()
                         return
                     }
                     
+                    SVProgressHUD.show(withStatus: "請稍候...")
+
 
                     guard let user = result?.user else {
                         return
@@ -107,7 +125,7 @@ class LoginVC: UIViewController {
 //                        return
 //                    }
                     
-                    let gUser = GUser(userID: user.uid, email: user.email ?? user.phoneNumber ?? "", name: user.displayName ?? "", profileImageURL: user.photoURL?.absoluteString ?? "")
+                    let gUser = GUser(userID: user.uid, email: user.email ?? user.phoneNumber ?? "Facebook 使用者", name: user.displayName ?? "", profileImageURL: user.photoURL?.absoluteString ?? "")
                     let userRef = FirebaseManager.shared.databaseReference.child("user").child(user.uid)
                     
                     FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value){ (allObjects, dict) in
@@ -117,11 +135,11 @@ class LoginVC: UIViewController {
                             userRef.setValue(gUser.uploadedUserData())
                         }
                         
-                        NotificationCenter.default.post(name: NSNotification.Name("login"), object: nil, userInfo: nil)
                         let delegate = UIApplication.shared.delegate as! AppDelegate
                         let tabbarController = delegate.window?.rootViewController as! UITabBarController
                         tabbarController.selectedIndex = 0
-                        
+                        NotificationCenter.default.post(name: NSNotification.Name("login"), object: nil, userInfo: nil)
+
                         SVProgressHUD.dismiss()
                         self.dismiss(animated: true, completion: nil)
                     }
