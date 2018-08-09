@@ -48,6 +48,10 @@ class MainVC: UIViewController {
             return
         }
         
+        if self.refresher == nil {
+            self.setUpRefreshView()
+        }
+        
         self.tableView.backgroundView = nil
         self.tableView.separatorStyle = .singleLine
         self.queryHostEventData(currentUser)
@@ -60,6 +64,11 @@ class MainVC: UIViewController {
         
         self.hostEventData.removeAll()
         self.joinedEventData.removeAll()
+        
+        if self.refresher != nil {
+            self.refresher.removeFromSuperview()
+            self.refresher = nil
+        }
         self.tableView.backgroundView = backgroundViewWithoutLogin
         self.tableView.separatorStyle = .none
         self.tableView.reloadData()
@@ -86,7 +95,6 @@ class MainVC: UIViewController {
         
         self.queryHostEventData(currentUser)
         self.refresher.endRefreshing()
-        
     }
     
     // Background view's login button be pressed.
@@ -111,16 +119,13 @@ class MainVC: UIViewController {
         
         if self.hostEventData.count == 0 && self.joinedEventData.count == 0{
             
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
-                
-                SVProgressHUD.dismiss()
+                SVProgressHUD.dismiss(withDelay: 1.0)
                 self.tableView.reloadData()
-            }
+            
         }
         let eventRef = FirebaseManager.shared.databaseReference.child("event").queryOrdered(byChild: "date")
         
         FirebaseManager.shared.getData(eventRef, type: .value) { (allObjects, dict)   in
-            SVProgressHUD.show(withStatus: "載入中...")
             self.hostEventData.removeAll()
             self.joinedEventData.removeAll()
             
@@ -137,7 +142,6 @@ class MainVC: UIViewController {
                                   eventImageURL: dict["eventImageURL"] as! String)
                 
                 return (event.organiserID == currentUser.uid ? event : nil)
-                
             }
             
             
@@ -205,7 +209,7 @@ class MainVC: UIViewController {
         
         guard Auth.auth().currentUser != nil else {
             
-            let alert = UIAlertController(title: "尚未登入", message: "登入來開始你的第一個聚吧！", preferredStyle: .alert)
+            let alert = UIAlertController(title: "尚未登入", message: "登入開始聚聚吧！", preferredStyle: .alert)
             
             let agree = UIAlertAction(title: "登入", style: .default) { (action) in
                 

@@ -21,6 +21,8 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb219860111987671</string>
@@ -31,7 +33,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.1097911060547-ols4con15iikb6vb085se7jt5gi7159j</string>
+				<string>com.googleusercontent.apps.197653326117-shampp049is54qf0hb3lpaefoqbakcp1</string>
 			</array>
 		</dict>
 	</array>
@@ -40,7 +42,7 @@
 	<key>FacebookAppID</key>
 	<string>219860111987671</string>
 	<key>FacebookDisplayName</key>
-	<string>Get together</string>
+	<string>聚聚</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>

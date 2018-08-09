@@ -17,7 +17,8 @@ target 'Get together' do
   pod 'Firebase/Messaging'
   pod 'SVProgressHUD'
   pod 'GoogleSignIn'
-  pod 'FacebookCore'
+    pod 'FacebookCore'
   pod 'FacebookLogin'
+
 
 end

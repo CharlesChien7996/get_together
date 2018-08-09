@@ -27,7 +27,6 @@ class NotificationVC: UITableViewController {
             return
         }
         self.setUpRefreshView()
-
         self.queryNotification(currentUser)
     }
     
@@ -54,6 +53,10 @@ class NotificationVC: UITableViewController {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
+        
+        if self.refresher == nil {
+            self.setUpRefreshView()
+        }
         self.tableView.backgroundView = nil
         self.tableView.separatorStyle = .singleLine
         self.queryNotification(currentUser)
@@ -64,6 +67,10 @@ class NotificationVC: UITableViewController {
         
         self.notificationData.removeAll()
         self.joinedEventData.removeAll()
+        if self.refresher != nil {
+            self.refresher.removeFromSuperview()
+            self.refresher = nil
+        }
         self.tableView.backgroundView = backgroundViewWithoutLogin
         self.tableView.separatorStyle = .none
         self.tableView.reloadData()
@@ -76,19 +83,14 @@ class NotificationVC: UITableViewController {
 
         if self.notificationData.count == 0 {
             
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
-                
-                SVProgressHUD.dismiss()
+                SVProgressHUD.dismiss(withDelay: 1.0)
                 self.tableView.reloadData()
-            }
         }
         
         
         let notificationRef = FirebaseManager.shared.databaseReference.child("notification").queryOrdered(byChild: "time")
         
         FirebaseManager.shared.getData(notificationRef, type: .value) { (allObjects, dict) in
-
-            SVProgressHUD.show(withStatus: "載入中...")
 
             self.notificationData.removeAll()
             self.joinedEventData.removeAll()
@@ -202,12 +204,11 @@ class NotificationVC: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         self.tableView.deselectRow(at: indexPath, animated: true)
         let notification = self.notificationData[indexPath.row]
-        
-        
+
         self.ref.child("notification").child(notification.notificationID).updateChildValues(["isRead" : true])
-        
     }
     
     
@@ -230,19 +231,6 @@ class NotificationVC: UITableViewController {
             eventContentVC.notification = selectedNotification
             
         }
-    }
-    
-    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        if identifier == "eventContent" {
-            guard let indexPath = self.tableView.indexPathForSelectedRow else{
-                return false
-            }
-            let selectedNotification = self.notificationData[indexPath.row]
-            if selectedNotification.isRemoved == true {
-                return false
-            }
-        }
-        return true
     }
     
     

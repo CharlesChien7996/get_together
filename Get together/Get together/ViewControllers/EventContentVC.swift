@@ -25,7 +25,6 @@ class EventContentVC: UITableViewController {
     var memberData: [GUser] = []
     var eventListData: [EventList] = []
     var notification: GNotification!
-    var user: GUser?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,42 +40,12 @@ class EventContentVC: UITableViewController {
         self.eventDescription.text = self.event.description
         self.eventImageView.image = self.event.image
         
-        guard let currentUser = Auth.auth().currentUser else {
-            
-            print("Fail to get current user")
-            return
-        }
-        
-        if currentUser.uid == self.event.organiserID {
-            
-            self.editBtn.title = "編輯"
-            self.editBtn.isEnabled = true
-            
-        }
         
         self.setLocationAnnotation()
         self.queryEventList()
         self.queryUserData()
         self.memberCollectionView.dataSource = self
 
-    }
-    
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        
-        guard let currentUser = Auth.auth().currentUser else {
-            
-            print("Fail to get current user")
-            return 0
-        }
-        
-        if Set(self.event.memberIDs).contains(currentUser.uid) {
-            
-            return 9
-        }else {
-            
-            return 8
-        }
     }
     
     
@@ -190,8 +159,6 @@ class EventContentVC: UITableViewController {
                                      name: dict["name"] as! String,
                                      profileImageURL: dict["profileImageURL"] as! String)
                     
-                    self.user = user
-                    
                     if eventList.eventID == self.event.eventID && eventList.isReply == false {
                         
                         self.showAnwserSelector(currentUser, user: user)
@@ -217,6 +184,35 @@ class EventContentVC: UITableViewController {
             return
         }
         
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let edit = UIAlertAction(title: "編輯", style: .default) { (action) in
+            self.performSegue(withIdentifier: "editEvent", sender: sender)
+        }
+        
+        let dropOut = UIAlertAction(title: "退出", style: .destructive) { (action) in
+
+            self.showDropOutAlert(currentUser)
+        }
+        
+        let cencel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        
+        
+        if currentUser.uid == self.event.organiserID {
+            
+            actionSheet.addAction(edit)
+        }else {
+            
+            actionSheet.addAction(dropOut)
+        }
+
+        actionSheet.addAction(cencel)
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    
+    func showDropOutAlert(_ currentUser: User) {
+        
         let memberSet = Set(self.event.memberIDs)
         
         guard memberSet.contains(currentUser.uid) else{
@@ -227,16 +223,20 @@ class EventContentVC: UITableViewController {
         let alert = UIAlertController(title: "", message: "退出活動後需再次受邀才可以重新加入，是否確認退出？", preferredStyle: .alert)
         let ok = UIAlertAction(title: "確定", style: .default){ (action) in
             
-            let newMembers = self.event.memberIDs.filter{$0 != currentUser.uid}
+            let newMemberIDs = self.event.memberIDs.filter{$0 != currentUser.uid}
+            let currentUserData = self.memberData.filter{$0.userID == currentUser.uid}
+
             let ref = FirebaseManager.shared.databaseReference
-            ref.child("event").child(self.event.eventID).child("memberIDs").setValue(newMembers)
+            ref.child("event").child(self.event.eventID).child("memberIDs").setValue(newMemberIDs)
             
             let autoID = FirebaseManager.shared.databaseReference.childByAutoId().key
             let dateformatter = DateFormatter()
             dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             let time = dateformatter.string(from: Date())
             
-            let notification = GNotification(notificationID: autoID, userID: self.event.organiserID, eventID: self.event.eventID, message: "\"\(self.user?.name ?? "")\" 退出了 「\(self.event.title)」", remark: "", isRead: false, time: time, isRemoved: false)
+
+            
+            let notification = GNotification(notificationID: autoID, userID: self.event.organiserID, eventID: self.event.eventID, message: "\"\(currentUserData.first?.name ?? "")\" 退出了 「\(self.event.title)」", remark: "", isRead: false, time: time, isRemoved: false)
             
             ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).updateChildValues(["isMember" : false])
             ref.child("notification").child(autoID).setValue(notification.uploadNotification())
@@ -250,7 +250,6 @@ class EventContentVC: UITableViewController {
         alert.addAction(ok)
         alert.addAction(cancel)
         self.present(alert, animated: true, completion: nil)
-        
     }
     
     
@@ -268,7 +267,7 @@ class EventContentVC: UITableViewController {
         let agree = UIAlertAction(title: "同意", style: .default) { (action) in
             SVProgressHUD.show(withStatus: "請稍候...")
             
-            let notification = GNotification(notificationID: notificationID, userID: self.event.organiserID, eventID: self.event.eventID,message: "\"\(user.name)\" 同意加入 「\(self.event.title)」", remark: "" ,isRead: false,time: time,isRemoved: false)
+            let notification = GNotification(notificationID: notificationID, userID: self.event.organiserID, eventID: self.event.eventID,message: "\"\(user.name)\" 同意加入 「\(self.event.title)」", remark: "" , isRead: false,time: time,isRemoved: false)
             
             ref.child("notification").child(notificationID).setValue(notification.uploadNotification())
             ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).updateChildValues(["isReply" : true])
@@ -284,7 +283,6 @@ class EventContentVC: UITableViewController {
             let notificationRef = ref.child("notification")
             
             notificationRef.child(self.notification.notificationID).updateChildValues(["isRemoved" : true])
-            notificationRef.child(self.notification.notificationID).updateChildValues(["remark" : "已拒絕邀請"])
             ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).updateChildValues(["isReply" : true])
             ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).updateChildValues(["isMember" : false])
 
@@ -338,7 +336,6 @@ class EventContentVC: UITableViewController {
             guard let organiser = organisers.first else {
                 return
             }
-            
             self.organiserName.text = organiser.name
             
             // Show image from cache if that has been stored in there.
@@ -397,6 +394,7 @@ class EventContentVC: UITableViewController {
         if segue.identifier == "editEvent" {
             
             let editEventVC = segue.destination as! AddEventVC
+            editEventVC.navigationItem.title = "編輯活動"
             editEventVC.isEdit = true
             editEventVC.event = self.event
             editEventVC.members = self.memberData
@@ -409,6 +407,12 @@ class EventContentVC: UITableViewController {
         if segue.identifier == "invitingMemberVC" {
             let invitingMemberVC = segue.destination as! InvitingMemberVC
             invitingMemberVC.event = self.event
+        }
+        
+        if segue.identifier == "commentVC" {
+            let commentVC = segue.destination as! CommentVC
+            commentVC.event = self.event
+            commentVC.memberData = self.memberData
         }
     }
     

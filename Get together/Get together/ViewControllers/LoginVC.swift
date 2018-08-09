@@ -94,47 +94,42 @@ class LoginVC: UIViewController {
     
     @IBAction func facebookSignInPressed(_ sender: Any) {
         
-        
         let loginManager = LoginManager()
-        loginManager.logIn(readPermissions: [.publicProfile, .email], viewController: self) { (result) in
-            
+        loginManager.logIn(readPermissions: [.publicProfile, .email,], viewController: self) { (result) in
+            SVProgressHUD.show(withStatus: "請稍候...")
+
             switch result {
             case .success(grantedPermissions: _, declinedPermissions: _, token: _):
-                
+
                 guard let accessToken = AccessToken.current?.authenticationToken else {
                     return
                 }
-                
+
                 let credential = FacebookAuthProvider.credential(withAccessToken: accessToken)
                 Auth.auth().signInAndRetrieveData(with: credential){ (result, error) in
-                    
+
                     if let error = error {
-                        
-                        print(error.localizedDescription)
+
+                        print(error)
                         return
                     }
-                    
-                    SVProgressHUD.show(withStatus: "請稍候...")
+
 
 
                     guard let user = result?.user else {
                         return
                     }
-                    
-//                    guard let email = user.email, let name = user.displayName, let profileImageURL = user.photoURL?.absoluteString else {
-//                        return
-//                    }
-                    
+
                     let gUser = GUser(userID: user.uid, email: user.email ?? user.phoneNumber ?? "Facebook 使用者", name: user.displayName ?? "", profileImageURL: user.photoURL?.absoluteString ?? "")
                     let userRef = FirebaseManager.shared.databaseReference.child("user").child(user.uid)
-                    
+
                     FirebaseManager.shared.getDataBySingleEvent(userRef, type: .value){ (allObjects, dict) in
-                        
+
                         if dict?.count == 0 || dict?.count == nil {
-                            
+
                             userRef.setValue(gUser.uploadedUserData())
                         }
-                        
+
                         let delegate = UIApplication.shared.delegate as! AppDelegate
                         let tabbarController = delegate.window?.rootViewController as! UITabBarController
                         tabbarController.selectedIndex = 0
@@ -144,13 +139,13 @@ class LoginVC: UIViewController {
                         self.dismiss(animated: true, completion: nil)
                     }
                 }
-                
+
             case .failed( let error):
                 print(error)
             case .cancelled:
                 SVProgressHUD.dismiss()
             }
-            
+
         }
     }
     
@@ -188,9 +183,9 @@ class LoginVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(notification:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(notification:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
+//
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
         
         guard Auth.auth().currentUser != nil else {
             print("Fail to get current user")
@@ -203,42 +198,42 @@ class LoginVC: UIViewController {
     
     
     // Remove observer when leave this view.
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    
-    @objc func keyboardWillAppear(notification : Notification)  {
-        
-        let info = notification.userInfo!
-        let currentKeyboardFrame = info[UIKeyboardFrameEndUserInfoKey] as! CGRect
-        let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
-        
-        let textFrame = self.view.window!.convert(self.stackView.frame, from: self.view)
-        var visibleRect = self.view.frame
-        self.originalFrame = visibleRect
-        
-        guard textFrame.maxY > currentKeyboardFrame.minY else{
-            return
-        }
-        
-        let difference = textFrame.maxY - currentKeyboardFrame.minY
-        visibleRect.origin.y = visibleRect.origin.y - (difference+16)
-        
-        UIView.animate(withDuration: duration) {
-            self.view.frame = visibleRect
-        }
-    }
-    
-    
-    @objc func keyboardWillHide(notification : Notification)  {
-        
-        UIView.animate(withDuration: 0.5) {
-            
-            self.view.frame.origin.y = 0
-        }
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        NotificationCenter.default.removeObserver(self)
+//    }
+//    
+//    
+//    @objc func keyboardWillAppear(notification : Notification)  {
+//        
+//        let info = notification.userInfo!
+//        let currentKeyboardFrame = info[UIKeyboardFrameEndUserInfoKey] as! CGRect
+//        let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
+//        
+//        let textFrame = self.view.window!.convert(self.stackView.frame, from: self.view)
+//        var visibleRect = self.view.frame
+//        self.originalFrame = visibleRect
+//        
+//        guard textFrame.maxY > currentKeyboardFrame.minY else{
+//            return
+//        }
+//        
+//        let difference = textFrame.maxY - currentKeyboardFrame.minY
+//        visibleRect.origin.y = visibleRect.origin.y - (difference+16)
+//        
+//        UIView.animate(withDuration: duration) {
+//            self.view.frame = visibleRect
+//        }
+//    }
+//    
+//    
+//    @objc func keyboardWillHide(notification : Notification)  {
+//        
+//        UIView.animate(withDuration: 0.5) {
+//            
+//            self.view.frame.origin.y = 0
+//        }
+//    }
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

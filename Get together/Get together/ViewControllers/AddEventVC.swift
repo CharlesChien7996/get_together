@@ -311,7 +311,7 @@ class AddEventVC: UITableViewController {
                     dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                     let time = dateformatter.string(from: Date())
                     
-                    let notification = GNotification(notificationID: notificationID, userID: member.userID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",remark: "已不在此聚成員內",isRead: false, time: time, isRemoved: true)
+                    let notification = GNotification(notificationID: notificationID, userID: member.userID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",remark: "",isRead: false, time: time, isRemoved: true)
                     
                     ref.child("invitingEventList").child(member.userID).child(self.event.eventID).updateChildValues(["isMember" : false])
 
