@@ -3,6 +3,7 @@ import Firebase
 import FirebaseStorage
 import MapKit
 import SVProgressHUD
+import UserNotifications
 
 class EventContentVC: UITableViewController {
     
@@ -176,7 +177,11 @@ class EventContentVC: UITableViewController {
     }
     
     
+
+    
+    
     @IBAction func editPressed(_ sender: Any) {
+        
         
         guard let currentUser = Auth.auth().currentUser else {
             
@@ -405,11 +410,20 @@ class EventContentVC: UITableViewController {
         }
         
         if segue.identifier == "invitingMemberVC" {
+            
             let invitingMemberVC = segue.destination as! InvitingMemberVC
             invitingMemberVC.event = self.event
         }
         
+        if segue.identifier == "eventAlertVC" {
+            
+            let eventAlertVC = segue.destination as! EventAlertVC
+            eventAlertVC.event = self.event
+        }
+        
+        
         if segue.identifier == "commentVC" {
+            
             let commentVC = segue.destination as! CommentVC
             commentVC.event = self.event
             commentVC.memberData = self.memberData
