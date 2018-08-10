@@ -19,6 +19,7 @@ class CommentVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.inpitBtn.isEnabled = false
         self.inpitBtn.backgroundColor = UIColor.lightGray
         self.textView.textColor = UIColor.lightGray
@@ -349,5 +350,43 @@ extension CommentVC: UITableViewDataSource, UITableViewDelegate {
             }
         }
         return commentCell
+    }
+    
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        
+
+        
+        if indexPath.section == 0 {
+            return false
+        }else {
+            
+            let comment = self.commentData[indexPath.row]
+            
+            guard let currentUser = Auth.auth().currentUser else {
+                print("Fail to get current user")
+                return false
+            }
+            
+            guard comment.userID == currentUser.uid else {
+                return false
+            }
+        }
+        return true
+    }
+    
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        let comment = self.commentData[indexPath.row]
+        let commentRef = FirebaseManager.shared.databaseReference.child("comment").child(self.event.eventID).child(comment.commentID)
+        
+        if editingStyle == .delete {
+            
+            self.commentData.remove(at: indexPath.row)
+            commentRef.removeValue()
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            
+        }
     }
 }

@@ -75,8 +75,8 @@ class EventContentVC: UITableViewController {
             return 44
             
         case 5:
-            return 177
-            
+            return UITableViewAutomaticDimension
+
         case 6:
             return UITableViewAutomaticDimension
             
