@@ -93,6 +93,9 @@ class CommentVC: UIViewController {
             }
         }
         
+        self.view.endEditing(true)
+        self.inpitBtn.isEnabled = false
+        self.inpitBtn.backgroundColor = UIColor.lightGray
         self.textView.text = "留言......"
         self.textView.textColor = UIColor.lightGray
     }
@@ -247,7 +250,9 @@ extension CommentVC: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         
-        if self.textView.text == "留言......" {
+        if self.textView.text == "留言......" || self.textView.text.isEmpty{
+            self.inpitBtn.isEnabled = false
+            self.inpitBtn.backgroundColor = UIColor.lightGray
             self.textView.text = ""
             self.textView.textColor = UIColor.black
         }
@@ -256,7 +261,7 @@ extension CommentVC: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         
-        if self.textView.text == "" {
+        if self.textView.text.isEmpty {
             self.textView.text = "留言......"
             self.textView.textColor = UIColor.lightGray
             self.inpitBtn.isEnabled = false
@@ -265,7 +270,7 @@ extension CommentVC: UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        if self.textView.text != "" && self.textView.textColor != UIColor.lightGray {
+        if !self.textView.text.isEmpty && self.textView.textColor != UIColor.lightGray {
             self.inpitBtn.isEnabled = true
             self.inpitBtn.backgroundColor = UIColor.init(red: 0, green: 0.6, blue: 1, alpha: 1)
         }else {
