@@ -59,7 +59,9 @@ class NotificationVC: UITableViewController {
         }
         self.tableView.backgroundView = nil
         self.tableView.separatorStyle = .singleLine
+        self.navigationController?.popToRootViewController(animated: true)
         self.queryNotification(currentUser)
+    
     }
     
     

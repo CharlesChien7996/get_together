@@ -284,6 +284,8 @@ class AddEventVC: UITableViewController {
             
             removedMemberSet.subtract(memberSet)
             self.deletedMembers = Array(removedMemberSet)
+            var deleteMemberIDs: [String] = []
+            var finalMemberIDs: [String] = [""]
             
             guard let currentUser = Auth.auth().currentUser else{
                 
@@ -293,44 +295,41 @@ class AddEventVC: UITableViewController {
             
             if self.isEdit == true {
                 
+                let originalMemberIDs = self.event.memberIDs
+                finalMemberIDs = originalMemberIDs
+
                 eventID = self.event.eventID
+                
+                if !self.deletedMembers.isEmpty {
+                    
+                    for member in self.deletedMembers {
+                        
+                        var notificationID = FirebaseManager.shared.databaseReference.childByAutoId().key
+                        ref.child("memberList").child(self.event.eventID).child(member.userID).removeValue()
+                        ref.child("eventList").child(member.userID).child(self.event.eventID).removeValue()
+                        let dateformatter = DateFormatter()
+                        dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                        let time = dateformatter.string(from: Date())
+                        
+                        let notification = GNotification(notificationID: notificationID, userID: member.userID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",remark: "",isRead: false, time: time, isRemoved: true)
+                        
+                        ref.child("invitingEventList").child(member.userID).child(self.event.eventID).updateChildValues(["isMember" : false])
+                        
+                        ref.child("notification").child(notificationID).setValue(notification.uploadNotification())
+                        notificationID = ""
+                        deleteMemberIDs.append(member.userID)
+                    }
+                    
+                    let finalMemberIDsSet = Set(originalMemberIDs).subtracting(Set(deleteMemberIDs))
+                    finalMemberIDs = Array(finalMemberIDsSet)
+                }
+                
             }else {
                 
                 eventID = FirebaseManager.shared.databaseReference.childByAutoId().key
-                
-            }
-            
-            if !self.deletedMembers.isEmpty {
-                
-                for member in self.deletedMembers {
-                    
-                    var notificationID = FirebaseManager.shared.databaseReference.childByAutoId().key
-                    ref.child("memberList").child(self.event.eventID).child(member.userID).removeValue()
-                    ref.child("eventList").child(member.userID).child(self.event.eventID).removeValue()
-                    let dateformatter = DateFormatter()
-                    dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                    let time = dateformatter.string(from: Date())
-                    
-                    let notification = GNotification(notificationID: notificationID, userID: member.userID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",remark: "",isRead: false, time: time, isRemoved: true)
-                    
-                    ref.child("invitingEventList").child(member.userID).child(self.event.eventID).updateChildValues(["isMember" : false])
-
-                    ref.child("notification").child(notificationID).setValue(notification.uploadNotification())
-                    notificationID = ""
-                }
             }
             
             
-            self.event = Event(eventID:eventID,
-                               organiserID: currentUser.uid,
-                               title: self.eventTitle.text!,
-                               memberIDs: [""],
-                               date: self.eventDate.text!,
-                               location: self.eventLocation.text!,
-                               description: self.eventDescription.text,
-                               eventImageURL: String(describing: url))
-            self.event.image = thumbnailImage
-            ref.child("event").child(eventID).setValue(self.event.uploadedEventData())
             self.delegate?.didUpdatedEvent(self.event)
             
             for member in self.editedMembers {
@@ -349,6 +348,20 @@ class AddEventVC: UITableViewController {
                 ref.child("notification").child(notificationID!).setValue(notification.uploadNotification())
                 notificationID = ""
             }
+            
+            
+            self.event = Event(eventID:eventID,
+                               organiserID: currentUser.uid,
+                               title: self.eventTitle.text!,
+                               memberIDs: finalMemberIDs,
+                               date: self.eventDate.text!,
+                               location: self.eventLocation.text!,
+                               description: self.eventDescription.text,
+                               eventImageURL: String(describing: url))
+            
+            self.event.image = thumbnailImage
+            ref.child("event").child(eventID).setValue(self.event.uploadedEventData())
+            
             SVProgressHUD.dismiss()
         }
     }

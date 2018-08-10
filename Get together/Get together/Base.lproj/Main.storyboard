@@ -40,7 +40,7 @@
                                                         <color key="backgroundColor" red="0.99682146309999997" green="0.99205094579999997" blue="0.99196249250000001" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <nil key="textColor"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
-                                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress" returnKeyType="next"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress" returnKeyType="next" textContentType="email"/>
                                                     </textField>
                                                 </subviews>
                                                 <constraints>
@@ -90,7 +90,7 @@
                                                         <rect key="frame" x="39" y="0.0" width="292.33333333333331" height="31"/>
                                                         <nil key="textColor"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
-                                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress" returnKeyType="next" secureTextEntry="YES"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress" returnKeyType="next" secureTextEntry="YES" textContentType="password"/>
                                                     </textField>
                                                 </subviews>
                                                 <constraints>

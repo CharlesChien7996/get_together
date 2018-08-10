@@ -8,7 +8,6 @@ class ResetPasswordVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
     
     @IBAction func resetPassword(_ sender: Any) {
@@ -24,7 +23,7 @@ class ResetPasswordVC: UIViewController {
                 return
             }
             SVProgressHUD.show(withStatus: "請稍候...")
-
+            
             self.emailTextField.text = ""
             let alertController = UIAlertController(title: "重設密碼信已寄出", message: "請至信箱確認並重設密碼", preferredStyle: .alert)
             let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)

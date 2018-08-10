@@ -54,9 +54,12 @@ class MainVC: UIViewController {
         
         self.tableView.backgroundView = nil
         self.tableView.separatorStyle = .singleLine
+         
         self.queryHostEventData(currentUser)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.queryNotificationCount(currentUser)
+        self.navigationController?.popToRootViewController(animated: true)
+
     }
     
     
