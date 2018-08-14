@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		711A96BAD4662E89DC8C6C7C /* Pods_Get_together.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EC47F91FF1D3B632DE7633A /* Pods_Get_together.framework */; };
+		D6036DAF2122AD58008F1992 /* RootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6036DAE2122AD58008F1992 /* RootVC.swift */; };
 		D60E33E120FC7F73003BD0FD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60E33E020FC7F73003BD0FD /* AppDelegate.swift */; };
 		D60E33E620FC7F73003BD0FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D60E33E420FC7F73003BD0FD /* Main.storyboard */; };
 		D60E33E820FC7F75003BD0FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D60E33E720FC7F75003BD0FD /* Assets.xcassets */; };
@@ -44,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		4EC47F91FF1D3B632DE7633A /* Pods_Get_together.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Get_together.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6036DAE2122AD58008F1992 /* RootVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC.swift; sourceTree = "<group>"; };
 		D60E33DD20FC7F73003BD0FD /* Get together.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Get together.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D60E33E020FC7F73003BD0FD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D60E33E520FC7F73003BD0FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 		D6A50FE820FC824200217A51 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				D6036DAE2122AD58008F1992 /* RootVC.swift */,
 				D6F28C57210C13D7005DE460 /* MainVC.swift */,
 				D60E33F920FC80CD003BD0FD /* LoginVC.swift */,
 				D60E33F320FC80CD003BD0FD /* RegisterVC.swift */,
@@ -374,6 +377,7 @@
 				D66F261821072F80002B4752 /* EditProfileInfoVC.swift in Sources */,
 				D64A38AB211BF7240089A755 /* CommentVC.swift in Sources */,
 				D6F3742920FCAD6C000C6D2E /* FirebaseManager.swift in Sources */,
+				D6036DAF2122AD58008F1992 /* RootVC.swift in Sources */,
 				D6194B29210710EC0077222F /* ProfileVC.swift in Sources */,
 				D62C2A6921215F5C00012557 /* AlertOptionItem.swift in Sources */,
 				D60E33E120FC7F73003BD0FD /* AppDelegate.swift in Sources */,

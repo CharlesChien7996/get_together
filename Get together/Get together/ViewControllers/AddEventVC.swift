@@ -23,6 +23,7 @@ class AddEventVC: UITableViewController {
     @IBOutlet weak var eventDescription: UITextView!
     
     @IBOutlet weak var selectDateBtn: UIButton!
+    @IBOutlet weak var dontBtn: UIBarButtonItem!
     
     var isOn = false
     var isEdit = false
@@ -258,9 +259,16 @@ class AddEventVC: UITableViewController {
     func uploadEventData() {
         
         SVProgressHUD.show(withStatus: "請稍候...")
-        var eventID: String!
+        var eventID = FirebaseManager.shared.databaseReference.childByAutoId().key
+
         let ref = FirebaseManager.shared.databaseReference
-        let imageRef = Storage.storage().reference().child("eventImage").child(FirebaseManager.shared.databaseReference.childByAutoId().key)
+        
+        if self.isEdit == true {
+            eventID = self.event.eventID
+        }
+        
+        let imageRef = Storage.storage().reference().child("eventImage").child(eventID)
+
         
         guard let image = self.eventImageView.image else {
             print("Fail to get event's image")
@@ -326,11 +334,7 @@ class AddEventVC: UITableViewController {
 //                self.delegate?.didUpdatedEvent(self.event)
 
                 
-            }else {
-                
-                eventID = FirebaseManager.shared.databaseReference.childByAutoId().key
             }
-            
             
             
             for member in self.editedMembers {
@@ -366,6 +370,25 @@ class AddEventVC: UITableViewController {
             
             SVProgressHUD.dismiss()
         }
+    }
+    
+    
+    @IBAction func cancelPressed(_ sender: Any) {
+
+        let alert = UIAlertController(title: "內容尚未儲存，確定要取消嗎？", message: nil, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "確定", style: .default) { (alertAction) in
+            DispatchQueue.main.async {
+                self.navigationController?.popViewController(animated: true)
+
+            }
+        }
+        
+        let cancel = UIAlertAction(title: "取消", style:.cancel, handler: nil)
+        
+        alert.addAction(ok)
+        alert.addAction(cancel)
+
+        self.present(alert, animated: true, completion: nil)
     }
     
     
@@ -546,7 +569,7 @@ extension AddEventVC: MemberSearchVCDelegate {
             return
         }
         
-        if updatedMember.email == currentUser.email {
+        if updatedMember.userID == currentUser.uid {
             
             self.showAlert("錯誤", message: "你已經是成員囉！")
             return
@@ -554,7 +577,7 @@ extension AddEventVC: MemberSearchVCDelegate {
         
         for i in self.members {
             
-            if updatedMember.email == i.email {
+            if updatedMember.userID == i.userID {
                 
                 self.showAlert("錯誤", message: "\(i.name)已經是成員囉！")
                 return
@@ -562,6 +585,7 @@ extension AddEventVC: MemberSearchVCDelegate {
         }
         
         self.members.insert(updatedMember, at: 0)
+
         self.collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
     }
 }

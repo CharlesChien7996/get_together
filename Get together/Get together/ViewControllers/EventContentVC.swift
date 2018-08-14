@@ -227,7 +227,7 @@ class EventContentVC: UITableViewController {
             return
         }
         
-        let alert = UIAlertController(title: "", message: "退出活動後需再次受邀才可以重新加入，是否確認退出？", preferredStyle: .alert)
+        let alert = UIAlertController(title: "退出活動後需再次受邀才可以重新加入，確定要退出嗎？", message: nil, preferredStyle: .alert)
         let ok = UIAlertAction(title: "確定", style: .default){ (action) in
             
             let newMemberIDs = self.event.memberIDs.filter{$0 != currentUser.uid}
@@ -248,8 +248,9 @@ class EventContentVC: UITableViewController {
             ref.child("invitingEventList").child(currentUser.uid).child(self.event.eventID).updateChildValues(["isMember" : false])
             ref.child("notification").child(autoID).setValue(notification.uploadNotification())
             
-            
-            self.navigationController?.popViewController(animated: true)
+            DispatchQueue.main.async {
+                self.navigationController?.popViewController(animated: true)
+            }
         }
         
         let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -282,7 +283,9 @@ class EventContentVC: UITableViewController {
             self.event.memberIDs.append(currentUser.uid)
             ref.child("event").child(self.event.eventID).updateChildValues(["memberIDs" : self.event.memberIDs])
             
-            self.navigationController?.popViewController(animated: true)
+            DispatchQueue.main.async {
+                self.navigationController?.popViewController(animated: true)
+            }
         }
         
         let reject = UIAlertAction(title: "拒絕", style: .cancel) { (action) in
@@ -298,7 +301,9 @@ class EventContentVC: UITableViewController {
             
             notificationRef.child(notificationID).setValue(newNotification.uploadNotification())
             
-            self.navigationController?.popViewController(animated: true)
+            DispatchQueue.main.async {
+                self.navigationController?.popViewController(animated: true)
+            }
         }
         
         alert.addAction(agree)

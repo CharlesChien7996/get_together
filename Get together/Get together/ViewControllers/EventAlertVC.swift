@@ -19,25 +19,23 @@ class EventAlertVC: UIViewController {
             self.alertStatus = alertOptions as! [Bool]
         }
         
-        
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-        
         
         
         self.eventImageView.image = self.event.image
         self.eventTitle.text = self.event.title
-        
-        
-        
-        let eventDate = self.alertDate.text!
-        let now = dateFormatter.string(from: Date())
-        
-        if eventDate < now {
-            self.alertDate.text = "已過期"
-            
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+       let eventDate = dateFormatter.date(from: self.event.date)!
+
+        if eventDate < Date() {
+            self.alertDate.text = "活動已過期"
+            self.alertDate.isHidden = false
+            self.tableView.isHidden = true
+
+        }else {
+            self.alertDate.text = self.event.date
         }
     }
     
@@ -87,11 +85,9 @@ class EventAlertVC: UIViewController {
         let content = UNMutableNotificationContent()
         content.title = "您的活動「\(self.event.title)」即將到來"
         content.body = "別忘了赴約喔：）"
-        content.badge = nil
         
         content.sound = UNNotificationSound.default()
         
-
         let components = Calendar.current.dateComponents([.month, .day, .hour, .minute], from: date)
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)

@@ -274,7 +274,7 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
             break
         }
         
-        cell.eventDate?.textColor = UIColor.blue
+        cell.eventDate?.textColor = UIColor.init(red: 0.5, green: 0.8, blue: 1, alpha: 1)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         if let eventDate = dateFormatter.date(from: event.date) {

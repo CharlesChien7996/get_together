@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+
         // Override point for customization after application launch.
         SVProgressHUD.setDefaultStyle(.dark)
         
@@ -180,18 +181,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
-
+    
 }
 
 @available(iOS 10, *)
 extension AppDelegate: UNUserNotificationCenterDelegate {
     
-    /// 推播送出時即會觸發的 delegate
-    ///
-    /// - Parameters:
-    ///   - center: _
-    ///   - notification: _
-    ///   - completionHandler: _
+    // 推播送出時即會觸發的 delegate
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
         // 印出後台送出的推播訊息(JOSN 格式)
@@ -213,10 +209,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         // 印出後台送出的推播訊息(JOSN 格式)
         let userInfo = response.notification.request.content.userInfo
         print("userInfo: \(userInfo)")
-        
         completionHandler()
     }
 }
+
 
 extension AppDelegate: MessagingDelegate {
     
@@ -242,7 +238,7 @@ extension AppDelegate: GIDSignInDelegate {
         }
         
         SVProgressHUD.show(withStatus: "請稍候...")
-
+        
         guard let authentication = user.authentication else {
             return
             
@@ -260,7 +256,7 @@ extension AppDelegate: GIDSignInDelegate {
                 return
             }
             
-
+            
             let gUser = GUser(userID: user.uid, email: user.email ?? user.phoneNumber ?? "Google 使用者", name: user.displayName ?? "", profileImageURL: user.photoURL?.absoluteString ?? "")
             
             let userRef = FirebaseManager.shared.databaseReference.child("user").child(user.uid)
@@ -279,7 +275,9 @@ extension AppDelegate: GIDSignInDelegate {
                 
                 SVProgressHUD.dismiss()
                 self.window?.rootViewController?.dismiss(animated: true, completion: nil)
+            }
         }
     }
-    }
 }
+
+
