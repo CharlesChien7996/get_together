@@ -1045,7 +1045,7 @@
                     <viewLayoutGuide key="safeArea" id="Z6y-Oy-f8l"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="3055" y="1476"/>
+            <point key="canvasLocation" x="3054" y="1432"/>
         </scene>
         <!--新增活動-->
         <scene sceneID="JrB-pF-ARK">
@@ -1807,27 +1807,31 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rV2-0h-K2m">
-                                                    <rect key="frame" x="67" y="11" width="42" height="20"/>
+                                                    <rect key="frame" x="67" y="11" width="41.666666666666657" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Yf-Om-vwT">
-                                                    <rect key="frame" x="356" y="6" width="31" height="30"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="提醒"/>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Yf-Om-vwT">
+                                                    <rect key="frame" x="365" y="4.3333333333333321" width="33" height="33.333333333333343"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="0Yf-Om-vwT" secondAttribute="height" multiplier="1:1" id="8LA-xS-0dZ"/>
+                                                    </constraints>
+                                                    <state key="normal" title="提醒" image="alarm"/>
                                                     <connections>
                                                         <segue destination="ZBF-1U-12C" kind="show" identifier="eventAlertVC" id="Oa3-aQ-ekE"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="rV2-0h-K2m" firstAttribute="leading" secondItem="NXg-9o-pQY" secondAttribute="leading" constant="67" id="3z1-Op-Msd"/>
-                                                <constraint firstItem="vUz-Ps-cL6" firstAttribute="top" secondItem="NXg-9o-pQY" secondAttribute="top" constant="11" id="UIj-zM-VpL"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rV2-0h-K2m" secondAttribute="trailing" id="VgA-u6-REJ"/>
+                                                <constraint firstItem="0Yf-Om-vwT" firstAttribute="width" secondItem="NXg-9o-pQY" secondAttribute="width" multiplier="0.08" id="9Mt-y9-JaW"/>
+                                                <constraint firstItem="rV2-0h-K2m" firstAttribute="leading" secondItem="vUz-Ps-cL6" secondAttribute="trailing" constant="16" id="LQ5-Dh-vKh"/>
+                                                <constraint firstItem="0Yf-Om-vwT" firstAttribute="centerY" secondItem="NXg-9o-pQY" secondAttribute="centerY" id="UEq-lJ-afK"/>
+                                                <constraint firstItem="vUz-Ps-cL6" firstAttribute="centerY" secondItem="NXg-9o-pQY" secondAttribute="centerY" id="Zla-PA-kJE"/>
                                                 <constraint firstItem="vUz-Ps-cL6" firstAttribute="leading" secondItem="NXg-9o-pQY" secondAttribute="leading" constant="16" id="b4R-tw-fEe"/>
-                                                <constraint firstItem="rV2-0h-K2m" firstAttribute="top" secondItem="NXg-9o-pQY" secondAttribute="top" constant="11" id="fnl-Sh-oXM"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vUz-Ps-cL6" secondAttribute="trailing" id="ipA-QM-BNx"/>
+                                                <constraint firstItem="rV2-0h-K2m" firstAttribute="centerY" secondItem="NXg-9o-pQY" secondAttribute="centerY" id="dEo-XZ-X6R"/>
+                                                <constraint firstAttribute="trailing" secondItem="0Yf-Om-vwT" secondAttribute="trailing" constant="16" id="xtE-B7-kQM"/>
+                                                <constraint firstItem="0Yf-Om-vwT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="rV2-0h-K2m" secondAttribute="trailing" constant="16" id="zY1-l9-1rI"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -1861,16 +1865,30 @@
                                                         <constraint firstAttribute="height" constant="120" id="Tgp-6j-42X"/>
                                                     </constraints>
                                                 </mapView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XzO-ry-QDA">
+                                                    <rect key="frame" x="365" y="100.66666666666667" width="33" height="33.000000000000014"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="XzO-ry-QDA" secondAttribute="height" multiplier="1:1" id="iRD-Sf-vOL"/>
+                                                    </constraints>
+                                                    <state key="normal" title="地圖" image="map"/>
+                                                    <connections>
+                                                        <action selector="goToMapPressed:" destination="qfP-Hk-2kc" eventType="touchUpInside" id="WcJ-Cf-V7A"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="qwu-Ig-blu" firstAttribute="top" secondItem="7Pc-jR-Px1" secondAttribute="top" constant="16" id="0ly-WM-iYe"/>
                                                 <constraint firstItem="1hd-B2-Jyv" firstAttribute="top" relation="greaterThanOrEqual" secondItem="qwu-Ig-blu" secondAttribute="bottom" constant="12.5" id="5P8-j2-p8p"/>
+                                                <constraint firstItem="XzO-ry-QDA" firstAttribute="width" secondItem="7Pc-jR-Px1" secondAttribute="width" multiplier="0.08" id="5Uf-DL-8uT"/>
                                                 <constraint firstItem="1hd-B2-Jyv" firstAttribute="centerX" secondItem="7Pc-jR-Px1" secondAttribute="centerX" id="DOv-o8-ar8"/>
+                                                <constraint firstItem="XzO-ry-QDA" firstAttribute="centerY" secondItem="1hd-B2-Jyv" secondAttribute="centerY" id="EJU-iz-hCR"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qwu-Ig-blu" secondAttribute="trailing" constant="16" id="bZe-WA-MzU"/>
                                                 <constraint firstAttribute="bottom" secondItem="1hd-B2-Jyv" secondAttribute="bottom" id="c3B-FB-z25"/>
                                                 <constraint firstItem="XRI-a4-40J" firstAttribute="leading" secondItem="7Pc-jR-Px1" secondAttribute="leading" constant="16" id="dD7-tF-bWO"/>
+                                                <constraint firstAttribute="trailing" secondItem="XzO-ry-QDA" secondAttribute="trailing" constant="16" id="fDy-Ma-rdC"/>
                                                 <constraint firstItem="XRI-a4-40J" firstAttribute="top" secondItem="7Pc-jR-Px1" secondAttribute="top" constant="16" id="jde-4D-9CJ"/>
                                                 <constraint firstItem="qwu-Ig-blu" firstAttribute="leading" secondItem="XRI-a4-40J" secondAttribute="trailing" constant="16" id="kC2-P8-hue"/>
+                                                <constraint firstItem="XzO-ry-QDA" firstAttribute="leading" secondItem="1hd-B2-Jyv" secondAttribute="trailing" constant="38" id="vtb-7o-iWR"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -1973,7 +1991,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vQi-z1-M1P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3840" y="1621"/>
+            <point key="canvasLocation" x="3839.130434782609" y="1619.8369565217392"/>
         </scene>
         <!--留言-->
         <scene sceneID="0y3-H5-Mu1">
@@ -2169,7 +2187,7 @@
                                     <constraint firstAttribute="width" secondItem="v0j-Ue-3DQ" secondAttribute="height" multiplier="1:1" id="qyI-8c-gw3"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fuG-qj-wy7">
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fuG-qj-wy7">
                                 <rect key="frame" x="0.0" y="241.33333333333337" width="414" height="36"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="30"/>
@@ -2183,13 +2201,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1zY-Jh-dJu">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="1zY-Jh-dJu">
                                 <rect key="frame" x="0.0" y="285" width="414" height="402"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="alertOptionCell" textLabel="8q1-Dg-LJE" style="IBUITableViewCellStyleDefault" id="yW2-dc-Dwh">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                        <rect key="frame" x="0.0" y="55.333333333333343" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yW2-dc-Dwh" id="Xrl-ul-Qb6">
                                             <rect key="frame" x="0.0" y="0.0" width="370" height="43.666666666666664"/>
@@ -2598,6 +2616,7 @@
     </scenes>
     <resources>
         <image name="add" width="29" height="29"/>
+        <image name="alarm" width="29" height="29"/>
         <image name="check" width="29" height="29"/>
         <image name="default" width="640" height="640"/>
         <image name="down" width="20" height="20"/>
@@ -2608,6 +2627,7 @@
         <image name="exit" width="20" height="20"/>
         <image name="lock" width="29" height="29"/>
         <image name="mail" width="29" height="29"/>
+        <image name="map" width="29" height="29"/>
         <image name="more" width="20" height="20"/>
         <image name="profile" width="29" height="29"/>
         <image name="profile2" width="29" height="29"/>
@@ -2615,7 +2635,7 @@
         <image name="user" width="29" height="29"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="zGs-19-rV2"/>
+        <segue reference="1ca-CF-K02"/>
         <segue reference="rmp-Mg-poj"/>
     </inferredMetricsTieBreakers>
 </document>

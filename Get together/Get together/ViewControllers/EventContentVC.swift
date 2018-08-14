@@ -26,6 +26,7 @@ class EventContentVC: UITableViewController {
     var memberData: [GUser] = []
     var eventListData: [EventList] = []
     var notification: GNotification!
+    var location: CLLocation!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -122,6 +123,7 @@ class EventContentVC: UITableViewController {
             let region = MKCoordinateRegion(center: annotation.coordinate, span: span)
             self.region = region
             self.eventLocationMap.setRegion(region, animated: false)
+            self.location = location
         }
     }
     
@@ -393,6 +395,31 @@ class EventContentVC: UITableViewController {
     }
     
     
+    @IBAction func goToMapPressed(_ sender: Any) {
+        
+        let latitude: CLLocationDegrees = self.location.coordinate.latitude
+        let longitude: CLLocationDegrees = self.location.coordinate.longitude
+
+        let regionDistance:CLLocationDistance = 1000
+        let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
+        let regionSpan = MKCoordinateRegionMakeWithDistance(coordinates, regionDistance, regionDistance)
+        let options = [
+            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span),
+//            MKLaunchOptionsDirectionsModeDriving: NSValue(mkCoordinate: coordinates)
+
+            ]
+        
+        let placemark = MKPlacemark(coordinate: coordinates)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = self.event.location
+        mapItem.openInMaps(launchOptions: options)
+        
+        
+    }
+    
+    
+    
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -406,7 +433,7 @@ class EventContentVC: UITableViewController {
             editEventVC.originalMemers = self.memberData
             editEventVC.annotation = self.annotation
             editEventVC.region = self.region
-            editEventVC.delegate = self
+//            editEventVC.delegate = self
         }
         
         if segue.identifier == "invitingMemberVC" {
@@ -480,18 +507,20 @@ extension EventContentVC: UICollectionViewDataSource {
     }
 }
 
-extension EventContentVC: AddEventVCDelegate {
-    func didUpdatedEvent(_ updatedEvent: Event) {
+//extension EventContentVC: AddEventVCDelegate {
+//    func didUpdatedEvent(_ updatedEvent: Event) {
+//
+//        self.event = updatedEvent
+//        self.queryUserData()
+//        self.eventTitle.text = self.event.title
+//        self.eventDate.text = self.event.date
+//        self.eventLocation.text = self.event.location
+//        self.eventDescription.text = self.event.description
+//        self.eventImageView.image = self.event.image
+//        self.setLocationAnnotation()
+//
+//    }
+//}
 
-        self.event = updatedEvent
-        self.queryUserData()
-        self.eventTitle.text = self.event.title
-        self.eventDate.text = self.event.date
-        self.eventLocation.text = self.event.location
-        self.eventDescription.text = self.event.description
-        self.eventImageView.image = self.event.image
-        self.setLocationAnnotation()
-        
-    }
-}
+
 

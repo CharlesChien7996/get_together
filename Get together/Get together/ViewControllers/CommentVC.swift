@@ -154,7 +154,6 @@ class CommentVC: UIViewController {
         
         let time = (timeNow.integerValue - timeModel.integerValue) / 60//计算时差
         
-        //print(time)
         //time 取得輸入時間到目前時間的分鐘差
         var returnMinDiff = false
         var returnHourDiff = false
@@ -239,12 +238,12 @@ class CommentVC: UIViewController {
         }
     }
     
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         self.view.endEditing(true)
         self.tableView.endEditing(true)
     }
-    
 }
 
 extension CommentVC: UITextViewDelegate {

@@ -104,14 +104,6 @@ class EventAlertVC: UIViewController {
     }
     
     
-    func cancelLocalNotificaiton(_ alertID: String) {
-        
-//        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: <#T##[String]#>)
-        
-        
-        
-        
-    }
     
     
 //
@@ -170,6 +162,10 @@ class EventAlertVC: UIViewController {
 
 extension EventAlertVC: UITableViewDataSource, UITableViewDelegate {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.alertOptions.count
     }
@@ -194,22 +190,24 @@ extension EventAlertVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         var isAlertOn = self.alertStatus[indexPath.row]
+        var removedIDs: [String] = []
         
         isAlertOn = !isAlertOn
         self.alertStatus[indexPath.row] = isAlertOn
         UserDefaults.standard.set(self.alertStatus, forKey: self.event.eventID)
-        
-        
         tableView.reloadData()
+        let result = self.setAlertDate(indexPath.row)
         
+        if isAlertOn == true {
+            
+        self.setLocalNotification(result.0, alertID:result.1 )
+            if removedIDs.count > 0 {
+                removedIDs.removeAll()
+            }
+        }else {
+            removedIDs.append(result.1)
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: removedIDs)
+        }
         
-        
-        
-        
-        
-        
-    }
-    
-    
-    
+    }  
 }

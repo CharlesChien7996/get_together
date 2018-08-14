@@ -4,9 +4,9 @@ import FirebaseStorage
 import MapKit
 import SVProgressHUD
 
-protocol AddEventVCDelegate : class{
-    func didUpdatedEvent(_ updatedEvent: Event)
-}
+//protocol AddEventVCDelegate : class{
+//    func didUpdatedEvent(_ updatedEvent: Event)
+//}
 
 
 class AddEventVC: UITableViewController {
@@ -34,7 +34,7 @@ class AddEventVC: UITableViewController {
     var editedMembers: [GUser] = []
     var region: MKCoordinateRegion!
     var annotation: MKPointAnnotation!
-    weak var delegate: AddEventVCDelegate?
+//    weak var delegate: AddEventVCDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -250,7 +250,7 @@ class AddEventVC: UITableViewController {
         
         // Upload event's data to firebasedatabase.
         self.uploadEventData()
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController?.popToRootViewController(animated: true)
     }
     
     
@@ -311,9 +311,9 @@ class AddEventVC: UITableViewController {
                         dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                         let time = dateformatter.string(from: Date())
                         
-                        let notification = GNotification(notificationID: notificationID, userID: member.userID, eventID: self.event.eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",remark: "",isRead: false, time: time, isRemoved: true)
+                        let notification = GNotification(notificationID: notificationID, userID: member.userID, eventID: eventID, message: "\"\(self.user.name)\" 將您從 「\(self.event.title)」 移出成員",remark: "",isRead: false, time: time, isRemoved: true)
                         
-                        ref.child("invitingEventList").child(member.userID).child(self.event.eventID).updateChildValues(["isMember" : false])
+                        ref.child("invitingEventList").child(member.userID).child(eventID).updateChildValues(["isMember" : false])
                         
                         ref.child("notification").child(notificationID).setValue(notification.uploadNotification())
                         notificationID = ""
@@ -323,6 +323,8 @@ class AddEventVC: UITableViewController {
                     let finalMemberIDsSet = Set(originalMemberIDs).subtracting(Set(deleteMemberIDs))
                     finalMemberIDs = Array(finalMemberIDsSet)
                 }
+//                self.delegate?.didUpdatedEvent(self.event)
+
                 
             }else {
                 
@@ -330,22 +332,22 @@ class AddEventVC: UITableViewController {
             }
             
             
-            self.delegate?.didUpdatedEvent(self.event)
             
             for member in self.editedMembers {
-                var notificationID: String? = FirebaseManager.shared.databaseReference.childByAutoId().key
-                let invitingEventList = EventList(eventID: self.event.eventID, isReply: false, isMember: true)
+                var notificationID: String = FirebaseManager.shared.databaseReference.childByAutoId().key
                 let dateformatter = DateFormatter()
                 dateformatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 let time = dateformatter.string(from: Date())
                 
+                let invitingEventList = EventList(eventID: eventID, isReply: false, isMember: true)
+
                 ref.child("invitingMemberList").child(invitingEventList.eventID).child(member.userID).child("invitingMemberID").setValue(member.userID)
                 ref.child("invitingEventList").child(member.userID).child(invitingEventList.eventID).setValue(invitingEventList.uploadedEventListData())
                 
                 // Upload data to notification.
-                let notification = GNotification(notificationID: notificationID!, userID: member.userID,eventID: self.event.eventID,message: "\"\(self.user.name)\" 邀請您加入 「\(self.event.title)」",remark: "",isRead: false,time: time,isRemoved: false)
+                let notification = GNotification(notificationID: notificationID, userID: member.userID,eventID: eventID,message: "\"\(self.user.name)\" 邀請您加入 「\(self.eventTitle.text!)」",remark: "",isRead: false,time: time,isRemoved: false)
                 
-                ref.child("notification").child(notificationID!).setValue(notification.uploadNotification())
+                ref.child("notification").child(notificationID).setValue(notification.uploadNotification())
                 notificationID = ""
             }
             
