@@ -124,7 +124,7 @@
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Li9-Q5-UZH">
-                                        <rect key="frame" x="264.33333333333337" y="170.66666666666669" width="67" height="27.333333333333343"/>
+                                        <rect key="frame" x="0.0" y="170.66666666666669" width="331.33333333333331" height="27.333333333333343"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <state key="normal" title="忘記密碼？"/>
                                         <connections>

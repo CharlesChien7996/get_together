@@ -128,10 +128,11 @@ class CommentVC: UIViewController {
                                       time: dict["time"] as! String)
                 
                 self.commentData.append(comment)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    SVProgressHUD.dismiss()
-                }
+            }
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                SVProgressHUD.dismiss()
             }
         }
     }
