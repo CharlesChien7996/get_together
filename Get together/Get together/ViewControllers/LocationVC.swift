@@ -43,10 +43,10 @@ class LocationVC: UIViewController {
         definesPresentationContext = true
         
         
-        // Ask user's permission.
+        // 取得權限
         locationManager.requestAlwaysAuthorization()
         
-        // prepare locationManager
+        // 設置locationManager
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.activityType = .automotiveNavigation

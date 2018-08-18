@@ -39,8 +39,9 @@ class EventAlertVC: UIViewController {
         }
     }
     
+    
+    // 設定提醒時間
     func setAlertDate(_ option: Int) -> (Date, String) {
-        
         
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
@@ -98,61 +99,6 @@ class EventAlertVC: UIViewController {
             print("成功建立通知...")
         }
     }
-    
-    
-    
-    
-//
-//    func saveChecklistItems() {
-//
-//        let encoder = PropertyListEncoder()
-//        do {
-//
-//            let data:Data = try encoder.encode(alertOptions)
-//            try data.write(to: dataFilePath(),options: Data.WritingOptions.atomic)
-//
-//        } catch {
-//            print("Error encoding item array!")
-//        }
-//    }
-//
-//    func loadChecklistItems() {
-//
-//        let path = dataFilePath()
-//        if let data = try? Data(contentsOf: path) {
-//            let decoder = PropertyListDecoder()
-//            do {
-//                alertOptions = try decoder.decode([AlertOptionItem].self,from: data)
-//            } catch {
-//                print("Error decoding item array!")
-//            }
-//        }
-//    }
-//
-//
-//    func dataFilePath() -> URL {
-//
-//        let paths = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask)
-//
-//        return paths[0].appendingPathComponent("Checklists.plist")
-//    }
-    
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
 }
 

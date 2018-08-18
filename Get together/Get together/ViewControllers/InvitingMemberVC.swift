@@ -17,6 +17,7 @@ class InvitingMemberVC: UITableViewController {
     }
     
     
+    // 查詢邀請中成員資料
     func queryInvitingMemberData() {
         
         SVProgressHUD.show(withStatus: "載入中...")
@@ -93,13 +94,12 @@ class InvitingMemberVC: UITableViewController {
         invitingMemberCell.imageView?.layer.cornerRadius = 30
         invitingMemberCell.imageView?.contentMode = .scaleAspectFill
         invitingMemberCell.imageView?.clipsToBounds = true
-        // Show image from cache if that has been stored in there.
+
         if let image = self.imageCache.object(forKey: invitingMember.profileImageURL as NSString) as? UIImage {
             
             invitingMemberCell.imageView?.image = image
         }else {
             
-            // Download image from firebase storage.
             FirebaseManager.shared.getImage(urlString: invitingMember.profileImageURL) { (image) in
                 
                 guard let image = image else {
@@ -112,7 +112,6 @@ class InvitingMemberVC: UITableViewController {
                 
                 DispatchQueue.main.async {
                     invitingMemberCell.imageView?.image = image
-
                 }
 
             }

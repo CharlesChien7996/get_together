@@ -51,6 +51,7 @@ class EventContentVC: UITableViewController {
     }
     
     
+    // 設定高度
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         switch indexPath.section {
@@ -90,6 +91,7 @@ class EventContentVC: UITableViewController {
     }
     
     
+    // 設置大頭針
     func setLocationAnnotation() {
         
         let geoCoder = CLGeocoder()
@@ -128,6 +130,7 @@ class EventContentVC: UITableViewController {
     }
     
     
+    // 查詢活動列表
     func queryEventList() {
         
         guard let currentUser = Auth.auth().currentUser else {
@@ -162,6 +165,7 @@ class EventContentVC: UITableViewController {
                                      name: dict["name"] as! String,
                                      profileImageURL: dict["profileImageURL"] as! String)
                     
+                    // 判斷成員是否已加入
                     if eventList.eventID == self.event.eventID && eventList.isReply == false {
                         
                         self.showAnwserSelector(currentUser, user: user)
@@ -178,10 +182,7 @@ class EventContentVC: UITableViewController {
         }
     }
     
-    
-
-    
-    
+    // 編輯
     @IBAction func editPressed(_ sender: Any) {
         
         
@@ -218,6 +219,7 @@ class EventContentVC: UITableViewController {
     }
     
     
+    // 退出
     func showDropOutAlert(_ currentUser: User) {
         
         let memberSet = Set(self.event.memberIDs)
@@ -261,6 +263,7 @@ class EventContentVC: UITableViewController {
     }
     
     
+    // 顯示是否加入提示框
     func showAnwserSelector(_ currentUser: User, user: GUser) {
         
         let ref = FirebaseManager.shared.databaseReference
@@ -324,6 +327,7 @@ class EventContentVC: UITableViewController {
         }
     
     
+    // 查詢成員資料
     func queryUserData() {
         
         SVProgressHUD.show(withStatus: "載入中...")
@@ -411,7 +415,6 @@ class EventContentVC: UITableViewController {
         let options = [
             MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
             MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span),
-//            MKLaunchOptionsDirectionsModeDriving: NSValue(mkCoordinate: coordinates)
 
             ]
         
@@ -438,7 +441,6 @@ class EventContentVC: UITableViewController {
             editEventVC.originalMemers = self.memberData
             editEventVC.annotation = self.annotation
             editEventVC.region = self.region
-//            editEventVC.delegate = self
         }
         
         if segue.identifier == "invitingMemberVC" {
@@ -484,14 +486,12 @@ extension EventContentVC: UICollectionViewDataSource {
         memberCell.memberName.text = member.name
         memberCell.memberProfileImage.image = nil
         
-        // Show image from cache if that has been stored in there.
         if let image = self.imageCache.object(forKey: member.profileImageURL as NSString) as? UIImage {
             
             memberCell.memberProfileImage.image = image
             member.image = image
         }else {
             
-            // Download image from firebase storage.
             FirebaseManager.shared.getImage(urlString: member.profileImageURL) { (image) in
                 
                 guard let image = image else {
@@ -511,21 +511,3 @@ extension EventContentVC: UICollectionViewDataSource {
         return memberCell
     }
 }
-
-//extension EventContentVC: AddEventVCDelegate {
-//    func didUpdatedEvent(_ updatedEvent: Event) {
-//
-//        self.event = updatedEvent
-//        self.queryUserData()
-//        self.eventTitle.text = self.event.title
-//        self.eventDate.text = self.event.date
-//        self.eventLocation.text = self.event.location
-//        self.eventDescription.text = self.event.description
-//        self.eventImageView.image = self.event.image
-//        self.setLocationAnnotation()
-//
-//    }
-//}
-
-
-

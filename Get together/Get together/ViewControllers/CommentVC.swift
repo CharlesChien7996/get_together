@@ -30,6 +30,7 @@ class CommentVC: UIViewController {
     }
     
     
+    // 送出留言
     @IBAction func inputPressed(_ sender: Any) {
         
         guard let currentUser = Auth.auth().currentUser else {
@@ -102,6 +103,7 @@ class CommentVC: UIViewController {
     }
     
     
+    // 查詢留言
     func queryCommentData() {
         
         SVProgressHUD.show(withStatus: "載入中...")
@@ -145,17 +147,21 @@ class CommentVC: UIViewController {
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .short
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        dateFormatter.timeZone = TimeZone.init(identifier: "Asia/Taipei")//設置時區
-        //print("目前時區--->\(TimeZone.current)---->\(NSTimeZone.system)")
+        dateFormatter.timeZone = TimeZone.init(identifier: "Asia/Taipei")
         
-        let dateModel = dateFormatter.date(from: date)//按照格式設置傳入的date时间
+        let dateModel = dateFormatter.date(from: date)
         let dateNow = Date()
-        let timeModel = NSString.init(format: "%ld", Int(dateModel!.timeIntervalSince1970))//計算傳入時間的時間戳
-        let timeNow = NSString.init(format: "%ld", Int(dateNow.timeIntervalSince1970))//計算當前時間的時間戳
         
-        let time = (timeNow.integerValue - timeModel.integerValue) / 60//计算时差
+        //計算傳入時間的時間戳
+        let timeModel = NSString.init(format: "%ld", Int(dateModel!.timeIntervalSince1970))
         
-        //time 取得輸入時間到目前時間的分鐘差
+        //計算當前時間的時間戳
+        let timeNow = NSString.init(format: "%ld", Int(dateNow.timeIntervalSince1970))
+        
+        // 計算時差
+        let time = (timeNow.integerValue - timeModel.integerValue) / 60
+        
+        // 取得輸入時間到目前時間的分鐘差
         var returnMinDiff = false
         var returnHourDiff = false
         var returnDayDiff = false
@@ -193,7 +199,7 @@ class CommentVC: UIViewController {
     }
     
     
-    // Adjust frame when keyboard is showing.
+    // 鍵盤升起畫面調整
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -356,7 +362,6 @@ extension CommentVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         
 
-        
         if indexPath.section == 0 {
             return false
         }else {

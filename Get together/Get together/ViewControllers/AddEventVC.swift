@@ -4,11 +4,6 @@ import FirebaseStorage
 import MapKit
 import SVProgressHUD
 
-//protocol AddEventVCDelegate : class{
-//    func didUpdatedEvent(_ updatedEvent: Event)
-//}
-
-
 class AddEventVC: UITableViewController {
     
     @IBOutlet weak var eventImageView: UIImageView!
@@ -35,7 +30,7 @@ class AddEventVC: UITableViewController {
     var editedMembers: [GUser] = []
     var region: MKCoordinateRegion!
     var annotation: MKPointAnnotation!
-//    weak var delegate: AddEventVCDelegate?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +42,7 @@ class AddEventVC: UITableViewController {
         self.eventDescription.delegate = self
         self.eventDescription.textColor = UIColor.lightGray
         
-        // Prepare defult event date.
+        // 預設時間
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         self.eventDate.text = dateformatter.string(from: Date())
@@ -66,13 +61,13 @@ class AddEventVC: UITableViewController {
             self.eventDescription.textColor = UIColor.black
         }
         
-        // Query organiser's data from database.
         if let currentUser = Auth.auth().currentUser {
             
             self.queryOrganiserData(currentUser.uid)
         }
     }
     
+    // 設定高度
     func heightHandle(indexPath: IndexPath) -> CGFloat {
         
         switch indexPath.section {
@@ -111,7 +106,7 @@ class AddEventVC: UITableViewController {
         return 44
     }
     
-    
+    // 設定高度
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         let height = self.heightHandle(indexPath: indexPath)
@@ -120,6 +115,7 @@ class AddEventVC: UITableViewController {
     }
     
     
+    // 設定高度
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         
         let height = self.heightHandle(indexPath: indexPath)
@@ -128,7 +124,7 @@ class AddEventVC: UITableViewController {
     }
     
     
-    // Query organiser's data from database.
+    // 查詢主辦者資料
     func queryOrganiserData(_ uid: String) {
         
         let organiserRef = Database.database().reference().child("user").child(uid)
@@ -154,7 +150,7 @@ class AddEventVC: UITableViewController {
     }
     
     
-    // Pick event image.
+    // 選取圖片
     @IBAction func uploadImagePressed(_ sender: Any) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -167,12 +163,14 @@ class AddEventVC: UITableViewController {
             self.present(imagePicker, animated: true, completion: nil)
             
         }
+        
         let camera = UIAlertAction(title: "相機", style: .default) { (action) in
             imagePicker.sourceType = .camera
             
             self.present(imagePicker, animated: true, completion: nil)
             
         }
+        
         let cancel = UIAlertAction(title: "取消", style: .cancel)
         alert.addAction(photoLibray)
         alert.addAction(camera)
@@ -181,7 +179,7 @@ class AddEventVC: UITableViewController {
     }
     
     
-    // Pick event date.
+    // 選取時間
     @IBAction func selectDatePressed(_ sender: Any) {
         
         if self.isOn == false {
@@ -223,19 +221,12 @@ class AddEventVC: UITableViewController {
     
     @IBAction func done(_ sender: Any) {
         
-        // Check if somewhere is empty.
+        // 檢查是否有位輸入 / 選擇的欄位
         if self.eventTitle.text?.isEmpty == true {
             
             self.showAlert("標題", message: "等等，還沒輸入標題呢！")
             return
         }
-        
-        //        if self.members.count <= 0 {
-        //
-        //            self.showAlert("描述", message: "等等，還沒邀請成員呢！")
-        //            return
-        //        }
-        
         
         if self.eventLocation.text == "尚未選擇" {
             
@@ -249,13 +240,12 @@ class AddEventVC: UITableViewController {
             return
         }
         
-        // Upload event's data to firebasedatabase.
         self.uploadEventData()
         self.navigationController?.popToRootViewController(animated: true)
     }
     
     
-    // Upload event's data to database.
+    // 上傳活動資料
     func uploadEventData() {
         
         SVProgressHUD.show(withStatus: "請稍候...")
@@ -283,10 +273,16 @@ class AddEventVC: UITableViewController {
         
         FirebaseManager.shared.uploadImage(imageRef, image: thumbnailImage) { (url) in
             
+            // 被移除的成員
             var removedMemberSet = Set(self.deletedMembers)
+            
+            // 原始成員(新增狀態)
             let memberSet = Set(self.members)
             
+            // 原始成員(編輯狀態)
             let originalMemerSet = Set(self.originalMemers)
+            
+            // 編輯後的成員
             let editedSet = memberSet.subtracting(removedMemberSet).subtracting(originalMemerSet)
             self.editedMembers = Array(editedSet)
             
@@ -301,6 +297,7 @@ class AddEventVC: UITableViewController {
                 return
             }
             
+            // 判斷是否為編輯狀態
             if self.isEdit == true {
                 
                 let originalMemberIDs = self.event.memberIDs
@@ -331,9 +328,6 @@ class AddEventVC: UITableViewController {
                     let finalMemberIDsSet = Set(originalMemberIDs).subtracting(Set(deleteMemberIDs))
                     finalMemberIDs = Array(finalMemberIDsSet)
                 }
-//                self.delegate?.didUpdatedEvent(self.event)
-
-                
             }
             
             

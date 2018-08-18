@@ -40,14 +40,12 @@ class RegisterVC: UIViewController {
         self.profileImageView.layer.cornerRadius = self.profileImageView.frame.width / 2.0
         self.createUserBtn.layer.cornerRadius = self.createUserBtn.frame.height / 5.0
         self.cancelBtn.layer.cornerRadius = self.cancelBtn.frame.height / 5.0
-        
     }
     
     
-    // USer register.
+    // 註冊
     @IBAction func registerPressed(_ sender: Any) {
         
-        // Check if text is empty.
         if self.emailTextField.text!.isEmpty{
             self.emailCheck.text = "Email不可以空空喔"
         }
@@ -91,6 +89,7 @@ class RegisterVC: UIViewController {
     }
     
     
+    // 錯誤訊息
     func handleError(_ error: Error) {
         
         guard let errorCode = AuthErrorCode(rawValue: error._code) else {
@@ -112,7 +111,7 @@ class RegisterVC: UIViewController {
         }
     }
     
-    
+    // 選擇圖片
     @IBAction func uploadProfileImage(_ sender: Any) {
         
         let imagePicker = UIImagePickerController()
@@ -145,6 +144,7 @@ class RegisterVC: UIViewController {
     }
     
     
+    // 上傳使用者資料
     func uploadUserData() {
         
         guard let currentUser = Auth.auth().currentUser else {
@@ -177,7 +177,7 @@ class RegisterVC: UIViewController {
     }
     
     
-    // Adjust frame when keyboard is showing.
+    // 鍵盤升起時畫面升起
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -187,8 +187,8 @@ class RegisterVC: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        
         super.viewWillDisappear(animated)
+        
         NotificationCenter.default.removeObserver(self)
     }
     

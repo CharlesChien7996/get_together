@@ -20,7 +20,7 @@ class NotificationVC: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         
-        // Show background view if current user is nil.
+        // 設置未登入時的Background view
         guard let currentUser = Auth.auth().currentUser else {
             self.tableView.backgroundView = backgroundViewWithoutLogin
             self.tableView.separatorStyle = .none
@@ -79,6 +79,7 @@ class NotificationVC: UITableViewController {
     }
     
     
+    // 查詢通知資料
     func queryNotification(_ currentUser: User) {
 
         SVProgressHUD.show(withStatus: "載入中...")
@@ -118,6 +119,7 @@ class NotificationVC: UITableViewController {
             self.notificationData.sort() { (GNoti1, GNoti2) -> Bool in
                 return GNoti1.time > GNoti2.time
             }
+            
             for notification in self.notificationData {
                 
                 let ref = Database.database().reference().child("event").child(notification.eventID)
@@ -157,7 +159,7 @@ class NotificationVC: UITableViewController {
     }
     
     
-    // Set up refresh view.
+    // 設置下拉更新
     func setUpRefreshView() {
         
         self.refresher = UIRefreshControl()

@@ -1,11 +1,3 @@
-//
-//  CommentEventCell.swift
-//  Get together
-//
-//  Created by 簡士荃 on 2018/8/9.
-//  Copyright © 2018年 Charles. All rights reserved.
-//
-
 import UIKit
 
 class CommentEventCell: UITableViewCell {

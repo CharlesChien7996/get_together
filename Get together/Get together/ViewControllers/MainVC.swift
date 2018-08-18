@@ -18,29 +18,31 @@ class MainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // 註冊登入 / 登出時的通知
         NotificationCenter.default.addObserver(self, selector: #selector(didUserLogin), name: NSNotification.Name("login"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didUserLogout), name: NSNotification.Name("logout"), object: nil)
+        
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.tableView.dataSource = self
         self.tableView.delegate = self
         
-        // Show background view if current user is nil.
+        // 設定為登入狀態時顯示的Background view
         guard let currentUser = Auth.auth().currentUser else {
             self.tableView.backgroundView = backgroundViewWithoutLogin
             self.tableView.separatorStyle = .none
             return
         }
+        
         self.setUpRefreshView()
-
         self.queryHostEventData(currentUser)
     }
     
     
     deinit {
+        // 移除通知
         NotificationCenter.default.removeObserver(self)
     }
 
-    
     
     @objc func didUserLogin() {
         
@@ -78,7 +80,7 @@ class MainVC: UIViewController {
     }
     
     
-    // Set up refresh view.
+    // 設置下拉刷新
     func setUpRefreshView() {
         
         self.refresher = UIRefreshControl()
@@ -100,12 +102,13 @@ class MainVC: UIViewController {
         self.refresher.endRefreshing()
     }
     
-    // Background view's login button be pressed.
+    // Background view上的登入Button被點擊時呼叫的方法
     @IBAction func goToLoginVC(_ sender: Any) {
         
         let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginVC
         self.present(loginVC, animated: true, completion: nil)
     }
+    
     
     @IBAction func segmentedControlChanged(_ sender: Any) {
         
@@ -116,7 +119,7 @@ class MainVC: UIViewController {
     }
     
     
-    // Query data host by self from database.
+    // 查詢主辦 / 加入的活動
     func queryHostEventData(_ currentUser: User) {
         SVProgressHUD.show(withStatus: "載入中...")
         
@@ -207,7 +210,7 @@ class MainVC: UIViewController {
     }
     
     
-    // Check current user.
+    // 確認使用者是否登入
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         
         guard Auth.auth().currentUser != nil else {
@@ -292,14 +295,14 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         
         cell.eventTitle?.text = event.title
         
-        // Show image from cache if that has been stored in there.
+        // 從快取顯示圖片
         if let image = self.imageCache.object(forKey: event.eventImageURL as NSString) as? UIImage {
             
             event.image = image
             cell.eventImageView.image = image
         }else {
             
-            // Download image from firebase storage.
+            // 從Storage下載圖片
             FirebaseManager.shared.getImage(urlString: event.eventImageURL) { (image) in
                 
                 guard let image = image else {

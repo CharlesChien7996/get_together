@@ -94,6 +94,7 @@ class ProfileVC: UITableViewController {
     }
     
     
+    // 查詢使用者資料
     func queryUserInfo(_ currentUser: User) {
         SVProgressHUD.show(withStatus: "載入中...")
         let userRef = FirebaseManager.shared.databaseReference.child("user").child(currentUser.uid)

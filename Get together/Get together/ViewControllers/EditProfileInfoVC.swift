@@ -51,7 +51,7 @@ class EditProfileInfoVC: UITableViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    // Upload user's data to database.
+    // 上傳使用者資料
     func uploadUserData() {
         SVProgressHUD.show(withStatus: "請稍候...")
         guard let uid = Auth.auth().currentUser?.uid else {

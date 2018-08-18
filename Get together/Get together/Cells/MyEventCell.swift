@@ -1,11 +1,3 @@
-//
-//  MyEventCell.swift
-//  Get together
-//
-//  Created by 簡士荃 on 2018/7/4.
-//  Copyright © 2018年 Charles. All rights reserved.
-//
-
 import UIKit
 
 class MyEventCell: UITableViewCell {

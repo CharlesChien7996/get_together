@@ -23,6 +23,7 @@ class MemberSearchVC: UITableViewController {
         
         let ref = FirebaseManager.shared.databaseReference.child("user")
         
+        // 查詢使用者資料
         FirebaseManager.shared.getData(ref, type: .childAdded) { (allObjects, dict) in
             
             guard let dict = dict else{
@@ -39,7 +40,7 @@ class MemberSearchVC: UITableViewController {
         }
         
         
-        // Prepare search bar.
+        // 設定Search bar
         self.memberSearchResultController = UISearchController(searchResultsController: nil)
         self.memberSearchResultController.searchResultsUpdater = self
         let memberSearchBar = self.memberSearchResultController.searchBar
@@ -87,7 +88,6 @@ class MemberSearchVC: UITableViewController {
             selectedMember.image = image
         }else {
             
-            // Download image from firebase storage.
             FirebaseManager.shared.getImage(urlString: selectedMember.profileImageURL) { (image) in
                 
                 guard let image = image else {

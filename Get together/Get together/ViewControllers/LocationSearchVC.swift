@@ -56,16 +56,16 @@ class LocationSearchVC: UITableViewController {
         let secondSpace = (selectedItem.subAdministrativeArea != nil && selectedItem.administrativeArea != nil) ? " " : ""
         let addressLine = String(
             format:"%@%@%@%@%@%@%@",
-            // street number
+            // 門牌號碼
             selectedItem.subThoroughfare ?? "",
             firstSpace,
-            // street name
+            // 街 / 路
             selectedItem.thoroughfare ?? "",
             comma,
-            // city
+            // 市
             selectedItem.locality ?? "",
             secondSpace,
-            // state
+            // 州
             selectedItem.administrativeArea ?? ""
         )
         return addressLine

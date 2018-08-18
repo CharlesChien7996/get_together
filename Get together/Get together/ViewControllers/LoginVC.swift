@@ -46,6 +46,7 @@ class LoginVC: UIViewController {
     }
     
     
+    // 一般登入
     @IBAction func loginPressed(_ sender: Any) {
         
         if self.emailTextField.text!.isEmpty {
@@ -80,17 +81,15 @@ class LoginVC: UIViewController {
     }
     
 
-    
+    // Google登入
     @IBAction func googleSignInPressed(_ sender: Any) {
         
         GIDSignIn.sharedInstance().signIn()
-        //        self.dismiss(animated: true)
-        
     }
     
     
 
-    
+    // Facebook登入
     @IBAction func facebookSignInPressed(_ sender: Any) {
         
         let loginManager = LoginManager()
@@ -112,9 +111,7 @@ class LoginVC: UIViewController {
                         print(error)
                         return
                     }
-
-
-
+                    
                     guard let user = result?.user else {
                         return
                     }
@@ -149,12 +146,14 @@ class LoginVC: UIViewController {
     }
     
     
+    // 稍後登入
     @IBAction func laterPressed(_ sender: Any) {
         
         self.dismiss(animated: true, completion: nil)
     }
     
     
+    // 錯誤訊息
     func loginErrorHandle(_ error: Error) {
         
         guard let errorCode = AuthErrorCode(rawValue: error._code) else {
@@ -178,61 +177,18 @@ class LoginVC: UIViewController {
     }
     
     
-    // Adjust frame when keyboard is showing.
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(notification:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-//
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
         
         guard Auth.auth().currentUser != nil else {
             print("Fail to get current user")
             return
         }
         
+        // 若使用者已登入則畫面跳轉至主畫面
         let tabBarVC = self.storyboard?.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
         self.present(tabBarVC, animated: true, completion: nil)
     }
-    
-    
-    // Remove observer when leave this view.
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        NotificationCenter.default.removeObserver(self)
-//    }
-//    
-//    
-//    @objc func keyboardWillAppear(notification : Notification)  {
-//        
-//        let info = notification.userInfo!
-//        let currentKeyboardFrame = info[UIKeyboardFrameEndUserInfoKey] as! CGRect
-//        let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
-//        
-//        let textFrame = self.view.window!.convert(self.stackView.frame, from: self.view)
-//        var visibleRect = self.view.frame
-//        self.originalFrame = visibleRect
-//        
-//        guard textFrame.maxY > currentKeyboardFrame.minY else{
-//            return
-//        }
-//        
-//        let difference = textFrame.maxY - currentKeyboardFrame.minY
-//        visibleRect.origin.y = visibleRect.origin.y - (difference+16)
-//        
-//        UIView.animate(withDuration: duration) {
-//            self.view.frame = visibleRect
-//        }
-//    }
-//    
-//    
-//    @objc func keyboardWillHide(notification : Notification)  {
-//        
-//        UIView.animate(withDuration: 0.5) {
-//            
-//            self.view.frame.origin.y = 0
-//        }
-//    }
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
