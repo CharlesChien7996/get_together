@@ -32,6 +32,9 @@ class EventContentVC: UITableViewController {
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         self.editBtn.title = ""
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        self.navigationController?.navigationBar.shadowImage = UIImage()
+//        self.tableView.contentInsetAdjustmentBehavior = .never
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"

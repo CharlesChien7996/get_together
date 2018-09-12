@@ -37,6 +37,11 @@ class MainVC: UIViewController {
         self.queryHostEventData(currentUser)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
+    
     
     deinit {
         // 移除通知
@@ -277,7 +282,6 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
             break
         }
         
-        cell.eventDate?.textColor = UIColor.init(red: 0.5, green: 0.8, blue: 1, alpha: 1)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         if let eventDate = dateFormatter.date(from: event.date) {
